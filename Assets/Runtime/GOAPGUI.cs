@@ -12,6 +12,7 @@ public class GOAPGUI : EditorWindow
     */
 
     GOAPPlanner goapPlanner;
+    Dictionary<string, bool> displayActions;
     
     // Grid appearance
     float majorGridSpacing = 100f;
@@ -29,6 +30,7 @@ public class GOAPGUI : EditorWindow
 
     public void SetPlanner(GOAPPlanner _goapPlanner){
         goapPlanner = _goapPlanner;
+        displayActions = new Dictionary<string, bool>();
     }
 
     private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
@@ -67,9 +69,21 @@ public class GOAPGUI : EditorWindow
         Dictionary<Goal, List<GOAPAction>> goalActionMap = goapPlanner.GetGoalActionMap();
 
         for (int i = 0; i < goalActionMap.Count; i++){
+
             var element = goalActionMap.ElementAt(i);
             string goalName = element.Key.GetType().ToString();
-            GUILayout.Label(goalName);
+
+            if (!displayActions.ContainsKey(goalName)){
+                displayActions[goalName] = false;
+            }
+            displayActions[goalName] = GUILayout.Toggle(displayActions[goalName], goalName);
+
+            if (displayActions[goalName]){
+                List<GOAPAction> goalActions = element.Value;
+                for (int j = 0; j < goalActions.Count; j++){
+                    GUILayout.Label($"   {goalActions[j].GetType().ToString()}");
+                }
+            }
 
         }
 
