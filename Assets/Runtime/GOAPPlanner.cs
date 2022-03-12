@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEditor;
 
 namespace GOAP{
 public class GOAPPlanner : MonoBehaviour
@@ -15,6 +16,9 @@ public class GOAPPlanner : MonoBehaviour
     GOAPAction bestAction;
 
     Dictionary<Goal, List<GOAPAction> > GoalActionMap; 
+
+    public bool displayPlanner = false;
+    bool displayingPlanner = false;
 
     void Awake(){
         goals = new List<Goal>(GetComponents<Goal>());
@@ -34,6 +38,9 @@ public class GOAPPlanner : MonoBehaviour
         }
 
         UpdateActiveAction();
+
+        UpdateDisplayPlanner();
+
     }
 
     bool NoActiveGoal(){
@@ -157,5 +164,31 @@ public class GOAPPlanner : MonoBehaviour
         }       
         return chosenAction;
     }
+
+    public Dictionary<Goal, List<GOAPAction>> GetGoalActionMap(){
+        return GoalActionMap;
+    }
+
+    void UpdateDisplayPlanner(){
+
+        if (Selection.activeObject == this.gameObject && !displayingPlanner && displayPlanner){
+            DisplayPlanner();
+        }
+        else if (Selection.activeObject != this.gameObject && displayingPlanner){
+            StopDisplayingPlanner();
+        }
+
+    }
+
+    void DisplayPlanner(){
+        displayingPlanner = true;
+        GOAPGUI window = EditorWindow.GetWindow(typeof(GOAPGUI)) as GOAPGUI;
+        window.SetPlanner(this);
+    }
+
+    void StopDisplayingPlanner(){
+        displayingPlanner = false;
+    }
+
 }
 }
