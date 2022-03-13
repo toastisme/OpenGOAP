@@ -145,7 +145,7 @@ public class GOAPPlanner : MonoBehaviour
     }
 
     bool HasHigherPriority(Goal goal, Goal other){
-        return goal.CalculatePriority() > other.CalculatePriority();
+        return goal.GetPriority() > other.GetPriority();
     }
 
     bool HasLowerCost(GOAPAction _action, GOAPAction other){

@@ -9,7 +9,7 @@ public class Goal : MonoBehaviour, IGoal
     public GOAPAction LinkedAction {get; protected set;}
     public virtual void Setup(){}
 
-    public virtual float CalculatePriority(){
+    public virtual float GetPriority(){
         return 0f;
     }
 

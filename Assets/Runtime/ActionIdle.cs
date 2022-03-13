@@ -5,6 +5,7 @@ using UnityEngine;
 namespace GOAP{
 public class ActionIdle : GOAPAction
 {
+
     List<System.Type> SupportedGoals = new List<System.Type>(new System.Type[] {typeof(GoalIdle)});
 
     public override List<System.Type> GetSupportedGoals(){
@@ -12,7 +13,7 @@ public class ActionIdle : GOAPAction
     }
 
     public override float GetCost(){
-        return 0f;
+        return 0.0f;
     }
 
 }
