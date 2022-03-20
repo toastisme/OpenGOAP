@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace GOAP{
-public struct WorldState 
+public class WorldState 
 {
     public Dictionary<string, bool> boolKeys;
     public Dictionary<string, float> floatKeys;
@@ -12,6 +12,16 @@ public struct WorldState
     public Dictionary<string, Vector3> vector3Keys;
     public Dictionary<string, Vector2> vector2Keys;
     public Dictionary<string, GameObject> gameObjectKeys;
+
+    public WorldState(){
+        boolKeys = new Dictionary<string, bool>();
+        floatKeys = new Dictionary<string, float>();
+        intKeys = new Dictionary<string, int>();
+        stringKeys = new Dictionary<string, string>();
+        vector3Keys = new Dictionary<string, Vector3>();
+        vector2Keys = new Dictionary<string, Vector2>();
+        gameObjectKeys = new Dictionary<string, GameObject>();
+    }
 
     static public WorldState GetCombinedState(WorldState a, WorldState b){
         /**

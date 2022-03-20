@@ -20,13 +20,20 @@ public class GOAPPlanner : MonoBehaviour
     Goal optimalGoal;
     List<GOAPAction> optimalPlan;
 
-    //// Display
+    //// Planner
     public bool displayPlanner = false;
     bool displayingPlanner = false;
 
     void Awake(){
         goals = new List<Goal>(GetComponents<Goal>());
         actions = new List<GOAPAction>(GetComponents<GOAPAction>());
+        worldState = new WorldState();
+        for (int i = 0; i < goals.Count; i++){
+            goals[i].Setup();
+        }
+        for (int i = 0; i < actions.Count; i++){
+            actions[i].Setup(worldState: ref worldState);
+        }
     }
 
     void Update(){
@@ -39,7 +46,7 @@ public class GOAPPlanner : MonoBehaviour
             StartCurrentBestGoal();
         } 
 
-        //UpdateDisplayPlanner();
+        UpdateDisplayPlanner();
 
     }
 
@@ -60,7 +67,7 @@ public class GOAPPlanner : MonoBehaviour
         if (activeGoal != null){
             activeGoal.OnDeactivated();
         }
-        if (activeActionIdx < activePlan.Count){
+        if (activePlan != null && activeActionIdx < activePlan.Count){
             activePlan[activeActionIdx].OnDeactivated();
         }
 
@@ -87,7 +94,7 @@ public class GOAPPlanner : MonoBehaviour
     void OnTickActivePlan(){
         if (!(activeGoal != null && activePlan != null)){return;}
         activePlan[activeActionIdx].OnTick();
-        if (worldState.IsSubset(activePlan[activeActionIdx].outputState)){
+        if (activePlan[activeActionIdx].outputState.IsSubset(worldState)){
             activePlan[activeActionIdx].OnDeactivated();
             activeActionIdx++;
             if (activeActionIdx < activePlan.Count){
@@ -242,7 +249,6 @@ public class GOAPPlanner : MonoBehaviour
 
     //// Planner display
 
-    /*
     void UpdateDisplayPlanner(){
 
         if (Selection.activeObject == this.gameObject && !displayingPlanner && displayPlanner){
@@ -255,17 +261,13 @@ public class GOAPPlanner : MonoBehaviour
 
     void DisplayPlanner(){
         displayingPlanner = true;
-        GOAPGUI window = EditorWindow.GetWindow(typeof(GOAPGUI)) as GOAPGUI;
+        GUIPlanner window = EditorWindow.GetWindow(typeof(GUIPlanner)) as GUIPlanner;
         window.SetPlanner(this);
     }
 
     void StopDisplayingPlanner(){
         displayingPlanner = false;
     }
-    */
-
-
-
 
 }
 }

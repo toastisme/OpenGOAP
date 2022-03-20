@@ -18,6 +18,7 @@ public class GOAPAction : MonoBehaviour, IAction
     }
 
     public virtual bool SatisfiesCondition(string condition){
+        if (condition == ""){return true;}
         bool conditionValue;
         if(outputState.boolKeys.TryGetValue(
             condition, out conditionValue) && conditionValue == true
@@ -28,7 +29,7 @@ public class GOAPAction : MonoBehaviour, IAction
     }
 
     public virtual bool SatisfiesState(WorldState state){
-        return outputState.IsSubset(state);
+        return state.IsSubset(outputState);
     }
 
     public virtual void OnActivated(){
@@ -43,7 +44,7 @@ public class GOAPAction : MonoBehaviour, IAction
         /**
          * true if worldState satisfies preconditions
          */
-        return requiredState.IsSubset(worldState);
+        return worldState.IsSubset(requiredState);
     }
 }
 }

@@ -11,13 +11,19 @@ public class GUIPlanner : EditorWindow
     Vector2 nodeSpacing;
     Vector2 nodeSize;
 
+    public void SetPlanner(GOAPPlanner planner){
+        this.planner = planner;
+    }
+
     void OnEnable(){
         nodeSpacing = GUIProperties.NodeSpacing();
         nodeSize = GUIProperties.NodeSize();
     }
 
     void OnGUI(){
-        DrawActionNodes();
+        if (planner != null){
+            DrawActionNodes();
+        }
     }
 
     void OnInspectorUpdate(){

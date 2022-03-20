@@ -5,7 +5,7 @@ using UnityEngine;
 namespace GOAP{
 public class Goal : MonoBehaviour, IGoal
 {
-    public string condition;
+    public string condition="";
 
     public virtual void Setup(){}
 
@@ -21,12 +21,5 @@ public class Goal : MonoBehaviour, IGoal
     public virtual void OnActivated(){}
     public virtual void OnDeactivated(){}
 
-    void Awake(){
-        Setup();
-    }
-
-    void Update(){
-        OnTick();
-    }
 }
 }
