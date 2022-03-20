@@ -8,13 +8,13 @@ namespace GOAP{
 public class GOAPPlanner : MonoBehaviour
 {
     WorldState worldState;
-    List<Goal> goals;
-    List<GOAPAction> actions;
+    public List<Goal> goals{get; private set;}
+    public List<GOAPAction> actions{get; private set;}
 
     //// Active
-    Goal activeGoal;
-    int activeActionIdx;
-    List<GOAPAction> activePlan;
+    public Goal activeGoal{get; private set;}
+    public int activeActionIdx{get; private set;}
+    public List<GOAPAction> activePlan{get; private set;}
 
     //// Optimal
     Goal optimalGoal;
