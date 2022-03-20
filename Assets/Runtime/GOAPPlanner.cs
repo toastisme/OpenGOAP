@@ -7,39 +7,39 @@ using UnityEditor;
 namespace GOAP{
 public class GOAPPlanner : MonoBehaviour
 {
+    WorldState worldState;
     List<Goal> goals;
     List<GOAPAction> actions;
 
+    //// Active
     Goal activeGoal;
-    Goal bestGoal;
-    GOAPAction activeAction;
-    GOAPAction bestAction;
+    int activeActionIdx;
+    List<GOAPAction> activePlan;
 
-    Dictionary<Goal, List<GOAPAction> > GoalActionMap; 
+    //// Optimal
+    Goal optimalGoal;
+    List<GOAPAction> optimalPlan;
 
+    //// Display
     public bool displayPlanner = false;
     bool displayingPlanner = false;
 
     void Awake(){
         goals = new List<Goal>(GetComponents<Goal>());
         actions = new List<GOAPAction>(GetComponents<GOAPAction>());
-        UpdateGoalActionMap();
     }
 
     void Update(){
 
-        UpdateBestOptions();
+        OnTick();
+
+        GetHighestPriorityGoal(chosenGoal:out optimalGoal, chosenPlan:out optimalPlan);
 
         if ((NoActiveGoal() && GoalAvailable()) || BetterGoalAvailable()){
             StartCurrentBestGoal();
         } 
-        else if (BetterActionAvailable()){
-            StartCurrentBestAction();
-        }
 
-        UpdateActiveAction();
-
-        UpdateDisplayPlanner();
+        //UpdateDisplayPlanner();
 
     }
 
@@ -47,85 +47,71 @@ public class GOAPPlanner : MonoBehaviour
         return activeGoal == null;
     }
 
+
     bool BetterGoalAvailable(){
-        return bestGoal != null && bestGoal != activeGoal;
+        return optimalGoal != null && optimalGoal != activeGoal;
     }
 
     bool GoalAvailable(){
-        return bestAction != null && bestGoal != null;
+        return optimalPlan != null && optimalGoal != null;
     }
 
     void StartCurrentBestGoal(){
         if (activeGoal != null){
             activeGoal.OnDeactivated();
         }
-        if (activeAction != null){
-            activeAction.OnDeactivated();
+        if (activeActionIdx < activePlan.Count){
+            activePlan[activeActionIdx].OnDeactivated();
         }
 
-        activeGoal = bestGoal;
-        activeAction = bestAction;
-        activeGoal.OnActivated(activeAction);
-        activeAction.OnActivated(activeGoal);
+        activeActionIdx = 0;
+        activeGoal = optimalGoal;
+        activePlan = optimalPlan;
+        activeGoal.OnActivated();
+        activePlan[activeActionIdx].OnActivated();
     }
 
-    bool ActionAvailable(){
-        return bestAction != null;
+    void OnTick(){
+        OnTickGoals();
+        OnTickActivePlan();
     }
 
-    bool BetterActionAvailable(){
-        return bestAction != null && bestAction != activeAction;
-    }
-
-    void StartCurrentBestAction(){
-        Assert.IsTrue(activeGoal != null);
-        Assert.IsTrue(bestAction != null);
-        if (activeAction != null){
-            activeAction.OnDeactivated();
-        }
-        activeAction = bestAction;
-        bestAction.OnActivated(activeGoal);
-    }
-
-    void UpdateActiveAction(){
-        if (activeAction != null){
-            activeAction.OnTick();
-        }
-    }
-
-    void UpdateBestOptions(){
-        bestGoal = null;
-        bestAction = null;
-        GetHighestPriorityGoal(chosenGoal:out bestGoal, chosenAction:out bestAction);
-    }
-
-    void UpdateGoalActionMap(){
-        if (goals == null || actions == null){
-            return;
-        }
-        GoalActionMap = new Dictionary<Goal, List<GOAPAction>>();
-        for (int i = 0; i < goals.Count; i++){
-            List<GOAPAction> goalActions = new List<GOAPAction>();
-            for (int j = 0; j < actions.Count; j++){
-                if (actions[j].GetSupportedGoals().Contains(goals[i].GetType())){
-                    goalActions.Add(actions[j]);
-                }
+    void OnTickGoals(){
+        if (goals != null){
+            for (int i = 0; i < goals.Count; i++){
+                goals[i].OnTick();
             }
-            GoalActionMap[goals[i]] = goalActions;
         }
-
     }
 
-    void GetHighestPriorityGoal(out Goal chosenGoal, out GOAPAction chosenAction){
+    void OnTickActivePlan(){
+        if (!(activeGoal != null && activePlan != null)){return;}
+        activePlan[activeActionIdx].OnTick();
+        if (worldState.IsSubset(activePlan[activeActionIdx].outputState)){
+            activePlan[activeActionIdx].OnDeactivated();
+            activeActionIdx++;
+            if (activeActionIdx < activePlan.Count){
+                activePlan[activeActionIdx].OnActivated();
+            }
+            else{
+                // Goal complete
+                activeGoal.OnDeactivated();
+            }
+        }
+    }
 
+    void GetHighestPriorityGoal(out Goal chosenGoal, out List<GOAPAction> chosenPlan){
+
+        /**
+         * Updates chosenGoal and chosenPlan with the highest priorty goal that 
+         * has a valid plan
+         */
 
         chosenGoal = null;
-        chosenAction = null;
+        chosenPlan = null;
         if (goals == null){return;}
 
         for (int i = 0; i < goals.Count; i++){
-
-            goals[i].OnTick();
 
             if (!goals[i].CanRun()){
                 continue;
@@ -135,11 +121,15 @@ public class GOAPPlanner : MonoBehaviour
                 continue;
             }
 
-            GOAPAction candidateAction = GetLowestCostAction(GoalActionMap[goals[i]]);
+            List<GOAPAction> candidatePath = GetOptimalPath(
+                currentState:worldState,
+                goal:goals[i], 
+                actions:actions
+                );
 
-            if (candidateAction != null){
+            if (candidatePath != null){
                 chosenGoal = goals[i];
-                chosenAction = candidateAction;
+                chosenPlan = candidatePath;
             }
         }
     }
@@ -148,27 +138,111 @@ public class GOAPPlanner : MonoBehaviour
         return goal.GetPriority() > other.GetPriority();
     }
 
-    bool HasLowerCost(GOAPAction _action, GOAPAction other){
-        return _action.GetCost() < other.GetCost();
-    }
 
-    GOAPAction GetLowestCostAction(List<GOAPAction> _actions){
-        if (_actions == null || _actions.Count == 0){
-            return null;
-        }
-        GOAPAction chosenAction = null;
-        for (int i = 0; i < _actions.Count; i++){
-            if (chosenAction == null || HasLowerCost(_actions[i], chosenAction)){
-                chosenAction = _actions[i];
+    //// A*
+
+    List<GOAPAction> GetOptimalPath(WorldState currentState, Goal goal, List<GOAPAction> actions){
+        
+        List<GOAPAction> availableNodes = new List<GOAPAction>();
+        List<GOAPAction> path = new List<GOAPAction>();
+
+        // Get starting node
+        GOAPAction startNode = null;
+        float minCost = -1;
+        for (int i = 0; i< actions.Count; i++){
+            if (actions[i].SatisfiesCondition(goal.condition)){
+                float cost = actions[i].GetCost();
+                if (minCost < 0 || cost < minCost){
+                    minCost = cost;
+                    startNode = actions[i];
+                }
             }
-        }       
-        return chosenAction;
+        }
+
+        // No path found
+        if (startNode == null){return null;}
+        availableNodes.Add(startNode);
+        WorldState requiredState = startNode.requiredState;
+
+        while (availableNodes.Count != 0){
+
+            GOAPAction currentNode = GetNextNode(
+                requiredState:requiredState,
+                path:path,
+                availableNodes:availableNodes);
+
+            // No path found
+            if (currentNode == null){
+                return null;
+            }
+            path.Add(currentNode);            
+
+            // Found complete path
+            if (currentState.IsSubset(currentNode.requiredState)){
+                path.Reverse();
+                return path;
+            }
+
+            requiredState = currentNode.requiredState;
+            List<GOAPAction> linkedNodes = GetLinkedNodes(
+                node:currentNode,
+                path:path,
+                availableNodes:availableNodes
+                );
+            for (int i = 0; i < linkedNodes.Count; i++){
+                availableNodes.Add(linkedNodes[i]);
+            }
+        }
+        // No path found
+        return null;
     }
 
-    public Dictionary<Goal, List<GOAPAction>> GetGoalActionMap(){
-        return GoalActionMap;
+    GOAPAction GetNextNode(
+        WorldState requiredState, 
+        List<GOAPAction> path, 
+        List<GOAPAction> availableNodes){
+            /**
+             * Searches for the node in availableNodes with the smallest
+             * cost that satisfies requiredState
+             */
+            
+            float minCost = -1f;
+            GOAPAction nextNode = null;
+            for (int i = 0; i < availableNodes.Count; i++){
+                if (path.Contains(availableNodes[i])){continue;}
+                if (!(requiredState.IsSubset(availableNodes[i].outputState))){
+                    continue;
+                }
+                float cost = availableNodes[i].GetCost();
+                if (minCost < 0 || cost < minCost){
+                    nextNode = availableNodes[i];
+                    minCost = cost;
+                }
+            }
+            return nextNode;
+        }
+
+    List<GOAPAction> GetLinkedNodes(
+        GOAPAction node, 
+        List<GOAPAction> path, 
+        List<GOAPAction> availableNodes){
+        /**
+         * Searches availableNodes for all those that satisfy node.requiredState 
+         * and that are not in path  
+         */
+        List<GOAPAction> linkedNodes = new List<GOAPAction>();
+        for (int i = 0; i < availableNodes.Count; i++){
+            if (path.Contains(availableNodes[i])){continue;}
+            if (node.requiredState.IsSubset(availableNodes[i].outputState)){
+                linkedNodes.Add(availableNodes[i]);
+            }
+        }
+        return linkedNodes;
     }
 
+    //// Planner display
+
+    /*
     void UpdateDisplayPlanner(){
 
         if (Selection.activeObject == this.gameObject && !displayingPlanner && displayPlanner){
@@ -177,7 +251,6 @@ public class GOAPPlanner : MonoBehaviour
         else if (Selection.activeObject != this.gameObject && displayingPlanner){
             StopDisplayingPlanner();
         }
-
     }
 
     void DisplayPlanner(){
@@ -189,6 +262,10 @@ public class GOAPPlanner : MonoBehaviour
     void StopDisplayingPlanner(){
         displayingPlanner = false;
     }
+    */
+
+
+
 
 }
 }

@@ -4,11 +4,14 @@ using System.Collections.Generic;
 namespace GOAP{
 public interface IAction
 {
-    List<System.Type> GetSupportedGoals();
     float GetCost(); // Between 0 and 1
-    void OnActivated(Goal linkedGoal);
+    void OnActivated();
     void OnDeactivated();
     void OnTick();
-    void Setup();
+    void Setup(ref WorldState worldState);
+    bool SatisfiesCondition(string condition);
+    bool SatisfiesState(WorldState state);
+    bool CanRun(); // true if currentState satisfies preconditions
+    
 }
 }

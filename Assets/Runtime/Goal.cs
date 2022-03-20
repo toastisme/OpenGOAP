@@ -5,8 +5,8 @@ using UnityEngine;
 namespace GOAP{
 public class Goal : MonoBehaviour, IGoal
 {
+    public string condition;
 
-    public GOAPAction LinkedAction {get; protected set;}
     public virtual void Setup(){}
 
     public virtual float GetPriority(){
@@ -18,7 +18,7 @@ public class Goal : MonoBehaviour, IGoal
     }
 
     public virtual void OnTick(){}
-    public virtual void OnActivated(GOAPAction linkedAction){}
+    public virtual void OnActivated(){}
     public virtual void OnDeactivated(){}
 
     void Awake(){
@@ -28,6 +28,5 @@ public class Goal : MonoBehaviour, IGoal
     void Update(){
         OnTick();
     }
-
 }
 }

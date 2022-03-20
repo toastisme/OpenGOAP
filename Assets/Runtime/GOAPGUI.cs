@@ -11,6 +11,7 @@ public class GOAPGUI : EditorWindow
     * Class to visualise a GameObject's GOAP planner
     */
 
+    /*
     GOAPPlanner goapPlanner;
     Dictionary<string, bool> displayActions;
     
@@ -144,6 +145,7 @@ public class GOAPGUI : EditorWindow
         GUI.backgroundColor = currentColor;
     }
 
+    */
 
 }
 }
