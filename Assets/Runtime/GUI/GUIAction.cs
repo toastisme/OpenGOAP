@@ -17,6 +17,7 @@ public class GUIAction
     GUIStyle selectedStyle;
     GUIStyle activeStyle;
     Rect rect;
+    Rect callNumberRect;
     string displayName;
 
     public GUIAction(
@@ -34,7 +35,16 @@ public class GUIAction
             size.x,
             size.y
             );
+        Vector2 callNumberSize = GUIProperties.CallNumberSize();
+        Vector2 relCallNumberPos = GUIProperties.RelCallNumberPos();
+        this.callNumberRect = new Rect(
+            rect.x + relCallNumberPos.x,
+            rect.y + relCallNumberPos.y,
+            callNumberSize.x,
+            callNumberSize.y
+        );
         this.UpdatePanelDetails = UpdatePanelDetails;
+
     }
 
     public virtual void SetSelected(bool selected){
@@ -50,6 +60,11 @@ public class GUIAction
 
     public void Draw(){
         GUI.Box(rect, displayName, activeStyle);
+    }
+
+    public void Draw(int callNumber){
+        GUI.Box(rect, displayName, activeStyle);
+        GUI.Box(callNumberRect, callNumber.ToString(), activeStyle);
     }
 
 

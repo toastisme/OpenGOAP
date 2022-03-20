@@ -22,6 +22,10 @@ public class GUIProperties
         );
     }
 
+    public static Vector2 RelCallNumberPos(){
+        return new Vector2(0,0);
+    }
+
     //// Colors
 
     public static Color DefaultNodeColor(){
