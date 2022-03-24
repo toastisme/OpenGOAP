@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GOAP;
+using UnityEditor;
 using System.Linq;
 using System;
 
@@ -15,10 +15,12 @@ public class Vision : MonoBehaviour
 
 
     [SerializeField] LayerMask detectionMask = ~0;
-    [SerializeField] float fov = 60f;
+    [Range(1f, 180f)]
+    public float fov = 60f;
     float cosFov;
-    [SerializeField] float visionRange = 30f;
-    [SerializeField] Color fovColor = new Color(1f, 0f, 0f, 0.25f);
+    [Range(1f,500f)]
+    public float visionRange = 30f;
+    public Color fovColor = new Color(0f, 1f, 0f, 0.1f);
 
 
     Action<Detectable> OnSeenDetectable;
@@ -59,7 +61,7 @@ public class Vision : MonoBehaviour
 
             vecToDetectable.Normalize();
 
-            // Not in vision cone
+            // Not in field of view
             if (Vector3.Dot(vecToDetectable, eyeDirection) < cosFov)
                 continue;
 
@@ -79,3 +81,30 @@ public class Vision : MonoBehaviour
         OnSeenDetectable = func;
     }
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(Vision))]
+public class VisionEditor : Editor
+{
+    /**
+     * Draws field of view
+     */
+
+    public void OnSceneGUI()
+    {
+        var vision = target as Vision;
+
+        Vector3 fovStart = Mathf.Cos(-vision.fov * Mathf.Deg2Rad) * vision.transform.forward +
+                             Mathf.Sin(-vision.fov * Mathf.Deg2Rad) * vision.transform.right;
+
+        Handles.color = vision.fovColor;
+        Handles.DrawSolidArc(
+            vision.transform.position, 
+            Vector3.up, 
+            fovStart, 
+            vision.fov * 2f, 
+            vision.visionRange
+        );        
+    }
+}
+#endif // UNITY_EDITOR
