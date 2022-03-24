@@ -3,58 +3,79 @@ using System.Collections.Generic;
 using UnityEngine;
 using GOAP;
 using System.Linq;
+using System;
 
 public class Vision : MonoBehaviour
 {
-    [SerializeField]
-    float radius = 5f;
 
-    [SerializeField]
-    List<string> possibleResources;
+    /**
+     * Generic vision class, based on
+     * https://github.com/GameDevEducation/AdvancedDeepDive_GOAP_Monolithic/blob/master/Assets/Systems/Sensors/VisionSensor.cs
+     */ 
 
-    WorldState worldState;
 
-    public void Setup(ref WorldState worldState){
-        this.worldState = worldState;
+    [SerializeField] LayerMask detectionMask = ~0;
+    [SerializeField] float fov = 60f;
+    float cosFov;
+    [SerializeField] float visionRange = 30f;
+    [SerializeField] Color fovColor = new Color(1f, 0f, 0f, 0.25f);
+
+
+    Action<Detectable> OnSeenDetectable;
+    Vector3 eyeLocation => transform.position;
+    Vector3 eyeDirection => transform.forward;
+
+    void Awake(){
+        cosFov = Mathf.Cos(fov * Mathf.Deg2Rad);
     }
 
-    void OnTick(){
-        OnTickResourceAwareness();
+
+    void Update()
+    {
+        UpdateVision();
     }
 
-    public void OnTickResourceAwareness(){
+    void UpdateVision(){
+
         /**
-         * Searches in within radius for possibleResources and updates
-         * WorldState if they are found
-         */
+         * For any Detectable in range call OnSeenDetectable
+         */ 
 
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
-        for (int i = 0; i < possibleResources.Count; i++){
-            worldState.boolKeys[$"{possibleResources}Nearby"] = false;
-        }
-        for (int i = 0; i < hitColliders.Length; i++){
-            if (possibleResources.Contains(hitCollider.tag)){
-                worldState.boolKeys[$"{possibleResources}Nearby"] = true;
+        if (DetectableManager.Instance == null || OnSeenDetectable == null){return;}
+
+        for (int i = 0; i < DetectableManager.Instance.Detectables.Count; ++i)
+        {
+            var detectable = DetectableManager.Instance.Detectables[i];
+
+            // Is self
+            if (detectable.gameObject == this.gameObject)
+                continue;
+
+            var vecToDetectable = detectable.transform.position - eyeLocation;
+
+            // Not in range
+            if (vecToDetectable.sqrMagnitude > (visionRange * visionRange))
+                continue;
+
+            vecToDetectable.Normalize();
+
+            // Not in vision cone
+            if (Vector3.Dot(vecToDetectable, eyeDirection) < cosFov)
+                continue;
+
+            // Has line of sight
+            RaycastHit hit;
+            if (Physics.Raycast(eyeLocation, vecToDetectable, out hit, 
+                                visionRange, detectionMask, QueryTriggerInteraction.Collide))
+            {
+                if (hit.collider.GetComponentInParent<Detectable>() == detectable)
+                    OnSeenDetectable(detectable);
             }
         }
+
     }
 
-    public List<GameObject> GetAllNearby(string objectTag){
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
-        List<GameObject> objs = new List<GameObject>();
-        for (int i = 0; i < hitColliders.Length; i++){
-            if (hitColliders[i].tag == objectTag){
-                objs.Add(hitColliders[i].gameObject);
-            }
-        }
-        return objs;
+    public void SetOnSeenDetectable(Action<Detectable> func){
+        OnSeenDetectable = func;
     }
-
-    public GameObject GetNearest(string objectTag){
-        List<GameObject> objs = GetAllNearby(objectTag);
-        List<GameObject> sortedList = objs.OrderBy(o=>(Vector3.squareMagnitude(
-            o.transform.position-transform.position))).ToList();
-        return sortedList[0];
-    }
-
 }
