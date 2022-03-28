@@ -3,24 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class Movement : MonoBehaviour
 {
     NavMeshAgent nav;
-    [SerializeField]
-    float minTargetDistance=1f;
+    float searchRange = 5f;
 
     void Awake()
     {
         nav = GetComponent<NavMeshAgent>();
     }
 
+    void SetDestination(Vector3 target){
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(
+            target, 
+            out hit, 
+            searchRange,
+            NavMesh.AllAreas)){
+                nav.SetDestination(hit.position);
+            }
+    }
+
     public void GoTo(Vector3 target){
-        nav.SetDesination(target);
+        SetDestination(target);
     }
 
     public void GoTo(Vector3 target, float speed){
         nav.speed = speed;
-        nav.SetDesination(target);
+        SetDestination(target);
     }
 
     public void GoTo(GameObject target){
@@ -28,11 +39,23 @@ public class Movement : MonoBehaviour
     }
 
     public void GoTo(GameObject target, float speed){
-        GoTo(taget:target.transform.position, speed:speed);
+        GoTo(target:target.transform.position, speed:speed);
     }
 
     public bool AtTarget(){
-        return nav.remainingDistance < minTargetDistance;
+        return nav.remainingDistance < nav.stoppingDistance;
+    }
+
+    public Vector3 RandomLocation(float range){
+        Vector3 location = transform.position;
+        location += Random.Range(-range, range) * Vector3.forward;
+        location += Random.Range(-range, range) * Vector3.right;
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(location, out hit, searchRange, NavMesh.AllAreas))
+            return hit.position;
+
+        return transform.position;
     }
 
 

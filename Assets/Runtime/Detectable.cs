@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Sensors{
 public class Detectable : MonoBehaviour
 {
     void Start()
@@ -12,5 +13,5 @@ public class Detectable : MonoBehaviour
     void OnDestroy(){
         DetectableManager.Instance?.Remove(this);
     }
-
+}
 }

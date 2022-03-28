@@ -157,7 +157,7 @@ public class GOAPPlanner : MonoBehaviour
         GOAPAction startNode = null;
         float minCost = -1;
         for (int i = 0; i< actions.Count; i++){
-            if (actions[i].SatisfiesCondition(goal.condition)){
+            if (actions[i].SatisfiesCondition(goal.GetCondition())){
                 float cost = actions[i].GetCost();
                 if (minCost < 0 || cost < minCost){
                     minCost = cost;

@@ -5,6 +5,7 @@ using UnityEditor;
 using System.Linq;
 using System;
 
+namespace Sensors{
 public class Vision : MonoBehaviour
 {
 
@@ -108,3 +109,4 @@ public class VisionEditor : Editor
     }
 }
 #endif // UNITY_EDITOR
+}

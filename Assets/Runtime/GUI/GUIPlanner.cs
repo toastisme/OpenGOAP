@@ -21,8 +21,8 @@ public class GUIPlanner : EditorWindow
     }
 
     void OnGUI(){
-        if (planner != null){
-            DrawActionNodes();
+        if (planner != null && planner.activePlan != null){
+            //DrawActionNodes();
         }
     }
 
