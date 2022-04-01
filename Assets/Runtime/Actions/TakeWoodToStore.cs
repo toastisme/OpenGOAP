@@ -30,8 +30,11 @@ public class TakeWoodToStore : GOAPAction
 
     public override void OnTick()
     {
-        if (movement.AtTarget()){
-            worldState.boolKeys["WoodHarvested"] = true;
+        while(CanRun()){
+            if (movement.AtTarget()){
+                worldState.boolKeys["WoodHarvested"] = true;
+            }
+            break;
         }
     }
 

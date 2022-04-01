@@ -9,8 +9,11 @@ public class GOAPAction : MonoBehaviour, IAction
     public WorldState requiredState;
     public WorldState outputState;
 
+    bool stopAction_;
+    
     public virtual void Setup(ref WorldState worldState){
         this.worldState = worldState;
+        stopAction_ = false;
     }
 
     public virtual float GetCost(){
@@ -33,18 +36,24 @@ public class GOAPAction : MonoBehaviour, IAction
     }
 
     public virtual void OnActivated(){
+        stopAction_ = false;
     }
 
     public virtual void OnDeactivated(){
+        stopAction_ = true;
     }
 
     public virtual void OnTick(){}
+
+    public void StopAction(){
+        stopAction_=true;
+    }
 
     public virtual bool CanRun(){
         /**
          * true if worldState satisfies preconditions
          */
-        return worldState.IsSubset(requiredState);
+        return (!(stopAction_) && worldState.IsSubset(requiredState));
     }
 }
 }

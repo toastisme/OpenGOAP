@@ -102,9 +102,16 @@ public class GOAPPlanner : MonoBehaviour
             }
             else{
                 // Goal complete
-                activeGoal.OnDeactivated();
+                OnCompleteActivePlan();
             }
         }
+    }
+
+    void OnCompleteActivePlan(){
+        activeGoal.OnDeactivated();
+        activeGoal = null;
+        activePlan = null;
+
     }
 
     void GetHighestPriorityGoal(out Goal chosenGoal, out List<GOAPAction> chosenPlan){

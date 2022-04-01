@@ -7,7 +7,7 @@ public class Hearing : MonoBehaviour
 {
     void Start()
     {
-        HearingManager.Instance.Add(this);
+        HearingManager.Instance?.Add(this);
     }
 
     void OnDestroy(){

@@ -13,5 +13,9 @@ public class Detectable : MonoBehaviour
     void OnDestroy(){
         DetectableManager.Instance?.Remove(this);
     }
+
+    public virtual string Name(){
+        return "Detectable";
+    }
 }
 }
