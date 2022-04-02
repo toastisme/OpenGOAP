@@ -20,14 +20,26 @@ public class Villager : Detectable
     GOAPPlanner planner;
     WorldState worldState;
 
+    void Awake(){
+        Setup();
+    }
+
+    protected override void Start(){
+        base.Start();
+    }
+
+    void Update(){
+        awareness.OnTick();
+    }
+
     void Setup(){
+        worldState = new WorldState();
         movement = GetComponent<Movement>();
         memory = GetComponent<Memory>();
         hearing = GetComponent<Hearing>();
         planner = GetComponent<GOAPPlanner>();
         SetupAwareness();
         SetupVision();
-        worldState = new WorldState();
     }
 
     void SetupAwareness(){
@@ -42,8 +54,12 @@ public class Villager : Detectable
 
     public void OnSeenDetectable(Detectable detectable){
         awareness.Add(obj:detectable, memory:100f, memoryDecay:1f);
-        memory.Record(obj:detectable);
+        if(Memorable(detectable)){
+            memory.Record(obj:detectable);
+        }
     }
+
+    bool Memorable(Detectable detectable){return false;}
 
 
 

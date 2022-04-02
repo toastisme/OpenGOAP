@@ -7,7 +7,7 @@ using UnityEditor;
 namespace Sensors{
 public class NearbyObject{
     Detectable obj;
-    float memory;
+    public float memory;
     float memoryDecay;
 
     public NearbyObject(Detectable obj, float memory, float memoryDecay){
@@ -41,6 +41,11 @@ public class Awareness : MonoBehaviour
 
     public void SetWorldState(ref WorldState worldState){
         this.worldState = worldState;
+    }
+
+    public void OnTick(){
+        DecayAwareness();
+        UpdateWorldState();
     }
 
     void DecayAwareness(){

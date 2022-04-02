@@ -39,7 +39,6 @@ public class Vision : MonoBehaviour
     }
 
     void UpdateVision(){
-        Debug.Log("Call UpdateVision");
 
         /**
          * For any Detectable in range call OnSeenDetectable
@@ -55,15 +54,12 @@ public class Vision : MonoBehaviour
             if (detectable.gameObject == this.gameObject)
                 continue;
 
-            Debug.Log("Not self");
-
             var vecToDetectable = detectable.transform.position - eyeLocation;
 
             // Not in range
             if (vecToDetectable.sqrMagnitude > (visionRange * visionRange))
                 continue;
 
-            Debug.Log("In range");
             vecToDetectable.Normalize();
 
             // Not in field of view
@@ -76,7 +72,6 @@ public class Vision : MonoBehaviour
                                 visionRange, detectionMask, QueryTriggerInteraction.Collide))
             {
                 if (hit.collider.GetComponentInParent<Detectable>() == detectable){
-                    Debug.Log("OnSeenDetectable");
                     OnSeenDetectable(detectable);
                 }
             }

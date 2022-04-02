@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Sensors{
 public class Detectable : MonoBehaviour
 {
-    void Start()
+    protected virtual void Start()
     {
         DetectableManager.Instance?.Add(this);
     }
