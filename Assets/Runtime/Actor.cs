@@ -8,11 +8,11 @@ public class Actor : Detectable
      * Class that can use SmartObjects
      */
     
-    protected List<SmartObject> inventory;
+    protected Inventory inventory;
 
     protected override void Start(){
         base.Start();
-        inventory = new List<SmartObject>();
+        inventory = new Inventory();
     }
 
      public virtual void PickUp(SmartObject obj){

@@ -10,7 +10,7 @@ using GOAP;
 [RequireComponent(typeof(Memory))]
 [RequireComponent(typeof(Hearing))]
 [RequireComponent(typeof(GOAPPlanner))]
-public class Villager : Detectable
+public class Villager : Actor
 {
     Movement movement;
     Vision vision;
@@ -33,13 +33,17 @@ public class Villager : Detectable
     }
 
     void Setup(){
-        worldState = new WorldState();
+        SetupWorldState();
         movement = GetComponent<Movement>();
         memory = GetComponent<Memory>();
         hearing = GetComponent<Hearing>();
         planner = GetComponent<GOAPPlanner>();
         SetupAwareness();
         SetupVision();
+    }
+
+    void SetupWorldState(){
+        worldState = new WorldState();
     }
 
     void SetupAwareness(){
