@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sensors{
 public class Detectable : MonoBehaviour
 {
+    public string typeName {get; protected set;}
     protected virtual void Start()
     {
         DetectableManager.Instance?.Add(this);
@@ -13,9 +13,4 @@ public class Detectable : MonoBehaviour
     void OnDestroy(){
         DetectableManager.Instance?.Remove(this);
     }
-
-    public virtual string Name(){
-        return "Detectable";
-    }
-}
 }

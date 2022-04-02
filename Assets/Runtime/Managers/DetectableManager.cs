@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Sensors{
 public class DetectableManager : MonoBehaviour
 {
     public static DetectableManager Instance {get; private set;} = null;
@@ -21,5 +20,4 @@ public class DetectableManager : MonoBehaviour
     public void Remove(Detectable detectable){
         Detectables.Remove(detectable);
     }
-}
 }

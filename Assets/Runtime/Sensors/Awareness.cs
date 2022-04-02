@@ -48,7 +48,7 @@ public class Awareness : MonoBehaviour
         Detectable nearest;
         float minDistance = -1f;
         foreach(var obj in nearbyObjects){
-            if (obj.Key.name == name){
+            if (obj.Key.typeName == name){
                 float distance = (obj.Key.transform.position - transform.position).sqrMagnitude;
                 if (minDistance < 0 || distance < minDistance){
                     nearest = obj.Key;
@@ -98,16 +98,16 @@ public class Awareness : MonoBehaviour
 
     void Forget(Detectable obj){
         nearbyObjects.Remove(obj);
-        nearbyObjectCounts[obj.Name()] -= 1;
+        nearbyObjectCounts[obj.typeName] -= 1;
     }
 
     public void Add(Detectable obj, float memory, float memoryDecay){
         nearbyObjects[obj] = new NearbyObject(obj, memory, memoryDecay);
-        if (nearbyObjectCounts.ContainsKey(obj.Name())){
-            nearbyObjectCounts[obj.Name()] += 1;
+        if (nearbyObjectCounts.ContainsKey(obj.typeName)){
+            nearbyObjectCounts[obj.typeName] += 1;
         }
         else{
-            nearbyObjectCounts[obj.Name()] = 1;
+            nearbyObjectCounts[obj.typeName] = 1;
         }
     }
 }
