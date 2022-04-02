@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Sensors;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Movement : MonoBehaviour
@@ -39,6 +40,14 @@ public class Movement : MonoBehaviour
     }
 
     public void GoTo(GameObject target, float speed){
+        GoTo(target:target.transform.position, speed:speed);
+    }
+
+    public void GoTo(Detectable target){
+        GoTo(target.transform.position);
+    }
+
+    public void GoTo(Detectable target, float speed){
         GoTo(target:target.transform.position, speed:speed);
     }
 

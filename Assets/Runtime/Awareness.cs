@@ -39,6 +39,30 @@ public class Awareness : MonoBehaviour
 
     Dictionary<string, int> nearbyObjectCounts = new Dictionary<string, int>();
 
+    public Detectable GetNearest(string name){
+        if (!(nearbyObjectCounts.ContainsKey(name)) || nearbyObjectCounts[name] >=0){
+            return null;
+        }
+        int totalCount = nearbyObjectCounts[name];
+        int count = 0;
+        Detectable nearest;
+        float minDistance = -1f;
+        foreach(var obj in nearbyObjects){
+            if (obj.Key.name == name){
+                float distance = (obj.Key.transform.position - transform.position).sqrMagnitude;
+                if (minDistance < 0 || distance < minDistance){
+                    nearest = obj.Key;
+                    minDistance = distance;
+                    count++;
+                    if (count == totalCount){
+                        return nearest;
+                    } 
+                }
+            }
+        }
+        return null;
+    }
+
     public void SetWorldState(ref WorldState worldState){
         this.worldState = worldState;
     }

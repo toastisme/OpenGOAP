@@ -92,12 +92,22 @@ public class GOAPPlanner : MonoBehaviour
     }
 
     void OnTickActivePlan(){
-        if (!(activeGoal != null && activePlan != null)){return;}
+
+        // Nothing to run
+        if (!(activeGoal != null && activePlan != null)){ return; }
+
+        // Plan no longer viable
+        if (!(activePlan[activeActionIdx].CanRun())){ OnFailActivePlan(); }
+
         activePlan[activeActionIdx].OnTick();
+
         if (activePlan[activeActionIdx].outputState.IsSubset(worldState)){
+            // Action complete
             activePlan[activeActionIdx].OnDeactivated();
             activeActionIdx++;
+
             if (activeActionIdx < activePlan.Count){
+                // Start new action
                 activePlan[activeActionIdx].OnActivated();
             }
             else{
@@ -111,7 +121,12 @@ public class GOAPPlanner : MonoBehaviour
         activeGoal.OnDeactivated();
         activeGoal = null;
         activePlan = null;
+    }
 
+    void OnFailActivePlan(){
+        activeGoal.OnDeactivated();
+        activeGoal = null;
+        activePlan = null;
     }
 
     void GetHighestPriorityGoal(out Goal chosenGoal, out List<GOAPAction> chosenPlan){

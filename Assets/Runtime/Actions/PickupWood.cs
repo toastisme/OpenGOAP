@@ -8,15 +8,15 @@ namespace GOAP{
 public class PickUpWood : GOAPAction
 {
     Movement movement;
-    Vision vision;
-    GameObject targetWood;
+    Awareness awareness;
+    Detectable targetWood;
     
     public override float GetCost(){
         return 0.0f;
     }
     public override void Setup(ref WorldState worldState){
         movement = GetComponent<Movement>();
-        vision = GetComponent<Vision>();
+        awareness = GetComponent<Awareness>();
         this.worldState = worldState;
         requiredState = new WorldState();
         requiredState.boolKeys["WoodNearby"] = true;
@@ -26,22 +26,28 @@ public class PickUpWood : GOAPAction
 
     public override void OnActivated()
     {
-        //targetWood = vision.GetNearest(objectTag:"Wood");
-        movement.GoTo(targetWood);
+        targetWood = awareness.GetNearest("Wood");
+        if (targetWood != null){
+            movement.GoTo(targetWood);
+        }
+
     }
 
-    
-
     public override void OnTick(){
-        /*
-        if (targetWood == null){
-            targetWood = vision.GetNearest(objectTag:"Wood");
+        if (CanRun()){
+            if (targetWood == null){
+                targetWood = awareness.GetNearest("Wood");
+                if (targetWood == null)
+                {
+                    StopAction();
+                    return;
+                }
+            } 
             movement.GoTo(targetWood);
-        } 
-        if (movement.AtTarget()){
-            worldState.boolKeys["HoldingWood"] = true;
+            if (movement.AtTarget()){
+                worldState.boolKeys["HoldingWood"] = true;
+            }
         }
-        */
     }
 }
 }
