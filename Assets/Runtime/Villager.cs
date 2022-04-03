@@ -44,11 +44,11 @@ public class Villager : Actor
 
     void SetupWorldState(){
         worldState = new WorldState();
+        worldState.boolKeys["HoldingWood"] = inventory.Contains("Wood");
     }
 
     void SetupAwareness(){
         awareness = GetComponent<Awareness>();
-        awareness.SetWorldState(ref worldState);
     }
 
     void SetupVision(){

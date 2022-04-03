@@ -9,34 +9,48 @@ public class TakeWoodToStore : GOAPAction
 
     Movement movement;
     [SerializeField]
-    GameObject woodStore;
+    SmartObject woodStore;
+    bool _woodHarvested;
 
     public override float GetCost(){
         return 0.0f;
     }
-    public override void Setup(ref WorldState worldState){
+    public override void Setup(ref WorldState worldState, ref Inventory inventory){
+        base.Setup(ref worldState, ref inventory);
         movement = GetComponent<Movement>();
-        this.worldState = worldState;
-        requiredState = new WorldState();
-        requiredState.boolKeys["HoldingWood"] = true;
 
-        outputState = new WorldState();
-        outputState.boolKeys["WoodHarvested"] = true;
+        worldState.boolKeys2["HoldingWood"] = inventory.Contains("Wood");
+        preconditions["HoldingWood"] = true;
+
+        _woodHarvested = false;
+        worldState.boolKeys["WoodHarvested"] = WoodHarvested();
+        effects["WoodHarvested"] = true;
     }
 
     public override void OnActivated(){
+        _woodHarvested = false;
         movement.GoTo(woodStore.transform.position);
+    }
+
+    public override void OnDeactivated(){
+        _woodHarvested = false;
     }
 
     public override void OnTick()
     {
         while(CanRun()){
             if (movement.AtTarget()){
-                worldState.boolKeys["WoodHarvested"] = true;
+                for(int i = inventory.items["Wood"].Count -1; i >= 0; i--){
+                    woodStore.Add(inventory.items["Wood"][i]);
+                    inventory.Remove(inventory.items["Wood"][i]);
+                }
+                _woodHarvested = true;
+                break;
             }
-            break;
         }
     }
+
+    public bool WoodHarvested(){return _woodHarvested;}
 
     
 

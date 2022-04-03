@@ -30,7 +30,6 @@ public class Awareness : MonoBehaviour
 {
     public Color editorColor = new Color(0f, 1f, 0f, 0.1f);
     public float editorLineThickness = 1f;
-    public WorldState worldState;
 
     public Dictionary<Detectable,NearbyObject> nearbyObjects {
         get; 
@@ -39,8 +38,13 @@ public class Awareness : MonoBehaviour
 
     Dictionary<string, int> nearbyObjectCounts = new Dictionary<string, int>();
 
+    public bool Nearby(string name){
+        return (nearbyObjectCounts.ContainsKey(name) && nearbyObjectCounts[name] > 0);
+
+    }
+
     public Detectable GetNearest(string name){
-        if (!(nearbyObjectCounts.ContainsKey(name)) || nearbyObjectCounts[name] >=0){
+        if (!Nearby(name)){
             return null;
         }
         int totalCount = nearbyObjectCounts[name];
@@ -63,13 +67,8 @@ public class Awareness : MonoBehaviour
         return null;
     }
 
-    public void SetWorldState(ref WorldState worldState){
-        this.worldState = worldState;
-    }
-
     public void OnTick(){
         DecayAwareness();
-        UpdateWorldState();
     }
 
     void DecayAwareness(){
@@ -82,17 +81,6 @@ public class Awareness : MonoBehaviour
         }
         for (int i = toForget.Count-1; i >= 0; i--){
             Forget(toForget[i]);
-        }
-    }
-
-    void UpdateWorldState(){
-        foreach(var nObj in nearbyObjectCounts){
-            if (nObj.Value > 0){
-                worldState.boolKeys[$"{nObj.Key}Nearby"] = true;
-            }
-            else{
-                worldState.boolKeys[$"{nObj.Key}Nearby"] = false;
-            }
         }
     }
 

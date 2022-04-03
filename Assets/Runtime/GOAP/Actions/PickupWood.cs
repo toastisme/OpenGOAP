@@ -9,34 +9,38 @@ public class PickUpWood : GOAPAction
 {
     Movement movement;
     Awareness awareness;
-    Detectable targetWood;
+    SmartObject targetWood;
     
     public override float GetCost(){
         return 0.0f;
     }
-    public override void Setup(ref WorldState worldState){
+    public override void Setup(ref WorldState worldState, ref Inventory inventory){
+        base.Setup(ref worldState, ref inventory);
         movement = GetComponent<Movement>();
         awareness = GetComponent<Awareness>();
         this.worldState = worldState;
-        requiredState = new WorldState();
-        requiredState.boolKeys["WoodNearby"] = true;
-        outputState = new WorldState();
-        outputState.boolKeys["HoldingWood"] = true;
+        preconditions["WoodNearby"] = true;
+        worldState.boolKeys["WoodNearby"] = awareness.Nearby("Wood");
+        effects["HoldingWood"] = true;
+        worldState.boolKeys["HoldingWood"] = inventory.Contains("Wood");
     }
 
     public override void OnActivated()
     {
-        targetWood = awareness.GetNearest("Wood");
+        targetWood = (SmartObject)awareness.GetNearest("Wood");
         if (targetWood != null){
             movement.GoTo(targetWood);
         }
-
+        else{
+            StopAction();
+            return;
+        }
     }
 
     public override void OnTick(){
         if (CanRun()){
             if (targetWood == null){
-                targetWood = awareness.GetNearest("Wood");
+                targetWood = (SmartObject)awareness.GetNearest("Wood");
                 if (targetWood == null)
                 {
                     StopAction();
@@ -45,7 +49,7 @@ public class PickUpWood : GOAPAction
             } 
             movement.GoTo(targetWood);
             if (movement.AtTarget()){
-                worldState.boolKeys["HoldingWood"] = true;
+                inventory.Add(targetWood);
             }
         }
     }

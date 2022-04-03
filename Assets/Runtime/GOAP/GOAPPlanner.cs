@@ -5,9 +5,11 @@ using UnityEngine.Assertions;
 using UnityEditor;
 
 namespace GOAP{
+[RequireComponent(typeof(Inventory))]
 public class GOAPPlanner : MonoBehaviour
 {
     WorldState worldState;
+    Inventory inventory;
     public List<Goal> goals{get; private set;}
     public List<GOAPAction> actions{get; private set;}
 
@@ -28,11 +30,12 @@ public class GOAPPlanner : MonoBehaviour
         goals = new List<Goal>(GetComponents<Goal>());
         actions = new List<GOAPAction>(GetComponents<GOAPAction>());
         worldState = new WorldState();
+        inventory = GetComponent<Inventory>();
         for (int i = 0; i < goals.Count; i++){
             goals[i].Setup();
         }
         for (int i = 0; i < actions.Count; i++){
-            actions[i].Setup(worldState: ref worldState);
+            actions[i].Setup(worldState: ref worldState, inventory: ref inventory);
         }
     }
 
@@ -101,7 +104,7 @@ public class GOAPPlanner : MonoBehaviour
 
         activePlan[activeActionIdx].OnTick();
 
-        if (activePlan[activeActionIdx].outputState.IsSubset(worldState)){
+        if (activePlan[activeActionIdx].EffectsSatisfied()){
             // Action complete
             activePlan[activeActionIdx].OnDeactivated();
             activeActionIdx++;
@@ -170,7 +173,10 @@ public class GOAPPlanner : MonoBehaviour
 
     //// A*
 
-    List<GOAPAction> GetOptimalPath(WorldState currentState, Goal goal, List<GOAPAction> actions){
+    List<GOAPAction> GetOptimalPath(
+        WorldState currentState, 
+        Goal goal, 
+        List<GOAPAction> actions){
         
         List<GOAPAction> availableNodes = new List<GOAPAction>();
         List<GOAPAction> path = new List<GOAPAction>();
@@ -179,7 +185,7 @@ public class GOAPPlanner : MonoBehaviour
         GOAPAction startNode = null;
         float minCost = -1;
         for (int i = 0; i< actions.Count; i++){
-            if (actions[i].SatisfiesCondition(goal.GetCondition())){
+            if (actions[i].SatisfiesConditions(goal.conditions)){
                 float cost = actions[i].GetCost();
                 if (minCost < 0 || cost < minCost){
                     minCost = cost;
@@ -191,7 +197,7 @@ public class GOAPPlanner : MonoBehaviour
         // No path found
         if (startNode == null){return null;}
         availableNodes.Add(startNode);
-        WorldState requiredState = startNode.requiredState;
+        Dictionary<string, bool> requiredState = startNode.preconditions;
 
         while (availableNodes.Count != 0){
 
@@ -207,12 +213,12 @@ public class GOAPPlanner : MonoBehaviour
             path.Add(currentNode);            
 
             // Found complete path
-            if (currentState.IsSubset(currentNode.requiredState)){
+            if (currentState.IsSubset(currentNode.preconditions)){
                 path.Reverse();
                 return path;
             }
 
-            requiredState = currentNode.requiredState;
+            requiredState = currentNode.preconditions;
             List<GOAPAction> linkedNodes = GetLinkedNodes(
                 node:currentNode,
                 path:path,
@@ -227,7 +233,7 @@ public class GOAPPlanner : MonoBehaviour
     }
 
     GOAPAction GetNextNode(
-        WorldState requiredState, 
+        Dictionary<string, bool> requiredState, 
         List<GOAPAction> path, 
         List<GOAPAction> availableNodes){
             /**
@@ -239,7 +245,7 @@ public class GOAPPlanner : MonoBehaviour
             GOAPAction nextNode = null;
             for (int i = 0; i < availableNodes.Count; i++){
                 if (path.Contains(availableNodes[i])){continue;}
-                if (!(requiredState.IsSubset(availableNodes[i].outputState))){
+                if (!availableNodes[i].SatisfiesConditions(requiredState)){
                     continue;
                 }
                 float cost = availableNodes[i].GetCost();
@@ -256,13 +262,13 @@ public class GOAPPlanner : MonoBehaviour
         List<GOAPAction> path, 
         List<GOAPAction> availableNodes){
         /**
-         * Searches availableNodes for all those that satisfy node.requiredState 
+         * Searches availableNodes for all those that satisfy node.preconditions 
          * and that are not in path  
          */
         List<GOAPAction> linkedNodes = new List<GOAPAction>();
         for (int i = 0; i < availableNodes.Count; i++){
             if (path.Contains(availableNodes[i])){continue;}
-            if (node.requiredState.IsSubset(availableNodes[i].outputState)){
+            if (availableNodes[i].SatisfiesConditions(node.preconditions)){
                 linkedNodes.Add(availableNodes[i]);
             }
         }

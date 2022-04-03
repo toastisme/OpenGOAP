@@ -5,34 +5,41 @@ using UnityEngine;
 namespace GOAP{
 public class GOAPAction : MonoBehaviour, IAction
 {
-    public WorldState worldState;
-    public WorldState requiredState;
-    public WorldState outputState;
-
+    protected WorldState worldState;
+    protected Inventory inventory;
+    public Dictionary<string, bool> preconditions{get; protected set;} // worldState.boolKeys that must be true to start
+    public Dictionary<string, bool> effects{get; protected set;} // worldState.boolKeys that are true on completion
     bool stopAction_;
     
-    public virtual void Setup(ref WorldState worldState){
+    public virtual void Setup(
+        ref WorldState worldState,
+        ref Inventory inventory
+        ){
         this.worldState = worldState;
+        this.inventory = inventory;
         stopAction_ = false;
+        preconditions = new Dictionary<string, bool>();
+        effects = new Dictionary<string, bool>();
     }
 
     public virtual float GetCost(){
         return 0f;
     }
 
-    public virtual bool SatisfiesCondition(string condition){
-        if (condition == ""){return true;}
-        bool conditionValue;
-        if(outputState.boolKeys.TryGetValue(
-            condition, out conditionValue) && conditionValue == true
-            ){
-                return true;
-            }
-        return false;
-    }
+    public virtual bool SatisfiesConditions(
+        Dictionary<string, bool> conditions
+        ){
 
-    public virtual bool SatisfiesState(WorldState state){
-        return state.IsSubset(outputState);
+        foreach(var i in conditions){
+            if (!effects.ContainsKey(i.Key)){
+                return false;
+            }
+            if (effects[i.Key] != i.Value){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public virtual void OnActivated(){
@@ -40,7 +47,7 @@ public class GOAPAction : MonoBehaviour, IAction
     }
 
     public virtual void OnDeactivated(){
-        stopAction_ = true;
+        StopAction();
     }
 
     public virtual void OnTick(){}
@@ -53,7 +60,31 @@ public class GOAPAction : MonoBehaviour, IAction
         /**
          * true if worldState satisfies preconditions
          */
-        return (!(stopAction_) && worldState.IsSubset(requiredState));
+        if (stopAction_){ return false; }
+        foreach(var i in preconditions){
+            if (!worldState.boolKeys.ContainsKey(i.Key)){
+                return false;
+            }
+            if (worldState.boolKeys[i.Key]() != i.Value){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public virtual bool EffectsSatisfied(){
+        /**
+         * true if worldState satisfies effects
+         */
+        foreach(var i in effects){
+            if (!worldState.boolKeys.ContainsKey(i.Key)){
+                return false;
+            }
+            if (worldState.boolKeys[i.Key]() != i.Value){
+                return false;
+            }
+        }
+        return true;
     }
 }
 }

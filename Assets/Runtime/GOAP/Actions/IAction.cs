@@ -8,10 +8,10 @@ public interface IAction
     void OnActivated();
     void OnDeactivated();
     void OnTick();
-    void Setup(ref WorldState worldState);
-    bool SatisfiesCondition(string condition);
-    bool SatisfiesState(WorldState state);
+    void Setup(ref WorldState worldState, ref Inventory inventory);
+    bool SatisfiesConditions(Dictionary<string, bool> conditions);
     bool CanRun(); // true if currentState satisfies preconditions
+    bool EffectsSatisfied(); // true if WorldState contains all effects of action
     
 }
 }
