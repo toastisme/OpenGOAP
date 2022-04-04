@@ -109,7 +109,7 @@ public class GOAPGUI : EditorWindow
             GUILayout.BeginHorizontal();
             displayActions[goalName] = GUILayout.Toggle(displayActions[goalName], goalName, goalStyle);
 
-            if (sortedGoals[i].CanRun()){
+            if (sortedGoals[i].PreconditionsSatisfied()){
                 if (!runningGoalFound){
                     runningGoalFound = true;
                     GUI.backgroundColor = activeBarColor;

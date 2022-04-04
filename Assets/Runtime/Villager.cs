@@ -10,6 +10,7 @@ using GOAP;
 [RequireComponent(typeof(Memory))]
 [RequireComponent(typeof(Hearing))]
 [RequireComponent(typeof(GOAPPlanner))]
+[RequireComponent(typeof(WorldState))]
 public class Villager : Actor
 {
     Movement movement;
@@ -44,7 +45,7 @@ public class Villager : Actor
 
     void SetupWorldState(){
         worldState = new WorldState();
-        worldState.boolKeys["HoldingWood"] = inventory.Contains("Wood");
+        worldState.states["HoldingWood"] = inventory.Contains("Wood");
     }
 
     void SetupAwareness(){

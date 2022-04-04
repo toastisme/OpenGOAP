@@ -35,7 +35,7 @@ public class GOAPPlanner : MonoBehaviour
             goals[i].Setup();
         }
         for (int i = 0; i < actions.Count; i++){
-            actions[i].Setup(worldState: ref worldState, inventory: ref inventory);
+            actions[i].Setup();
         }
     }
 
@@ -100,7 +100,7 @@ public class GOAPPlanner : MonoBehaviour
         if (!(activeGoal != null && activePlan != null)){ return; }
 
         // Plan no longer viable
-        if (!(activePlan[activeActionIdx].CanRun())){ OnFailActivePlan(); }
+        if (!(activePlan[activeActionIdx].PreconditionsSatisfied())){ OnFailActivePlan(); }
 
         activePlan[activeActionIdx].OnTick();
 
@@ -145,7 +145,7 @@ public class GOAPPlanner : MonoBehaviour
 
         for (int i = 0; i < goals.Count; i++){
 
-            if (!goals[i].CanRun()){
+            if (!goals[i].PreconditionsSatisfied()){
                 continue;
             }
 

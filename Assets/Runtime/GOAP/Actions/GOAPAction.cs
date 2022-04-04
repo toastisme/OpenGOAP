@@ -6,17 +6,12 @@ namespace GOAP{
 public class GOAPAction : MonoBehaviour, IAction
 {
     protected WorldState worldState;
-    protected Inventory inventory;
-    public Dictionary<string, bool> preconditions{get; protected set;} // worldState.boolKeys that must be true to start
-    public Dictionary<string, bool> effects{get; protected set;} // worldState.boolKeys that are true on completion
+    public Dictionary<string, bool> preconditions{get; protected set;} // worldState.states that must be true to start
+    public Dictionary<string, bool> effects{get; protected set;} // worldState.states that are true on completion
     bool stopAction_;
     
-    public virtual void Setup(
-        ref WorldState worldState,
-        ref Inventory inventory
-        ){
-        this.worldState = worldState;
-        this.inventory = inventory;
+    public virtual void Setup(){
+        this.worldState = GetComponent<WorldState>();
         stopAction_ = false;
         preconditions = new Dictionary<string, bool>();
         effects = new Dictionary<string, bool>();
@@ -56,16 +51,16 @@ public class GOAPAction : MonoBehaviour, IAction
         stopAction_=true;
     }
 
-    public virtual bool CanRun(){
+    public virtual bool PreconditionsSatisfied(){
         /**
          * true if worldState satisfies preconditions
          */
         if (stopAction_){ return false; }
         foreach(var i in preconditions){
-            if (!worldState.boolKeys.ContainsKey(i.Key)){
+            if (!worldState.states.ContainsKey(i.Key)){
                 return false;
             }
-            if (worldState.boolKeys[i.Key]() != i.Value){
+            if (worldState.states[i.Key] != i.Value){
                 return false;
             }
         }
@@ -77,14 +72,16 @@ public class GOAPAction : MonoBehaviour, IAction
          * true if worldState satisfies effects
          */
         foreach(var i in effects){
-            if (!worldState.boolKeys.ContainsKey(i.Key)){
+            if (!worldState.states.ContainsKey(i.Key)){
                 return false;
             }
-            if (worldState.boolKeys[i.Key]() != i.Value){
+            if (worldState.states[i.Key] != i.Value){
                 return false;
             }
         }
         return true;
     }
+
+    public virtual void UpdateWorldState(){}
 }
 }

@@ -8,9 +8,9 @@ public interface IAction
     void OnActivated();
     void OnDeactivated();
     void OnTick();
-    void Setup(ref WorldState worldState, ref Inventory inventory);
+    void Setup();
     bool SatisfiesConditions(Dictionary<string, bool> conditions);
-    bool CanRun(); // true if currentState satisfies preconditions
+    bool PreconditionsSatisfied(); // true if WorldState satisfies preconditions
     bool EffectsSatisfied(); // true if WorldState contains all effects of action
     
 }

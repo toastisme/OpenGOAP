@@ -16,7 +16,7 @@ public class HarvestWood : Goal
             return .2f;
         }
 
-        public override bool CanRun(){
+        public override bool PreconditionsSatisfied(){
             return true;
         }
 }

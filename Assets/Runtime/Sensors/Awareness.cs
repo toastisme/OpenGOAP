@@ -26,8 +26,10 @@ public class NearbyObject{
 
 }
 
+[RequireComponent(typeof(WorldState))]
 public class Awareness : MonoBehaviour
 {
+    WorldState worldState;
     public Color editorColor = new Color(0f, 1f, 0f, 0.1f);
     public float editorLineThickness = 1f;
 
@@ -38,9 +40,12 @@ public class Awareness : MonoBehaviour
 
     Dictionary<string, int> nearbyObjectCounts = new Dictionary<string, int>();
 
+    void Start(){
+        worldState = GetComponent<WorldState>();
+    }
+
     public bool Nearby(string name){
         return (nearbyObjectCounts.ContainsKey(name) && nearbyObjectCounts[name] > 0);
-
     }
 
     public Detectable GetNearest(string name){
@@ -87,6 +92,9 @@ public class Awareness : MonoBehaviour
     void Forget(Detectable obj){
         nearbyObjects.Remove(obj);
         nearbyObjectCounts[obj.typeName] -= 1;
+        if (!Nearby(obj.typeName)){
+            worldState.states[$"{obj.typeName}Nearby"] = false;
+        }
     }
 
     public void Add(Detectable obj, float memory, float memoryDecay){
@@ -97,6 +105,7 @@ public class Awareness : MonoBehaviour
         else{
             nearbyObjectCounts[obj.typeName] = 1;
         }
+        worldState.states[$"{obj.typeName}Nearby"] = true;
     }
 }
 #if UNITY_EDITOR

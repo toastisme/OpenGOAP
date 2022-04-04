@@ -14,7 +14,7 @@ public class Goal : MonoBehaviour, IGoal
         return 0f;
     }
 
-    public virtual bool CanRun(){
+    public virtual bool PreconditionsSatisfied(){
         return false;
     }
 

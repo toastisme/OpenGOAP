@@ -10,19 +10,18 @@ public class PickUpWood : GOAPAction
     Movement movement;
     Awareness awareness;
     SmartObject targetWood;
+    Inventory inventory;
     
     public override float GetCost(){
         return 0.0f;
     }
-    public override void Setup(ref WorldState worldState, ref Inventory inventory){
-        base.Setup(ref worldState, ref inventory);
+    public override void Setup(){
+        base.Setup();
         movement = GetComponent<Movement>();
         awareness = GetComponent<Awareness>();
-        this.worldState = worldState;
+        inventory = GetComponent<Inventory>();
         preconditions["WoodNearby"] = true;
-        worldState.boolKeys["WoodNearby"] = awareness.Nearby("Wood");
         effects["HoldingWood"] = true;
-        worldState.boolKeys["HoldingWood"] = inventory.Contains("Wood");
     }
 
     public override void OnActivated()
@@ -38,7 +37,7 @@ public class PickUpWood : GOAPAction
     }
 
     public override void OnTick(){
-        if (CanRun()){
+        if (PreconditionsSatisfied()){
             if (targetWood == null){
                 targetWood = (SmartObject)awareness.GetNearest("Wood");
                 if (targetWood == null)

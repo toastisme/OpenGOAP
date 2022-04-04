@@ -739,7 +739,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   fov: 100.3
-  visionRange: 1
+  visionRange: 14
   fovColor: {r: 0, g: 1, b: 0.015195131, a: 0.08627451}
 --- !u!135 &1845868836
 SphereCollider:
@@ -880,8 +880,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bec023e296a69e49a67b96ca6ed5bd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  editorColor: {r: 1, g: 0, b: 0.5117955, a: 0.1}
-  editorLineThickness: 1
+  editorColor: {r: 1, g: 0, b: 0.5117955, a: 0.7372549}
+  editorLineThickness: 2
 --- !u!114 &1845868845
 MonoBehaviour:
   m_ObjectHideFlags: 0

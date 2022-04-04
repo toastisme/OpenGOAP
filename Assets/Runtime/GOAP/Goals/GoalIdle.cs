@@ -8,15 +8,14 @@ public class GoalIdle : Goal
 
     public override void Setup(){
         base.Setup();
-        conditions["WasIdle"] = true;
     }
 
     public override float GetPriority()
     {
-        return .1f;
+        return 0f;
     }
 
-    public override bool CanRun(){
+    public override bool PreconditionsSatisfied(){
         return true;
     }
     
