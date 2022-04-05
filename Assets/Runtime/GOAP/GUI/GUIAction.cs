@@ -7,6 +7,7 @@ using System;
 namespace GOAP{
 public class GUIAction 
 {
+    /*
     GOAPAction nodeAction; // The action being visualised
 
     public bool IsSelected{get; private set;}
@@ -66,6 +67,7 @@ public class GUIAction
         GUI.Box(rect, displayName, activeStyle);
         GUI.Box(callNumberRect, callNumber.ToString(), activeStyle);
     }
+    */
 
 
 }

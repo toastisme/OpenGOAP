@@ -14,13 +14,7 @@ public class GUIProperties
     //// Sizes
 
     public static Vector2 NodeSize(){return new Vector2(200, 120);}
-    public static Vector2 CallNumberSize(){
-        Vector2 guiNodeSize = GUIProperties.NodeSize();
-        return new Vector2(
-            guiNodeSize.x/6f,
-            guiNodeSize.x/6f
-        );
-    }
+    public static Vector2 TaskNodeSize(){return new Vector2(200, 80);}
 
     //// Positions
 
@@ -33,29 +27,28 @@ public class GUIProperties
         );
     }
 
-    public static Vector2 RelCallNumberPos(){
-        return new Vector2(0,0);
-    }
-
     //// Colors
 
-    public static Color DefaultNodeColor(){
+    public static Color BackgroundNodeColor(){
         return new Color(87f/255.0f, 117f/255.0f, 144f/255.0f);
     }
-    public static Color CallNumberColor(){
-        return GUIProperties.DefaultNodeColor();
+
+    public static Color GoalColor(){
+        return new Color(67f/255.0f, 170f/255.0f, 139f/255.0f);
+    }
+    public static Color CompletedActionColor(){
+        return new Color(39f/255.0f, 125f/255.0f, 161f/255.0f);
+    }
+    public static Color ActionColor(){
+        return new Color(249f/255.0f, 65f/255.0f, 68f/255.0f);
     }
 
     public static Color RunningTint(){
-        return new Color(0f, .9f, 0);        
-    }
-
-    public static Color InPlanTint(){
-        return new Color(1f, 1f, 1f);
+        return new Color(.8f, .8f, .8f);        
     }
 
     public static Color DefaultTint(){
-        return new Color(.8f, .8f, .8f);
+        return new Color(1f, 1f, 1f);
     }
 
     //// Styles
@@ -81,6 +74,21 @@ public class GUIProperties
         return selectedNodeStyle;
     }
 
+    //// GUIContent
+
+    public static GUIContent ActionContent(){
+        Texture2D icon = Resources.Load("Icons/action_icon", typeof(Texture2D)) as Texture2D;
+        string text = "Action";
+        string tooltip = "Action for the gameobject to execute.";
+        return new GUIContent(text, icon, tooltip);
+    }
+
+    public static GUIContent GoalContent(){
+        Texture2D icon = Resources.Load("Icons/goal_icon", typeof(Texture2D)) as Texture2D;
+        string text = "Goal";
+        string tooltip = "The goal this plan satisfies.";
+        return new GUIContent(text, icon, tooltip);
+    }
 
 }
 }
