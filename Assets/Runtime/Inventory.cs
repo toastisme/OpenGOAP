@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GOAP;
+using Sensors;
 
 [RequireComponent(typeof(WorldState))]
 public class Inventory : MonoBehaviour
 {
     WorldState worldState;
+    Awareness awareness;
     public Dictionary<string, List<SmartObject> > items;
 
-    public Inventory(){
+    void Start(){
         items = new Dictionary<string, List<SmartObject>>();
         worldState = GetComponent<WorldState>();
+        awareness = GetComponent<Awareness>();
     }
 
     public void Add(SmartObject obj){
@@ -20,6 +23,7 @@ public class Inventory : MonoBehaviour
         }
         obj.PickedUp();
         items[obj.typeName].Add(obj);
+        awareness.Forget(obj);
         worldState.states[$"Holding{obj.typeName}"] = true;
     }
 

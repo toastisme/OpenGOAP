@@ -8,6 +8,7 @@ public class WoodStore : SmartObject
     {
         base.Start();
         value = 0f;
+        typeName = "WoodStore";
     }
 
     public override void Add(SmartObject obj){

@@ -8,7 +8,7 @@ public class WorldState : MonoBehaviour
 {
     public Dictionary<string, bool> states;
 
-    public WorldState(){
+    void Awake(){
         states = new Dictionary<string, bool>();
     }
 

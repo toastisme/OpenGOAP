@@ -8,6 +8,7 @@ public class Detectable : MonoBehaviour
     protected virtual void Start()
     {
         DetectableManager.Instance?.Add(this);
+        typeName = "Detectable";
     }
 
     void OnDestroy(){

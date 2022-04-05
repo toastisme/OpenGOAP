@@ -8,6 +8,7 @@ public class Wood : SmartObject
     {
         base.Start();
         value = 5f;
+        typeName = "Wood";
     }
 
 }

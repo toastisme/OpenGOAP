@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     void Awake()
     {
         nav = GetComponent<NavMeshAgent>();
+        nav.stoppingDistance = .2f;
     }
 
     void SetDestination(Vector3 target){
@@ -51,7 +52,7 @@ public class Movement : MonoBehaviour
     }
 
     public bool AtTarget(){
-        return nav.remainingDistance < nav.stoppingDistance;
+        return nav.remainingDistance <= nav.stoppingDistance;
     }
 
     public Vector3 RandomLocation(float range){

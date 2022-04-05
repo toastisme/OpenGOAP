@@ -5,11 +5,9 @@ using UnityEngine.Assertions;
 using UnityEditor;
 
 namespace GOAP{
-[RequireComponent(typeof(Inventory))]
 public class GOAPPlanner : MonoBehaviour
 {
     WorldState worldState;
-    Inventory inventory;
     public List<Goal> goals{get; private set;}
     public List<GOAPAction> actions{get; private set;}
 
@@ -26,11 +24,10 @@ public class GOAPPlanner : MonoBehaviour
     public bool displayPlanner = false;
     bool displayingPlanner = false;
 
-    void Awake(){
+    void Start(){
         goals = new List<Goal>(GetComponents<Goal>());
         actions = new List<GOAPAction>(GetComponents<GOAPAction>());
-        worldState = new WorldState();
-        inventory = GetComponent<Inventory>();
+        worldState = GetComponent<WorldState>();
         for (int i = 0; i < goals.Count; i++){
             goals[i].Setup();
         }
@@ -177,7 +174,7 @@ public class GOAPPlanner : MonoBehaviour
         WorldState currentState, 
         Goal goal, 
         List<GOAPAction> actions){
-        
+
         List<GOAPAction> availableNodes = new List<GOAPAction>();
         List<GOAPAction> path = new List<GOAPAction>();
 
@@ -197,7 +194,7 @@ public class GOAPPlanner : MonoBehaviour
         // No path found
         if (startNode == null){return null;}
         availableNodes.Add(startNode);
-        Dictionary<string, bool> requiredState = startNode.preconditions;
+        Dictionary<string, bool> requiredState = goal.conditions;
 
         while (availableNodes.Count != 0){
 
@@ -222,7 +219,7 @@ public class GOAPPlanner : MonoBehaviour
             List<GOAPAction> linkedNodes = GetLinkedNodes(
                 node:currentNode,
                 path:path,
-                availableNodes:availableNodes
+                availableNodes:actions
                 );
             for (int i = 0; i < linkedNodes.Count; i++){
                 availableNodes.Add(linkedNodes[i]);

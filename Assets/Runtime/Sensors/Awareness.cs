@@ -89,7 +89,7 @@ public class Awareness : MonoBehaviour
         }
     }
 
-    void Forget(Detectable obj){
+    public void Forget(Detectable obj){
         nearbyObjects.Remove(obj);
         nearbyObjectCounts[obj.typeName] -= 1;
         if (!Nearby(obj.typeName)){
@@ -98,6 +98,9 @@ public class Awareness : MonoBehaviour
     }
 
     public void Add(Detectable obj, float memory, float memoryDecay){
+        // Already aware of obj
+        if (nearbyObjects.ContainsKey(obj)){return;}
+
         nearbyObjects[obj] = new NearbyObject(obj, memory, memoryDecay);
         if (nearbyObjectCounts.ContainsKey(obj.typeName)){
             nearbyObjectCounts[obj.typeName] += 1;

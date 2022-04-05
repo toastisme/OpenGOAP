@@ -44,8 +44,7 @@ public class Villager : Actor
     }
 
     void SetupWorldState(){
-        worldState = new WorldState();
-        worldState.states["HoldingWood"] = inventory.Contains("Wood");
+        worldState = GetComponent<WorldState>();
     }
 
     void SetupAwareness(){

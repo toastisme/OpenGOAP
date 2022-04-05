@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Inventory))]
 public class Actor : Detectable
 {
     /**
-     * Class that can use SmartObjects
+     * Class that can use SmartObjects.
+     * Has an Inventory.
      */
     
     protected Inventory inventory;
 
     protected override void Start(){
         base.Start();
-        inventory = new Inventory();
+        inventory = GetComponent<Inventory>();
     }
 
      public virtual void PickUp(SmartObject obj){
