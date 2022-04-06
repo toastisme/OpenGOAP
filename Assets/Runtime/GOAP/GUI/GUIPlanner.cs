@@ -97,7 +97,7 @@ public class GUIPlanner : EditorWindow
                 "",
                 activeNodeStyle);
 
-            actionContent.text = "\n" + activePlan[i].GetType().ToString() + "\n";
+            actionContent.text = "\n\n" + GetTypeString(activePlan[i].GetType());
 
             // Draw task rect
             GUI.backgroundColor = actionColor;
@@ -122,11 +122,21 @@ public class GUIPlanner : EditorWindow
             "",
             selectedNodeStyle);
         GUI.backgroundColor = goalColor;
-        goalContent.text = "\n" + planner.activeGoal.GetType().ToString() + "\n";
+        goalContent.text = "\n\n" + GetTypeString(planner.activeGoal.GetType());
         GUI.Box(
             GetTaskRect(new Vector2(count,0)), 
             goalContent, 
             selectedNodeStyle);
+    }
+
+    string GetTypeString(Type type){
+        /**
+         * Strips type.ToString() of GOAP namespace
+         */
+
+         string name = type.ToString();
+         return name.Split("GOAP.")[1];
+
     }
 
     Rect GetNodeRect(Vector2 gridPos){

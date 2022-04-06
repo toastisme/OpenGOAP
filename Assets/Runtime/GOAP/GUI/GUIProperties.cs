@@ -64,6 +64,7 @@ public class GUIProperties
         nodeStyle.alignment = TextAnchor.UpperLeft;
         nodeStyle.fontStyle = FontStyle.Bold;
         nodeStyle.padding=new RectOffset(10,0,0,0);
+        nodeStyle.fontSize=14;
         return nodeStyle;
     }
 
