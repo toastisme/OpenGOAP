@@ -57,13 +57,20 @@ public class GUIPlanner : EditorWindow
         DrawGrid(20, 0.2f, Color.gray);
         DrawGrid(100, 0.4f, Color.gray);
 
-        if (planner != null && planner.activePlan != null && planner.activePlan.Count>0){
-            DrawActionNodes();
-        }
+        GUILayout.Label("Active Plan");
+        DrawActivePlan();
+
+        GUILayout.Label("Top Priorities");
     }
 
     void OnInspectorUpdate(){
         Repaint();
+    }
+
+    void DrawActivePlan(){
+        if (planner != null && planner.activePlan != null && planner.activePlan.Count>0){
+            DrawActionNodes();
+        }
     }
 
     void DrawActionNodes(){
@@ -76,8 +83,8 @@ public class GUIPlanner : EditorWindow
             // Draw link
             if (count > 0){
                 DrawLink(
-                    new Vector2(count-1, 0), 
-                    new Vector2(count, 0),
+                    count-1, 
+                    count,
                     linkColor
                 );
             }
@@ -93,7 +100,7 @@ public class GUIPlanner : EditorWindow
             }
             // Draw node rect
             GUI.Box(
-                GetNodeRect(new Vector2(i,0)), 
+                GetNodeRect(count), 
                 "",
                 activeNodeStyle);
 
@@ -102,7 +109,7 @@ public class GUIPlanner : EditorWindow
             // Draw task rect
             GUI.backgroundColor = actionColor;
             GUI.Box(
-                GetTaskRect(new Vector2(i,0)), 
+                GetTaskRect(count), 
                 actionContent, 
                 activeNodeStyle);
 
@@ -111,20 +118,20 @@ public class GUIPlanner : EditorWindow
 
         // Draw goal
         DrawLink(
-            new Vector2(count-1, 0), 
-            new Vector2(count, 0),
+            count-1, 
+            count,
             linkColor
         );
         GUI.color = GUIProperties.RunningTint();
         GUI.backgroundColor = backgroundNodeColor;
         GUI.Box(
-            GetNodeRect(new Vector2(count,0)), 
+            GetNodeRect(count), 
             "",
             selectedNodeStyle);
         GUI.backgroundColor = goalColor;
         goalContent.text = "\n\n" + GetTypeString(planner.activeGoal.GetType());
         GUI.Box(
-            GetTaskRect(new Vector2(count,0)), 
+            GetTaskRect(count), 
             goalContent, 
             selectedNodeStyle);
     }
@@ -139,38 +146,38 @@ public class GUIPlanner : EditorWindow
 
     }
 
-    Rect GetNodeRect(Vector2 gridPos){
+    Rect GetNodeRect(int gridPos){
         return new Rect(
-            gridPos.x * nodeSpacing.x,
-            gridPos.y * nodeSpacing.y,
+            gridPos * nodeSpacing.x,
+            0,
             nodeSize.x,
             nodeSize.y
         );
     }
 
-    Rect GetTaskRect(Vector2 gridPos){
+    Rect GetTaskRect(int gridPos){
         return new Rect(
-            gridPos.x * nodeSpacing.x,
-            gridPos.y * nodeSpacing.y + taskNodeSize.y*.25f,
+            gridPos * nodeSpacing.x,
+            taskNodeSize.y*.25f,
             taskNodeSize.x,
             taskNodeSize.y
         );
     }
 
     void DrawLink(
-        Vector2 startGridPos, 
-        Vector2 endGridPos, 
+        int startGridPos, 
+        int endGridPos, 
         Color color,
         float thickness=4f){
 
         Vector2 startPos = new Vector2(
-            startGridPos.x * nodeSpacing.x + nodeSize.x,
-            startGridPos.y * nodeSpacing.y + nodeSize.y*.5f
+            startGridPos * nodeSpacing.x + nodeSize.x,
+            nodeSize.y*.5f
         );
 
         Vector2 endPos = new Vector2(
-            endGridPos.x * nodeSpacing.x,
-            endGridPos.y * nodeSpacing.y + nodeSize.y*.5f
+            endGridPos * nodeSpacing.x,
+            nodeSize.y*.5f
         );
 
         Handles.DrawBezier(
