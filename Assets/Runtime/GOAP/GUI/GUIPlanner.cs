@@ -18,6 +18,9 @@ public class GUIPlanner : EditorWindow
     GUIContent actionContent;
     GUIContent goalContent;
 
+    float activePlanHeight = 30f;
+    float topPropertiesHeight = 0.2f;
+
     // Colors
     Color backgroundNodeColor;
     Color actionColor;
@@ -60,7 +63,14 @@ public class GUIPlanner : EditorWindow
         GUILayout.Label("Active Plan");
         DrawActivePlan();
 
-        GUILayout.Label("Top Priorities");
+        GUI.Label(
+            new Rect(
+                0, 
+                (int)(Screen.height*topPropertiesHeight), 
+                100, 
+                100), 
+                "Top Priorities"
+            );
     }
 
     void OnInspectorUpdate(){
@@ -149,7 +159,7 @@ public class GUIPlanner : EditorWindow
     Rect GetNodeRect(int gridPos){
         return new Rect(
             gridPos * nodeSpacing.x,
-            0,
+            activePlanHeight,
             nodeSize.x,
             nodeSize.y
         );
@@ -158,7 +168,7 @@ public class GUIPlanner : EditorWindow
     Rect GetTaskRect(int gridPos){
         return new Rect(
             gridPos * nodeSpacing.x,
-            taskNodeSize.y*.25f,
+            activePlanHeight + taskNodeSize.y*.25f,
             taskNodeSize.x,
             taskNodeSize.y
         );
@@ -172,12 +182,12 @@ public class GUIPlanner : EditorWindow
 
         Vector2 startPos = new Vector2(
             startGridPos * nodeSpacing.x + nodeSize.x,
-            nodeSize.y*.5f
+            activePlanHeight + nodeSize.y*.5f
         );
 
         Vector2 endPos = new Vector2(
             endGridPos * nodeSpacing.x,
-            nodeSize.y*.5f
+            activePlanHeight + nodeSize.y*.5f
         );
 
         Handles.DrawBezier(
