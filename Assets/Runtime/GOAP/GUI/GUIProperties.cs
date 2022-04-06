@@ -36,19 +36,20 @@ public class GUIProperties
     public static Color GoalColor(){
         return new Color(67f/255.0f, 170f/255.0f, 139f/255.0f);
     }
-    public static Color CompletedActionColor(){
-        return new Color(39f/255.0f, 125f/255.0f, 161f/255.0f);
-    }
     public static Color ActionColor(){
         return new Color(249f/255.0f, 65f/255.0f, 68f/255.0f);
     }
 
     public static Color RunningTint(){
-        return new Color(.8f, .8f, .8f);        
+        return new Color(1f, 1f, 1f);        
     }
 
     public static Color DefaultTint(){
-        return new Color(1f, 1f, 1f);
+        return new Color(.8f, .8f, .8f);
+    }
+
+    public static Color LinkColor(){
+        return Color.white;
     }
 
     //// Styles
