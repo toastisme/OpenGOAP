@@ -3,8 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEditor;
+using System;
 
 namespace GOAP{
+
+public struct GoalData{
+    public Type goalType;
+    public float priority;
+    public bool canRun;
+
+    public GoalData(Type goalType, float priority, bool canRun){
+        this.priority = priority;
+        this.goalType = goalType;
+        this.canRun = canRun;
+    }
+}
 public class GOAPPlanner : MonoBehaviour
 {
     WorldState worldState;
@@ -292,6 +305,28 @@ public class GOAPPlanner : MonoBehaviour
 
     void StopDisplayingPlanner(){
         displayingPlanner = false;
+    }
+
+    public List<GoalData> GetSortedGoalData(){
+
+        /**
+         * Returns list of GoalData reverse sorted by priority
+         */
+
+        List<GoalData> goalData = new List<GoalData>();
+        for (int i=0; i<goals.Count; i++){
+            goalData.Add(
+                new GoalData(
+                    goals[i].GetType(), 
+                    goals[i].GetPriority(), 
+                    goals[i].PreconditionsSatisfied()
+                    )
+            );
+        }
+
+        goalData.Sort((x, y) => x.priority.CompareTo(y.priority));
+        goalData.Reverse();
+        return goalData;
     }
 
 }

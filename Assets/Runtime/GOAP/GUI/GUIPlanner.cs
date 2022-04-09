@@ -11,15 +11,26 @@ public class GUIPlanner : EditorWindow
     Vector2 nodeSpacing;
     Vector2 nodeSize;
     Vector2 taskNodeSize;
+
+    // Styles
     GUIStyle guiNodeStyle;
     GUIStyle selectedNodeStyle;
     GUIStyle activeNodeStyle;
+    GUIStyle panelStyle;
+    GUIStyle goalLabelStyle;
+    GUIStyle disabledGoalLabelStyle;
 
+    // GUIContent
     GUIContent actionContent;
     GUIContent goalContent;
 
+    Rect activePlanPanel;
+    Rect goalPrioritiesPanel;
+
     float activePlanHeight = 30f;
-    float topPropertiesHeight = 0.2f;
+    float maxPriorityRectWidth;
+    float priorityRectHeight = 40f;
+    float prioritySpacing = 25f;
 
     // Colors
     Color backgroundNodeColor;
@@ -28,6 +39,7 @@ public class GUIPlanner : EditorWindow
     Color runningTint;
     Color defaultTint;
     Color linkColor;
+    Color panelColor;
 
 
 
@@ -36,6 +48,22 @@ public class GUIPlanner : EditorWindow
     }
 
     void OnEnable(){
+
+        activePlanPanel = new Rect(
+            0,
+            0,
+            position.width,
+            position.height*.4f
+        );
+        goalPrioritiesPanel = new Rect(
+            0,
+            position.height*.4f,
+            position.width,
+            position.height
+        );
+
+        maxPriorityRectWidth = position.width - 10f;
+
         nodeSpacing = GUIProperties.NodeSpacing();
         nodeSize = GUIProperties.NodeSize();
         taskNodeSize = GUIProperties.TaskNodeSize();
@@ -43,6 +71,9 @@ public class GUIPlanner : EditorWindow
         guiNodeStyle = GUIProperties.GUINodeStyle();
         selectedNodeStyle = GUIProperties.SelectedGUINodeStyle();
         activeNodeStyle = guiNodeStyle;
+        panelStyle = GUIProperties.GUIPlannerStyle();
+        goalLabelStyle = GUIProperties.GoalLabelStyle();
+        disabledGoalLabelStyle = GUIProperties.DisabledGoalLabelStyle();
 
         backgroundNodeColor = GUIProperties.BackgroundNodeColor();
         actionColor = GUIProperties.ActionColor();
@@ -50,6 +81,7 @@ public class GUIPlanner : EditorWindow
         runningTint = GUIProperties.RunningTint();
         defaultTint = GUIProperties.DefaultTint();
         linkColor = GUIProperties.LinkColor();
+        panelColor = GUIProperties.PanelColor();
 
         actionContent = GUIProperties.ActionContent();
         goalContent = GUIProperties.GoalContent();
@@ -60,30 +92,85 @@ public class GUIPlanner : EditorWindow
         DrawGrid(20, 0.2f, Color.gray);
         DrawGrid(100, 0.4f, Color.gray);
 
-        GUILayout.Label("Active Plan");
-        DrawActivePlan();
+        DrawActivePlanPanel();
+        DrawGoalPrioritiesPanel();
+    }
 
-        GUI.Label(
-            new Rect(
-                0, 
-                (int)(Screen.height*topPropertiesHeight), 
-                100, 
-                100), 
-                "Top Priorities"
-            );
+
+    void DrawActivePlanPanel(){
+        GUI.color = runningTint;
+        GUI.backgroundColor = panelColor;
+        BeginWindows();
+        activePlanPanel = GUILayout.Window(
+            1,
+            activePlanPanel,
+            DrawActivePlan,
+            "Active Plan",
+            panelStyle
+        );
+        EndWindows();
+    }
+
+    void DrawGoalPrioritiesPanel(){
+        GUI.color = runningTint;
+        GUI.backgroundColor = panelColor;
+        BeginWindows();
+        goalPrioritiesPanel = GUILayout.Window(
+            2,
+            goalPrioritiesPanel,
+            DrawGoalPriorities,
+            "Goal Priorities",
+            panelStyle
+        );
+        EndWindows();
     }
 
     void OnInspectorUpdate(){
         Repaint();
     }
 
-    void DrawActivePlan(){
+    void DrawActivePlan(int unusedWindowID){
         if (planner != null && planner.activePlan != null && planner.activePlan.Count>0){
-            DrawActionNodes();
+            DrawActionNodes(unusedWindowID);
         }
     }
 
-    void DrawActionNodes(){
+    void DrawGoalPriorities(int unusedWindowID){
+        List<GoalData> goalData = planner.GetSortedGoalData();
+        GUILayout.Label("\n\n");
+        GUI.color = runningTint;
+        GUI.backgroundColor = backgroundNodeColor;
+        for(int i=0; i<goalData.Count; i++){
+            string name = GetTypeString(goalData[i].goalType);
+            if (goalData[i].canRun){
+                GUI.Box(
+                    new Rect(
+                        0,
+                        30f + i*prioritySpacing,
+                        Mathf.Clamp(goalData[i].priority, 0.05f, 1f) * maxPriorityRectWidth,
+                        priorityRectHeight
+                    ),
+                    name,
+                    goalLabelStyle
+                );
+            }
+            else{
+                GUI.Box(
+                    new Rect(
+                        0,
+                        30f + i*prioritySpacing,
+                        Mathf.Clamp(goalData[i].priority, 0.05f, 1f) * maxPriorityRectWidth,
+                        priorityRectHeight
+                    ),
+                    name,
+                    disabledGoalLabelStyle
+                );
+            }
+        }
+
+    }
+
+    void DrawActionNodes(int unusedWindowID){
         List<GOAPAction> activePlan = planner.activePlan;
         List<GOAPAction> actions = planner.actions;
         GOAPAction activeAction = activePlan[planner.activeActionIdx];
@@ -132,7 +219,7 @@ public class GUIPlanner : EditorWindow
             count,
             linkColor
         );
-        GUI.color = GUIProperties.RunningTint();
+        GUI.color = runningTint;
         GUI.backgroundColor = backgroundNodeColor;
         GUI.Box(
             GetNodeRect(count), 

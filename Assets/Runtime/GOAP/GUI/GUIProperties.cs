@@ -40,6 +40,11 @@ public class GUIProperties
         return new Color(249f/255.0f, 65f/255.0f, 68f/255.0f);
     }
 
+    public static Color PanelColor(){
+        Color color = BackgroundNodeColor();
+        return new Color(color[0]*.5f, color[1]*.5f, color[2]*.5f);
+    }
+
     public static Color RunningTint(){
         return new Color(1f, 1f, 1f);        
     }
@@ -75,6 +80,41 @@ public class GUIProperties
             ) as Texture2D;
         return selectedNodeStyle;
     }
+
+    public static GUIStyle GUIPlannerStyle(){
+        GUIStyle nodeStyle = new GUIStyle();
+        nodeStyle.normal.background = EditorGUIUtility.Load(
+            "builtin skins/lightskin/images/node0.png"
+            ) as Texture2D;
+        nodeStyle.border = new RectOffset(12, 12, 12, 12);
+        nodeStyle.normal.textColor = Color.white;
+        nodeStyle.alignment = TextAnchor.UpperLeft;
+        nodeStyle.fontStyle = FontStyle.Bold;
+        nodeStyle.padding=new RectOffset(10,0,10,0);
+        nodeStyle.fontSize=14;
+        return nodeStyle;
+    }
+
+    public static GUIStyle GoalLabelStyle(){
+        GUIStyle nodeStyle = new GUIStyle();
+        nodeStyle.normal.background = EditorGUIUtility.Load(
+            "builtin skins/lightskin/images/node0.png"
+            ) as Texture2D;
+        nodeStyle.border = new RectOffset(12, 12, 12, 12);
+        nodeStyle.alignment = TextAnchor.MiddleLeft;
+        nodeStyle.normal.textColor = Color.white;
+        nodeStyle.fontStyle = FontStyle.Bold;
+        nodeStyle.padding=new RectOffset(10,0,-5,0);
+        nodeStyle.fontSize=12;
+        return nodeStyle;
+    }
+
+    public static GUIStyle DisabledGoalLabelStyle(){
+        GUIStyle nodeStyle = GoalLabelStyle();
+        nodeStyle.normal.textColor = Color.grey;
+        return nodeStyle;
+    }
+
 
     //// GUIContent
 
