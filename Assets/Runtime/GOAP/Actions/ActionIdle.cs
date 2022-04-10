@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GOAP;
 
-namespace GOAP{
 public class ActionIdle : GOAPAction
 {
     bool _wasIdle;
@@ -28,5 +28,4 @@ public class ActionIdle : GOAPAction
 
     public bool WasIdle(){return _wasIdle;}
 
-}
 }

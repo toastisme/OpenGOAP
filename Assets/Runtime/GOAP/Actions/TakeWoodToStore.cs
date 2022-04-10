@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using GOAP;
 
-namespace GOAP{
 public class TakeWoodToStore : GOAPAction
 {
 
@@ -50,5 +50,4 @@ public class TakeWoodToStore : GOAPAction
 
     
 
-}
 }

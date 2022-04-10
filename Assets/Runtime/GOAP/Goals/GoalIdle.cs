@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GOAP;
 
-namespace GOAP{
 public class GoalIdle : Goal
 {
 
@@ -19,5 +19,4 @@ public class GoalIdle : Goal
         return true;
     }
     
-}
 }

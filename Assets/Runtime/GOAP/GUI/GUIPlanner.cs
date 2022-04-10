@@ -234,13 +234,7 @@ public class GUIPlanner : EditorWindow
     }
 
     string GetTypeString(Type type){
-        /**
-         * Strips type.ToString() of GOAP namespace
-         */
-
-         string name = type.ToString();
-         return name.Split("GOAP.")[1];
-
+         return type.ToString();
     }
 
     Rect GetNodeRect(int gridPos){

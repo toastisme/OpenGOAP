@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GOAP;
 
-namespace GOAP{
 public class HarvestWood : Goal
 {
 
@@ -19,5 +19,4 @@ public class HarvestWood : Goal
         public override bool PreconditionsSatisfied(){
             return true;
         }
-}
 }

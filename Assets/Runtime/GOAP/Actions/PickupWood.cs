@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Sensors;
+using GOAP;
 
-namespace GOAP{
 public class PickUpWood : GOAPAction
 {
     Movement movement;
@@ -52,5 +52,4 @@ public class PickUpWood : GOAPAction
             }
         }
     }
-}
 }
