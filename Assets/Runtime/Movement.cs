@@ -67,6 +67,10 @@ public class Movement : MonoBehaviour
         return transform.position;
     }
 
+    public void ClearTarget(){
+        nav.ResetPath();
+    }
+
 
 
 }
