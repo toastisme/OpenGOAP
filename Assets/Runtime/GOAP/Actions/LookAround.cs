@@ -13,7 +13,7 @@ public class LookAround : GOAPAction
     }
 
     Coroutine surveying;
-
+    bool isSurveying=false;
     Vector3 moveTarget;
 
     public override void Setup(){
@@ -24,6 +24,7 @@ public class LookAround : GOAPAction
     }
 
     IEnumerator SurveyArea(){
+        isSurveying = true;
         int numPointsToLookAt = UnityEngine.Random.Range(2, 5);
         for (int i=0; i<numPointsToLookAt; i++){
             Vector3 dir = UnityEngine.Random.Range(0,10) > 5 ? transform.right : -transform.right;
@@ -36,19 +37,18 @@ public class LookAround : GOAPAction
                 yield return null;
             }
         }        
+        moveTarget = movement.RandomLocation(vision.visionRange);
+        movement.GoTo(moveTarget);
+        isSurveying = false;
     }
 
     public override void OnTick(){
-        if (PreconditionsSatisfied()){
-            if (moveTarget == null || movement.AtTarget()){
-                surveying = StartCoroutine(SurveyArea());
-                moveTarget = movement.RandomLocation(vision.visionRange);
-                movement.GoTo(moveTarget);
-            }
-        }
-        else{
+        if (!PreconditionsSatisfied()){
             StopAction();
             return;
+        }
+        if (moveTarget == null || movement.AtTarget() && !isSurveying){
+            surveying = StartCoroutine(SurveyArea());
         }
     }
 
