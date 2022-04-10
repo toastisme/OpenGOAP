@@ -26,6 +26,7 @@ public class PickUpWood : GOAPAction
 
     public override void OnActivated()
     {
+        base.OnActivated();
         targetWood = (SmartObject)awareness.GetNearest("Wood");
         if (targetWood != null){
             movement.GoTo(targetWood);

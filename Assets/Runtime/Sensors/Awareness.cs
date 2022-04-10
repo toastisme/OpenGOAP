@@ -54,7 +54,7 @@ public class Awareness : MonoBehaviour
         }
         int totalCount = nearbyObjectCounts[name];
         int count = 0;
-        Detectable nearest;
+        Detectable nearest = null;
         float minDistance = -1f;
         foreach(var obj in nearbyObjects){
             if (obj.Key.typeName == name){
@@ -62,11 +62,11 @@ public class Awareness : MonoBehaviour
                 if (minDistance < 0 || distance < minDistance){
                     nearest = obj.Key;
                     minDistance = distance;
-                    count++;
-                    if (count == totalCount){
-                        return nearest;
-                    } 
                 }
+                count++;
+                if (count == totalCount){
+                    return nearest;
+                } 
             }
         }
         return null;

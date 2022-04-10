@@ -136,6 +136,7 @@ public class GUIPlanner : EditorWindow
     }
 
     void DrawGoalPriorities(int unusedWindowID){
+        if (planner == null){return;}
         List<GoalData> goalData = planner.GetSortedGoalData();
         GUILayout.Label("\n\n");
         GUI.color = runningTint;

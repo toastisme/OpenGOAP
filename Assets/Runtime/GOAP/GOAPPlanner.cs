@@ -110,7 +110,10 @@ public class GOAPPlanner : MonoBehaviour
         if (!(activeGoal != null && activePlan != null)){ return; }
 
         // Plan no longer viable
-        if (!(activePlan[activeActionIdx].PreconditionsSatisfied())){ OnFailActivePlan(); }
+        if (!(activePlan[activeActionIdx].PreconditionsSatisfied())){ 
+            OnFailActivePlan(); 
+            return;
+        }
 
         activePlan[activeActionIdx].OnTick();
 
