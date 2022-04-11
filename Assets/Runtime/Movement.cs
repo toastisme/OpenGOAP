@@ -55,6 +55,10 @@ public class Movement : MonoBehaviour
         return nav.remainingDistance <= nav.stoppingDistance;
     }
 
+    public float DistanceToTarget(){
+        return nav.remainingDistance - nav.stoppingDistance;
+    }
+
     public Vector3 RandomLocation(float range){
         Vector3 location = transform.position;
         location += Random.Range(-range, range) * Vector3.forward;

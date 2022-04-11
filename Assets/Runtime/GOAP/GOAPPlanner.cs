@@ -42,7 +42,7 @@ public class GOAPPlanner : MonoBehaviour
         actions = new List<GOAPAction>(GetComponents<GOAPAction>());
         personalState = GetComponent<WorldState>();
         for (int i = 0; i < goals.Count; i++){
-            goals[i].Setup();
+            goals[i].Setup(personalState);
         }
         for (int i = 0; i < actions.Count; i++){
             actions[i].Setup();
@@ -109,6 +109,12 @@ public class GOAPPlanner : MonoBehaviour
         // Nothing to run
         if (!(activeGoal != null && activePlan != null)){ return; }
 
+        // Goal no longer viable
+        if (!activeGoal.PreconditionsSatisfied()){
+            OnFailActivePlan();
+            return;
+        }
+
         // Plan no longer viable
         if (!(activePlan[activeActionIdx].PreconditionsSatisfied())){ 
             OnFailActivePlan(); 
@@ -117,18 +123,19 @@ public class GOAPPlanner : MonoBehaviour
 
         activePlan[activeActionIdx].OnTick();
 
-        if (activePlan[activeActionIdx].EffectsSatisfied()){
-            // Action complete
-            activePlan[activeActionIdx].OnDeactivated();
-            activeActionIdx++;
+        // Goal complete
+        if (activeGoal.ConditionsSatisfied()){
+            OnCompleteActivePlan();
+            return;
+        }
 
-            if (activeActionIdx < activePlan.Count){
-                // Start new action
+        if (activeActionIdx < activePlan.Count-1){
+            // At least one more action after activeAction
+            if (activePlan[activeActionIdx + 1].PreconditionsSatisfied()){
+                // Can move to next action
+                activePlan[activeActionIdx].OnDeactivated();
+                activeActionIdx++;
                 activePlan[activeActionIdx].OnActivated();
-            }
-            else{
-                // Goal complete
-                OnCompleteActivePlan();
             }
         }
     }

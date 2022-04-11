@@ -8,7 +8,7 @@ public class Berries : SmartObject
     {
         base.Start();
         value = 5f;
-        typeName = "Berries";
+        typeName = "Food";
         
     }
 }

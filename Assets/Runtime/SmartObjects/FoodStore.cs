@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GOAP;
 
-public class BerryStore : SmartObject
+public class FoodStore : SmartObject
 {
     WorldState tribeState;
     [SerializeField]
@@ -14,16 +14,16 @@ public class BerryStore : SmartObject
     {
         base.Start();
         value = 0f;
-        typeName = "BerryStore";
+        typeName = "FoodStore";
         tribeState = GameObject.Find("TribeState").GetComponent<WorldState>();
     }
 
     public override void Add(SmartObject obj){
-        if (obj.typeName == "Berries"){
+        if (obj.typeName == "Food"){
             value += obj.value;
             obj.Remove();
         }
-        tribeState.UpdateFloatValue("Berries", obj.value);
+        tribeState.UpdateFloatValue("Food", obj.value);
     }
 
     public override GameObject Extract(float value){

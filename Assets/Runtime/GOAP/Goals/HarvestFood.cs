@@ -1,19 +1,19 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GOAP;
 
-public class HarvestWood : Goal
+public class HarvestFood : Goal
 {
-
         public override void Setup(WorldState worldState){
             base.Setup(worldState);
-            conditions["WoodHarvested"] = true;
+            conditions["FoodHarvested"] = true;
         }
 
         public override float GetPriority()
         {
-            return .2f;
+            return .3f;
         }
 
         public override bool PreconditionsSatisfied(){

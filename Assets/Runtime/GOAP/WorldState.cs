@@ -11,6 +11,7 @@ public class WorldState : MonoBehaviour
 
     void Awake(){
         states = new Dictionary<string, bool>();
+        floatStates = new Dictionary<string, float>();
     }
 
     public bool IsSubset(Dictionary<string, bool> state){
@@ -27,7 +28,7 @@ public class WorldState : MonoBehaviour
 
     public void UpdateFloatValue(string name, float addedValue){
         if (!floatStates.ContainsKey(name)){
-            floatStates["name"] = 0;
+            floatStates[name] = 0;
         }
         floatStates[name] += addedValue;
     }

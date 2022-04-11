@@ -21,6 +21,7 @@ public class LookAround : GOAPAction
         movement = GetComponent<Movement>();
         vision = GetComponent<Vision>();
         effects["WoodNearby"] = true;
+        effects["FoodNearby"] = true;
     }
 
     IEnumerator SurveyArea(){
