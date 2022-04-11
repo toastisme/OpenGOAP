@@ -7,13 +7,13 @@ using Sensors;
 [RequireComponent(typeof(WorldState))]
 public class Inventory : MonoBehaviour
 {
-    WorldState worldState;
+    WorldState personalState;
     Awareness awareness;
     public Dictionary<string, List<SmartObject> > items;
 
     void Start(){
         items = new Dictionary<string, List<SmartObject>>();
-        worldState = GetComponent<WorldState>();
+        personalState = GetComponent<WorldState>();
         awareness = GetComponent<Awareness>();
     }
 
@@ -24,13 +24,14 @@ public class Inventory : MonoBehaviour
         obj.PickedUp();
         items[obj.typeName].Add(obj);
         awareness.Forget(obj);
-        worldState.states[$"Holding{obj.typeName}"] = true;
+        personalState.states[$"Holding{obj.typeName}"] = true;
+        obj.transform.SetParent(this.transform);
     }
 
     public void Remove(SmartObject obj){
         items[obj.typeName].Remove(obj);
         if (!Contains(obj.typeName)){
-            worldState.states[$"Holding{obj.typeName}"] = false;
+            personalState.states[$"Holding{obj.typeName}"] = false;
         }
     }
 

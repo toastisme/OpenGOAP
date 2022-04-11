@@ -20,17 +20,17 @@ public class TakeWoodToStore : GOAPAction
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
         preconditions["HoldingWood"] = true;
-        worldState.states["WoodHarvested"] = false;
+        personalState.states["WoodHarvested"] = false;
         effects["WoodHarvested"] = true;
     }
 
     public override void OnActivated(){
-        worldState.states["WoodHarvested"] = false;
+        personalState.states["WoodHarvested"] = false;
         movement.GoTo(woodStore);
     }
 
     public override void OnDeactivated(){
-        worldState.states["WoodHarvested"] = false;
+        personalState.states["WoodHarvested"] = false;
     }
 
     public override void OnTick()
@@ -42,7 +42,7 @@ public class TakeWoodToStore : GOAPAction
                     woodStore.Add(inventory.items["Wood"][i]);
                     inventory.Remove(inventory.items["Wood"][i]);
                 }
-                worldState.states["WoodHarvested"] = true;
+                personalState.states["WoodHarvested"] = true;
             }
         }
     }

@@ -20,8 +20,14 @@ public class SmartObject : Detectable, ISmartObject
 
     public virtual void Add(SmartObject obj){}
 
+    public virtual GameObject Extract(float value){return null;}
+
     public virtual void Remove(){
         Destroy(this);
+    }
+
+    public void SetValue(float value){
+        this.value = value;
     }
 
 }

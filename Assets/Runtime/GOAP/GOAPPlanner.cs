@@ -20,7 +20,7 @@ public struct GoalData{
 }
 public class GOAPPlanner : MonoBehaviour
 {
-    WorldState worldState;
+    WorldState personalState;
     public List<Goal> goals{get; private set;}
     public List<GOAPAction> actions{get; private set;}
 
@@ -40,7 +40,7 @@ public class GOAPPlanner : MonoBehaviour
     void Start(){
         goals = new List<Goal>(GetComponents<Goal>());
         actions = new List<GOAPAction>(GetComponents<GOAPAction>());
-        worldState = GetComponent<WorldState>();
+        personalState = GetComponent<WorldState>();
         for (int i = 0; i < goals.Count; i++){
             goals[i].Setup();
         }
@@ -167,7 +167,7 @@ public class GOAPPlanner : MonoBehaviour
             }
 
             List<GOAPAction> candidatePath = GetOptimalPath(
-                currentState:worldState,
+                currentState:personalState,
                 goal:goals[i], 
                 actions:actions
                 );

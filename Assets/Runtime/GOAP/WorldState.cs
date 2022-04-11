@@ -7,6 +7,7 @@ namespace GOAP{
 public class WorldState : MonoBehaviour
 {
     public Dictionary<string, bool> states;
+    public Dictionary<string, float> floatStates;
 
     void Awake(){
         states = new Dictionary<string, bool>();
@@ -22,6 +23,17 @@ public class WorldState : MonoBehaviour
             }
         }
         return true;
+    }
+
+    public void UpdateFloatValue(string name, float addedValue){
+        if (!floatStates.ContainsKey(name)){
+            floatStates["name"] = 0;
+        }
+        floatStates[name] += addedValue;
+    }
+
+    public void ReplaceFloatValue(string name, float value){
+        floatStates[name] = value;
     }
 }
 }
