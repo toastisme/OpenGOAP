@@ -9,7 +9,7 @@ public class LookAround : GOAPAction
     Movement movement;
     Vision vision;
     public override float GetCost(){
-        return 0.0f;
+        return 0.3f;
     }
 
     Coroutine surveying;

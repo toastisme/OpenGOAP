@@ -33,7 +33,7 @@ public class WorldState : MonoBehaviour
         floatStates[name] += addedValue;
     }
 
-    public void ReplaceFloatValue(string name, float value){
+    public void AddFloatValue(string name, float value){
         floatStates[name] = value;
     }
 }
