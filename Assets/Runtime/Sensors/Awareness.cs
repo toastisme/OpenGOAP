@@ -93,7 +93,7 @@ public class Awareness : MonoBehaviour
         nearbyObjects.Remove(obj);
         nearbyObjectCounts[obj.typeName] -= 1;
         if (!Nearby(obj.typeName)){
-            worldState.states[$"{obj.typeName}Nearby"] = false;
+            worldState.AddState($"{obj.typeName}Nearby", false);
         }
     }
 
@@ -108,7 +108,7 @@ public class Awareness : MonoBehaviour
         else{
             nearbyObjectCounts[obj.typeName] = 1;
         }
-        worldState.states[$"{obj.typeName}Nearby"] = true;
+        worldState.AddState($"{obj.typeName}Nearby", true);
     }
 }
 #if UNITY_EDITOR

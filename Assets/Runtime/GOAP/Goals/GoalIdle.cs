@@ -6,8 +6,8 @@ using GOAP;
 public class GoalIdle : Goal
 {
 
-    public override void Setup(WorldState worldState){
-        base.Setup(worldState);
+    public override void Setup(){
+        base.Setup();
     }
 
     public override float GetPriority()

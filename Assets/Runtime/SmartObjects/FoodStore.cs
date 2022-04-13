@@ -6,7 +6,7 @@ using GOAP;
 
 public class FoodStore : SmartObject
 {
-    WorldState tribeState;
+    StateSet tribeState;
     [SerializeField]
     GameObject berriesPrefab;
     
@@ -15,7 +15,7 @@ public class FoodStore : SmartObject
         base.Start();
         value = 0f;
         typeName = "FoodStore";
-        tribeState = GameObject.Find("TribeState").GetComponent<WorldState>();
+        tribeState = GameObject.Find("TribeState").GetComponent<StateSet>();
     }
 
     public override void Add(SmartObject obj){
@@ -23,16 +23,19 @@ public class FoodStore : SmartObject
             value += obj.value;
             obj.Remove();
         }
-        tribeState.UpdateFloatValue("Food", obj.value);
+        tribeState.UpdateState("g_Food", obj.value);
     }
 
-    public override GameObject Extract(float value){
+    public override GameObject Extract(float extractValue){
         GameObject berries = Instantiate(
             berriesPrefab, 
             transform.position, 
             Quaternion.identity
         );
-        berries.GetComponent<Berries>().SetValue(value);
+        extractValue = extractValue > value ? value : extractValue;
+        berries.GetComponent<Berries>().SetValue(extractValue);
+        value -= extractValue;
+        tribeState.UpdateState("g_Food", -extractValue);
         return berries;
     }
 }

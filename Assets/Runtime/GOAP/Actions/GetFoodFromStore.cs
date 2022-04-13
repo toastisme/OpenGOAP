@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using GOAP;
 
-public class TakeFoodToStore : GOAPAction
+public class GetFoodFromStore : GOAPAction
 {
 
     Inventory inventory;
@@ -19,18 +19,15 @@ public class TakeFoodToStore : GOAPAction
         base.Setup();
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
-        preconditions["HoldingFood"] = true;
-        worldState.AddState("FoodHarvested", false);
-        effects["FoodHarvested"] = true;
+        preconditions["g_FoodAvailable"] = true;
+        effects["HoldingFood"] = true;
     }
 
     public override void OnActivated(){
-        worldState.AddState("FoodHarvested", false);
         movement.GoTo(foodStore);
     }
 
     public override void OnDeactivated(){
-        worldState.AddState("FoodHarvested", false);
     }
 
     public override void OnTick()
@@ -46,4 +43,8 @@ public class TakeFoodToStore : GOAPAction
             }
         }
     }
+
+
+    
+
 }

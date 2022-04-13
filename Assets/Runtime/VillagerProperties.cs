@@ -5,28 +5,28 @@ using GOAP;
 
 public class VillagerProperties : MonoBehaviour
 {
-    WorldState personalState;
+    WorldState worldState;
 
     // Initial states and decay rates
     Dictionary<string, KeyValuePair<float, float>> properties = 
         new Dictionary<string, KeyValuePair<float, float>>{
-        {"health", new KeyValuePair<float, float>(1f, 0f)},
-        {"fatigue", new KeyValuePair<float, float>(0f, .01f)},
-        {"hunger", new KeyValuePair<float, float>(0f, .02f)},
-        {"thirst", new KeyValuePair<float, float>(0f, 0.3f)},
-        {"warmth", new KeyValuePair<float, float>(1f, 0f)}
+        {"Health", new KeyValuePair<float, float>(1f, 0f)},
+        {"Fatigue", new KeyValuePair<float, float>(0f, .01f)},
+        {"Hunger", new KeyValuePair<float, float>(0f, .02f)},
+        {"Thirst", new KeyValuePair<float, float>(0f, 0.3f)},
+        {"Warmth", new KeyValuePair<float, float>(1f, 0f)}
     };
 
 
     void Start(){
-        personalState = GetComponent<WorldState>();
+        worldState = GetComponent<WorldState>();
         SetInitialStates();
     }
 
     void SetInitialStates(){
         foreach (var i in properties){
-            personalState.AddFloatValue(i.Key, i.Value.Key);
-            personalState.AddFloatValue(GetDeltaKey(i.Key), i.Value.Value);
+            worldState.AddState(i.Key, i.Value.Key);
+            worldState.AddState(GetDeltaKey(i.Key), i.Value.Value);
         }
     }
 
@@ -36,24 +36,22 @@ public class VillagerProperties : MonoBehaviour
 
     public void AddProperty(string name, float value, float delta){
         properties[name] = new KeyValuePair<float, float>(value, delta);
-        personalState.AddFloatValue(name, value);
-        personalState.AddFloatValue(GetDeltaKey(name), delta);
+        worldState.AddState(name, value);
+        worldState.AddState(GetDeltaKey(name), delta);
     }
 
     public void RemoveProperty(string name){
-        personalState.floatStates.Remove(name);
-        personalState.floatStates.Remove(GetDeltaKey(name));
+        worldState.RemoveFloatState(name);
+        worldState.RemoveFloatState(GetDeltaKey(name));
         properties.Remove(name);
     }
 
     void UpdateProperties(){
         foreach(var i in properties){
-            personalState.floatStates[i.Key] += 
-                personalState.floatStates[GetDeltaKey(i.Key)] * Time.deltaTime;
+            worldState.UpdateState(
+                name, 
+                worldState.GetFloatState(GetDeltaKey(i.Key)) * Time.deltaTime
+                );
         }
     }
-
-
-
-    
 }

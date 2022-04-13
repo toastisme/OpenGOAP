@@ -19,8 +19,7 @@ public class Villager : Actor
     Memory memory;
     Hearing hearing;
     GOAPPlanner planner;
-    WorldState personalState;
-    WorldState tribeState;
+    WorldState worldState;
 
     void Awake(){
         Setup();
@@ -45,8 +44,10 @@ public class Villager : Actor
     }
 
     void SetupWorldState(){
-        personalState = GetComponent<WorldState>();
-        tribeState = GameObject.Find("TribeState").GetComponent<WorldState>();
+        worldState = GetComponent<WorldState>();
+        worldState.SetGlobalState(
+            GameObject.Find("TribeState").GetComponent<StateSet>()
+            );
     }
 
     void SetupAwareness(){
@@ -66,7 +67,4 @@ public class Villager : Actor
     }
 
     bool Memorable(Detectable detectable){return false;}
-
-
-
 }

@@ -20,7 +20,7 @@ public struct GoalData{
 }
 public class GOAPPlanner : MonoBehaviour
 {
-    WorldState personalState;
+    WorldState worldState;
     public List<Goal> goals{get; private set;}
     public List<GOAPAction> actions{get; private set;}
 
@@ -33,16 +33,16 @@ public class GOAPPlanner : MonoBehaviour
     Goal optimalGoal;
     List<GOAPAction> optimalPlan;
 
-    //// Planner
+    //// GUI bookkeeping
     public bool displayPlanner = false;
     bool displayingPlanner = false;
 
     void Start(){
+        worldState = GetComponent<WorldState>();
         goals = new List<Goal>(GetComponents<Goal>());
         actions = new List<GOAPAction>(GetComponents<GOAPAction>());
-        personalState = GetComponent<WorldState>();
         for (int i = 0; i < goals.Count; i++){
-            goals[i].Setup(personalState);
+            goals[i].Setup();
         }
         for (int i = 0; i < actions.Count; i++){
             actions[i].Setup();
@@ -58,15 +58,12 @@ public class GOAPPlanner : MonoBehaviour
         if ((NoActiveGoal() && GoalAvailable()) || BetterGoalAvailable()){
             StartCurrentBestGoal();
         } 
-
         UpdateDisplayPlanner();
-
     }
 
     bool NoActiveGoal(){
         return activeGoal == null;
     }
-
 
     bool BetterGoalAvailable(){
         return optimalGoal != null && optimalGoal != activeGoal;
@@ -174,7 +171,7 @@ public class GOAPPlanner : MonoBehaviour
             }
 
             List<GOAPAction> candidatePath = GetOptimalPath(
-                currentState:personalState,
+                currentState:worldState,
                 goal:goals[i], 
                 actions:actions
                 );
@@ -189,7 +186,6 @@ public class GOAPPlanner : MonoBehaviour
     bool HasHigherPriority(Goal goal, Goal other){
         return goal.GetPriority() > other.GetPriority();
     }
-
 
     //// A*
 

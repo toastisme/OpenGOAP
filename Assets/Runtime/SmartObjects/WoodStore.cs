@@ -5,7 +5,7 @@ using GOAP;
 
 public class WoodStore : SmartObject
 {
-    WorldState tribeState;
+    StateSet tribeState;
     [SerializeField]
     GameObject woodPrefab;
     
@@ -14,7 +14,7 @@ public class WoodStore : SmartObject
         base.Start();
         value = 0f;
         typeName = "WoodStore";
-        tribeState = GameObject.Find("TribeState").GetComponent<WorldState>();
+        tribeState = GameObject.Find("TribeState").GetComponent<StateSet>();
     }
 
     public override void Add(SmartObject obj){
@@ -22,16 +22,19 @@ public class WoodStore : SmartObject
             value += obj.value;
             obj.Remove();
         }
-        tribeState.UpdateFloatValue("Wood", obj.value);
+        tribeState.UpdateState("g_Wood", obj.value);
     }
 
-    public override GameObject Extract(float value){
+    public override GameObject Extract(float extractValue){
         GameObject wood = Instantiate(
             woodPrefab, 
             transform.position, 
             Quaternion.identity
         );
-        wood.GetComponent<Wood>().SetValue(value);
+        extractValue = extractValue > value ? value : extractValue;
+        wood.GetComponent<Wood>().SetValue(extractValue);
+        value -= extractValue;
+        tribeState.UpdateState("g_Wood", -extractValue);
         return wood;
     }
 }

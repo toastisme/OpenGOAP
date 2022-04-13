@@ -6,12 +6,12 @@ namespace GOAP{
 public class Goal : MonoBehaviour, IGoal
 {
 
-    WorldState personalState;
+    protected WorldState worldState;
 
     public Dictionary<string, bool> conditions{get; protected set;}
-    public virtual void Setup(WorldState worldState){
+    public virtual void Setup(){
         conditions = new Dictionary<string, bool>();
-        personalState = worldState;
+        worldState = GetComponent<WorldState>();
     }
 
     public virtual float GetPriority(){
@@ -23,7 +23,7 @@ public class Goal : MonoBehaviour, IGoal
     }
 
     public virtual bool ConditionsSatisfied(){
-        return personalState.IsSubset(conditions);
+        return worldState.IsSubset(conditions);
     }
 
     public virtual void OnTick(){}

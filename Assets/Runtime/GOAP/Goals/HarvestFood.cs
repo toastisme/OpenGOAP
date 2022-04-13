@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +5,8 @@ using GOAP;
 
 public class HarvestFood : Goal
 {
-        public override void Setup(WorldState worldState){
-            base.Setup(worldState);
+        public override void Setup(){
+            base.Setup();
             conditions["FoodHarvested"] = true;
         }
 
