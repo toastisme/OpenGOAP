@@ -235,7 +235,7 @@ public class GUIPlanner : EditorWindow
     }
 
     string GetTypeString(Type type){
-         return type.ToString();
+        return type.ToString();
     }
 
     Rect GetNodeRect(int gridPos){

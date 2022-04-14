@@ -18,9 +18,13 @@ public class VillagerProperties : MonoBehaviour
     };
 
 
-    void Start(){
+    void Awake(){
         worldState = GetComponent<WorldState>();
         SetInitialStates();
+    }
+
+    void Update(){
+        UpdateProperties();
     }
 
     void SetInitialStates(){
@@ -49,7 +53,7 @@ public class VillagerProperties : MonoBehaviour
     void UpdateProperties(){
         foreach(var i in properties){
             worldState.UpdateState(
-                name, 
+                i.Key, 
                 worldState.GetFloatState(GetDeltaKey(i.Key)) * Time.deltaTime
                 );
         }
