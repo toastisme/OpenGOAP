@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GOAP;
 
-public class HarvestWood : Goal
+public class Goal_HarvestWood : Goal
 {
 
         public override void Setup(){

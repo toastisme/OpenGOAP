@@ -9,7 +9,7 @@ public class LookAround : GOAPAction
     Movement movement;
     Vision vision;
     public override float GetCost(){
-        return 0.3f;
+        return 0.3f * worldState.GetFloatState("Fatigue");
     }
 
     Coroutine surveying;

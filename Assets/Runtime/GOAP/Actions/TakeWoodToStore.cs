@@ -13,7 +13,7 @@ public class TakeWoodToStore : GOAPAction
     SmartObject woodStore;
 
     public override float GetCost(){
-        return 0.0f;
+        return 0.1f * worldState.GetFloatState("Fatigue");
     }
     public override void Setup(){
         base.Setup();
@@ -22,6 +22,7 @@ public class TakeWoodToStore : GOAPAction
         preconditions["HoldingWood"] = true;
         worldState.AddState("WoodHarvested", false);
         effects["WoodHarvested"] = true;
+        effects["g_WoodAvailable"] = true;
     }
 
     public override void OnActivated(){

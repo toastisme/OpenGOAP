@@ -24,6 +24,7 @@ public class FoodStore : SmartObject
             obj.Remove();
         }
         tribeState.UpdateState("g_Food", obj.value);
+        tribeState.AddState("g_FoodAvailable", true);
     }
 
     public override GameObject Extract(float extractValue){
@@ -36,6 +37,9 @@ public class FoodStore : SmartObject
         berries.GetComponent<Berries>().SetValue(extractValue);
         value -= extractValue;
         tribeState.UpdateState("g_Food", -extractValue);
+        if (tribeState.GetFloatState("g_Food") < 1e-7){
+            tribeState.AddState("g_FoodAvailable", false);
+        }
         return berries;
     }
 }

@@ -13,7 +13,7 @@ public class TakeFoodToStore : GOAPAction
     SmartObject foodStore;
 
     public override float GetCost(){
-        return 0.0f;
+        return 0.1f * worldState.GetFloatState("Fatigue");
     }
     public override void Setup(){
         base.Setup();
@@ -22,6 +22,7 @@ public class TakeFoodToStore : GOAPAction
         preconditions["HoldingFood"] = true;
         worldState.AddState("FoodHarvested", false);
         effects["FoodHarvested"] = true;
+        effects["g_FoodAvailable"] = true;
     }
 
     public override void OnActivated(){

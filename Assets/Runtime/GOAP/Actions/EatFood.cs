@@ -35,6 +35,9 @@ public class EatFood : GOAPAction
             worldState.AddState("Hunger", 0f);
             worldState.AddState("ReducedHunger", true);
         }
+        else{
+            StopAction();
+        }
     }
 
 
