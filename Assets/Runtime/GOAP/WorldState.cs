@@ -116,7 +116,7 @@ public class WorldState : MonoBehaviour
         return localState.GetFloatState(name);
     }
 
-    private bool InSet(string name, bool value){
+    public bool InSet(string name, bool value){
         if (IsGlobalState(name)){
             if (globalState == null){
                 return false;
@@ -126,7 +126,7 @@ public class WorldState : MonoBehaviour
         return localState.InSet(name, value);
     }
 
-    private bool InSet(string name, float value){
+    public bool InSet(string name, float value){
         if (IsGlobalState(name)){
             if (globalState == null){
                 return false;
@@ -139,5 +139,6 @@ public class WorldState : MonoBehaviour
     private bool IsGlobalState(string name){
         return name.Contains("g_");
     }
+
 }
 }

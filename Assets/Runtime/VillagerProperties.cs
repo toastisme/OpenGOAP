@@ -11,9 +11,9 @@ public class VillagerProperties : MonoBehaviour
     Dictionary<string, KeyValuePair<float, float>> properties = 
         new Dictionary<string, KeyValuePair<float, float>>{
         {"Health", new KeyValuePair<float, float>(1f, 0f)},
-        {"Fatigue", new KeyValuePair<float, float>(0f, .01f)},
+        {"Fatigue", new KeyValuePair<float, float>(0f, .001f)},
         {"Hunger", new KeyValuePair<float, float>(0f, .02f)},
-        {"Thirst", new KeyValuePair<float, float>(0f, 0.3f)},
+        {"Thirst", new KeyValuePair<float, float>(0f, 0.03f)},
         {"Warmth", new KeyValuePair<float, float>(1f, 0f)}
     };
 
@@ -52,10 +52,12 @@ public class VillagerProperties : MonoBehaviour
 
     void UpdateProperties(){
         foreach(var i in properties){
-            worldState.UpdateState(
-                i.Key, 
-                worldState.GetFloatState(GetDeltaKey(i.Key)) * Time.deltaTime
-                );
+            if (worldState.GetFloatState(i.Key) < 1f){
+                worldState.UpdateState(
+                    i.Key, 
+                    worldState.GetFloatState(GetDeltaKey(i.Key)) * Time.deltaTime
+                    );
+            }
         }
     }
 }

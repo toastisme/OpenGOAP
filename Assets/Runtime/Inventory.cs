@@ -17,6 +17,10 @@ public class Inventory : MonoBehaviour
         awareness = GetComponent<Awareness>();
     }
 
+    public void Add(GameObject obj){
+        Add(obj.GetComponent<SmartObject>());
+    }
+
     public void Add(SmartObject obj){
         if (!items.ContainsKey(obj.typeName)){
             items[obj.typeName] = new List<SmartObject>();
@@ -48,6 +52,9 @@ public class Inventory : MonoBehaviour
         numToRemove = numToRemove < items[typeName].Count ? numToRemove : items[typeName].Count;
         for (int i = numToRemove-1; i >= 0; i--){
             items[typeName].RemoveAt(i);
+        }
+        if (!Contains(typeName)){
+            worldState.AddState($"Holding{typeName}", false);
         }
     }
 

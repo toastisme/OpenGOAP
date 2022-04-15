@@ -100,6 +100,12 @@ public class GUIPlanner : EditorWindow
     void DrawActivePlanPanel(){
         GUI.color = runningTint;
         GUI.backgroundColor = panelColor;
+        activePlanPanel = new Rect(
+            0,
+            0,
+            position.width,
+            position.height*.4f
+        );
         BeginWindows();
         activePlanPanel = GUILayout.Window(
             1,
@@ -114,6 +120,12 @@ public class GUIPlanner : EditorWindow
     void DrawGoalPrioritiesPanel(){
         GUI.color = runningTint;
         GUI.backgroundColor = panelColor;
+        goalPrioritiesPanel = new Rect(
+            0,
+            position.height*.4f,
+            position.width,
+            position.height
+        );
         BeginWindows();
         goalPrioritiesPanel = GUILayout.Window(
             2,
@@ -129,14 +141,21 @@ public class GUIPlanner : EditorWindow
         Repaint();
     }
 
+    bool IsActive(){
+        return (
+            planner != null 
+            && planner.activePlan != null 
+            && planner.activePlan.Count>0
+        );
+    }
+
     void DrawActivePlan(int unusedWindowID){
-        if (planner != null && planner.activePlan != null && planner.activePlan.Count>0){
-            DrawActionNodes(unusedWindowID);
-        }
+        if (!IsActive()){return;}
+        DrawActionNodes(unusedWindowID);
     }
 
     void DrawGoalPriorities(int unusedWindowID){
-        if (planner == null){return;}
+        if (!IsActive()){return;}
         List<GoalData> goalData = planner.GetSortedGoalData();
         GUILayout.Label("\n\n");
         GUI.color = runningTint;

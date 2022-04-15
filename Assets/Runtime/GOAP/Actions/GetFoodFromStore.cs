@@ -35,11 +35,7 @@ public class GetFoodFromStore : GOAPAction
         if(PreconditionsSatisfied()){
             movement.GoTo(foodStore);
             if (movement.AtTarget()){
-                for(int i = inventory.items["Food"].Count -1; i >= 0; i--){
-                    foodStore.Add(inventory.items["Food"][i]);
-                    inventory.Remove(inventory.items["Food"][i]);
-                }
-                worldState.AddState("FoodHarvested", true);
+                inventory.Add(foodStore.Extract(5f));
             }
         }
     }
