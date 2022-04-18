@@ -21,6 +21,11 @@ public class Villager : Actor
     GOAPPlanner planner;
     WorldState worldState;
 
+    List<string> memorableObjectTypes = new List<string>{
+        "FoodStore",
+        "WoodStore"
+    };
+
     void Awake(){
         Setup();
     }
@@ -41,6 +46,7 @@ public class Villager : Actor
         planner = GetComponent<GOAPPlanner>();
         SetupAwareness();
         SetupVision();
+        SetupMemory();
     }
 
     void SetupWorldState(){
@@ -59,6 +65,11 @@ public class Villager : Actor
         vision.SetOnSeenDetectable(OnSeenDetectable);
     }
 
+    void SetupMemory(){
+        memory.Record(GameObject.Find("FoodStore").GetComponent<Detectable>());
+        memory.Record(GameObject.Find("WoodStore").GetComponent<Detectable>());
+    }
+
     public void OnSeenDetectable(Detectable detectable){
         awareness.Add(obj:detectable, memory:100f, memoryDecay:1f);
         if(Memorable(detectable)){
@@ -66,5 +77,12 @@ public class Villager : Actor
         }
     }
 
-    bool Memorable(Detectable detectable){return false;}
+    bool Memorable(Detectable detectable){
+        if(memorableObjectTypes.Contains(detectable.typeName)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

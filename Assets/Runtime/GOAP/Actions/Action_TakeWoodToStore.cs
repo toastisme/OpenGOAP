@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using GOAP;
+using Sensors;
 
+[RequireComponent(typeof(Inventory))]
+[RequireComponent(typeof(Movement))]
+[RequireComponent(typeof(Memory))]
 public class Action_TakeWoodToStore : GOAPAction
 {
 
     Inventory inventory;
     Movement movement;
-    [SerializeField]
+    Memory memory;
+    
     SmartObject woodStore;
 
     public override float GetCost(){
@@ -19,6 +24,7 @@ public class Action_TakeWoodToStore : GOAPAction
         base.Setup();
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
+        memory = GetComponent<Memory>();
         preconditions["HoldingWood"] = true;
         worldState.AddState("WoodHarvested", false);
         effects["WoodHarvested"] = true;
@@ -27,6 +33,11 @@ public class Action_TakeWoodToStore : GOAPAction
 
     public override void OnActivated(){
         worldState.AddState("WoodHarvested", false);
+        woodStore = (SmartObject)memory.RememberNearest("WoodStore");
+        if (woodStore == null){
+            StopAction();
+            return;
+        }
         movement.GoTo(woodStore);
     }
 
@@ -48,7 +59,14 @@ public class Action_TakeWoodToStore : GOAPAction
         }
     }
 
-
-    
-
+    public override bool PreconditionsSatisfied()
+    {
+        bool result = base.PreconditionsSatisfied();
+        if (!result){
+            return result;
+        }
+        else{
+            return (woodStore != null);
+        }
+    }
 }

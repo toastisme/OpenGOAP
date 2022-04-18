@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using GOAP;
+using Sensors;
 
+[RequireComponent(typeof(Inventory))]
+[RequireComponent(typeof(Movement))]
+[RequireComponent(typeof(Memory))]
 public class Action_TakeFoodToStore : GOAPAction
 {
 
     Inventory inventory;
     Movement movement;
-    [SerializeField]
+    Memory memory;
     SmartObject foodStore;
 
     public override float GetCost(){
@@ -19,6 +23,7 @@ public class Action_TakeFoodToStore : GOAPAction
         base.Setup();
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
+        memory = GetComponent<Memory>();
         preconditions["HoldingFood"] = true;
         worldState.AddState("FoodHarvested", false);
         effects["FoodHarvested"] = true;
@@ -27,6 +32,11 @@ public class Action_TakeFoodToStore : GOAPAction
 
     public override void OnActivated(){
         worldState.AddState("FoodHarvested", false);
+        foodStore = (SmartObject)memory.RememberNearest("FoodStore");
+        if (foodStore == null){
+            StopAction();
+            return;
+        }
         movement.GoTo(foodStore);
     }
 
@@ -47,4 +57,16 @@ public class Action_TakeFoodToStore : GOAPAction
             }
         }
     }
+
+    public override bool PreconditionsSatisfied()
+    {
+        bool result = base.PreconditionsSatisfied();
+        if (!result){
+            return result;
+        }
+        else{
+            return (foodStore != null);
+        }
+    }
+
 }
