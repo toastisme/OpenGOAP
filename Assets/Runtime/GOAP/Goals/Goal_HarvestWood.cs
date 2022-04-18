@@ -17,7 +17,9 @@ public class Goal_HarvestWood : Goal
 
     public override float GetPriority()
     {
-        return .2f;
+        float demand = worldState.GetFloatState("People");
+        demand *= worldState.GetFloatState("WoodExtractValue");
+        return 1/(1+(worldState.GetFloatState("g_Wood")/demand));
     }
 
     public override bool PreconditionsSatisfied(){

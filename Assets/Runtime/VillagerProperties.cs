@@ -17,6 +17,8 @@ public class VillagerProperties : MonoBehaviour
         {"Warmth", new KeyValuePair<float, float>(1f, 0f)}
     };
 
+    public float foodExtractValue = 5f;
+    public float woodExtractValue = 5f;
 
     void Awake(){
         worldState = GetComponent<WorldState>();
@@ -32,6 +34,9 @@ public class VillagerProperties : MonoBehaviour
             worldState.AddState(i.Key, i.Value.Key);
             worldState.AddState(GetDeltaKey(i.Key), i.Value.Value);
         }
+        worldState.AddState("FoodExtractValue", foodExtractValue);
+        worldState.AddState("WoodExtractValue", woodExtractValue);
+        worldState.AddState("People", 1f);
     }
 
     string GetDeltaKey(string name){

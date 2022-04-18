@@ -46,7 +46,11 @@ public class Action_GetFoodFromStore : GOAPAction
         if(PreconditionsSatisfied()){
             movement.GoTo(foodStore);
             if (movement.AtTarget()){
-                inventory.Add(foodStore.Extract(5f));
+                inventory.Add(
+                    foodStore.Extract(
+                        worldState.GetFloatState("FoodExtractValue")
+                    )
+                );
             }
         }
     }

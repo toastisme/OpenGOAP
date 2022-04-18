@@ -16,15 +16,16 @@ public class FoodStore : SmartObject
         value = 0f;
         typeName = "FoodStore";
         tribeState = GameObject.Find("TribeState").GetComponent<StateSet>();
+        tribeState.UpdateState("g_Food", value);
     }
 
     public override void Add(SmartObject obj){
         if (obj.typeName == "Food"){
             value += obj.value;
+            tribeState.UpdateState("g_Food", obj.value);
+            tribeState.AddState("g_FoodAvailable", true);
             obj.Remove();
         }
-        tribeState.UpdateState("g_Food", obj.value);
-        tribeState.AddState("g_FoodAvailable", true);
     }
 
     public override GameObject Extract(float extractValue){

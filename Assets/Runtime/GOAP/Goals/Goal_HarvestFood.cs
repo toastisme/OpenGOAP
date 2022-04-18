@@ -16,7 +16,9 @@ public class Goal_HarvestFood : Goal
 
     public override float GetPriority()
     {
-        return .3f;
+        float demand = worldState.GetFloatState("People");
+        demand *= worldState.GetFloatState("FoodExtractValue");
+        return 1/(1+(worldState.GetFloatState("g_Food")/demand));
     }
 
     public override bool PreconditionsSatisfied(){
