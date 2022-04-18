@@ -6,7 +6,7 @@ using UnityEngine.AI;
 using Sensors;
 using GOAP;
 
-public class PickUpFood : GOAPAction
+public class Action_PickUpFood : GOAPAction
 {
     Movement movement;
     Awareness awareness;

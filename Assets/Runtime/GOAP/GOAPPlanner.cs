@@ -211,7 +211,8 @@ public class GOAPPlanner : MonoBehaviour
         }
 
         // No path found
-        if (startNode == null){return null;}
+        if (startNode == null){
+            return null;}
         availableNodes.Add(startNode);
         Dictionary<string, bool> requiredState = goal.conditions;
 

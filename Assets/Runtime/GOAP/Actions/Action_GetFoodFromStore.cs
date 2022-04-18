@@ -4,39 +4,39 @@ using UnityEngine;
 using UnityEngine.AI;
 using GOAP;
 
-public class EatFood : GOAPAction
+public class Action_GetFoodFromStore : GOAPAction
 {
 
     Inventory inventory;
+    Movement movement;
+    [SerializeField]
+    SmartObject foodStore;
 
     public override float GetCost(){
-        return 0.0f;
+        return 0.1f;
     }
-
     public override void Setup(){
         base.Setup();
+        movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
-        preconditions["HoldingFood"] = true;
-        effects["ReducedHunger"] = true;
+        preconditions["g_FoodAvailable"] = true;
+        effects["HoldingFood"] = true;
     }
 
     public override void OnActivated(){
-        worldState.AddState("ReducedHunger", false);
+        movement.GoTo(foodStore);
     }
 
     public override void OnDeactivated(){
-        worldState.AddState("ReducedHunger", false);
     }
 
     public override void OnTick()
     {
         if(PreconditionsSatisfied()){
-            inventory.Remove("Food", 1);
-            worldState.AddState("Hunger", 0f);
-            worldState.AddState("ReducedHunger", true);
-        }
-        else{
-            StopAction();
+            movement.GoTo(foodStore);
+            if (movement.AtTarget()){
+                inventory.Add(foodStore.Extract(5f));
+            }
         }
     }
 

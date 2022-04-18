@@ -4,7 +4,7 @@ using UnityEngine;
 using GOAP;
 using Sensors;
 
-public class LookAround : GOAPAction
+public class Action_LookAround : GOAPAction
 {
     Movement movement;
     Vision vision;

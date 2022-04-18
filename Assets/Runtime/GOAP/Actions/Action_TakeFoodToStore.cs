@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.AI;
 using GOAP;
 
-public class TakeWoodToStore : GOAPAction
+public class Action_TakeFoodToStore : GOAPAction
 {
 
     Inventory inventory;
     Movement movement;
     [SerializeField]
-    SmartObject woodStore;
+    SmartObject foodStore;
 
     public override float GetCost(){
         return 0.1f * worldState.GetFloatState("Fatigue");
@@ -19,36 +19,32 @@ public class TakeWoodToStore : GOAPAction
         base.Setup();
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
-        preconditions["HoldingWood"] = true;
-        worldState.AddState("WoodHarvested", false);
-        effects["WoodHarvested"] = true;
-        effects["g_WoodAvailable"] = true;
+        preconditions["HoldingFood"] = true;
+        worldState.AddState("FoodHarvested", false);
+        effects["FoodHarvested"] = true;
+        effects["g_FoodAvailable"] = true;
     }
 
     public override void OnActivated(){
-        worldState.AddState("WoodHarvested", false);
-        movement.GoTo(woodStore);
+        worldState.AddState("FoodHarvested", false);
+        movement.GoTo(foodStore);
     }
 
     public override void OnDeactivated(){
-        worldState.AddState("WoodHarvested", false);
+        worldState.AddState("FoodHarvested", false);
     }
 
     public override void OnTick()
     {
         if(PreconditionsSatisfied()){
-            movement.GoTo(woodStore);
+            movement.GoTo(foodStore);
             if (movement.AtTarget()){
-                for(int i = inventory.items["Wood"].Count -1; i >= 0; i--){
-                    woodStore.Add(inventory.items["Wood"][i]);
-                    inventory.Remove(inventory.items["Wood"][i]);
+                for(int i = inventory.items["Food"].Count -1; i >= 0; i--){
+                    foodStore.Add(inventory.items["Food"][i]);
+                    inventory.Remove(inventory.items["Food"][i]);
                 }
-                worldState.AddState("WoodHarvested", true);
+                worldState.AddState("FoodHarvested", true);
             }
         }
     }
-
-
-    
-
 }

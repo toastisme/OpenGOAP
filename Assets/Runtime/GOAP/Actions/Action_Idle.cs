@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GOAP;
 
-public class ActionIdle : GOAPAction
+public class Action_Idle : GOAPAction
 {
     bool _wasIdle;
     public override float GetCost(){

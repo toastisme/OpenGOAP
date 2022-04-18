@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using Sensors;
 using GOAP;
 
-public class PickUpWood : GOAPAction
+public class Action_PickUpWood : GOAPAction
 {
     Movement movement;
     Awareness awareness;

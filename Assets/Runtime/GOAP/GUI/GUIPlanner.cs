@@ -254,7 +254,11 @@ public class GUIPlanner : EditorWindow
     }
 
     string GetTypeString(Type type){
-        return type.ToString();
+        string typeString = type.ToString();
+        if (typeString.Contains("_")){
+            return typeString.Split("_")[1];
+        }
+        return typeString;
     }
 
     Rect GetNodeRect(int gridPos){
