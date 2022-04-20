@@ -18,6 +18,16 @@ public struct GoalData{
         this.canRun = canRun;
     }
 }
+
+public class ActionNode{
+    public ActionNode parent;
+    public GOAPAction action;
+    public ActionNode(ActionNode parent, GOAPAction action){
+        this.parent = parent;
+        this.action = action;
+    }
+}
+
 public class GOAPPlanner : MonoBehaviour
 {
     WorldState worldState;
@@ -194,78 +204,99 @@ public class GOAPPlanner : MonoBehaviour
         Goal goal, 
         List<GOAPAction> actions){
 
-        List<GOAPAction> availableNodes = new List<GOAPAction>();
-        List<GOAPAction> path = new List<GOAPAction>();
+        bool InList(GOAPAction action, List<ActionNode> nodeList){
+            for(int i = 0; i < nodeList.Count; i++){
+                if (nodeList[i].action == action){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        List<ActionNode> openList = new List<ActionNode>();
+        List<ActionNode> closedList = new List<ActionNode>();
 
         // Get starting node
-        GOAPAction startNode = null;
+        GOAPAction startAction = null;
         float minCost = -1;
         for (int i = 0; i< actions.Count; i++){
             if (actions[i].SatisfiesConditions(goal.conditions)){
                 float cost = actions[i].GetCost();
                 if (minCost < 0 || cost < minCost){
                     minCost = cost;
-                    startNode = actions[i];
+                    startAction = actions[i];
                 }
             }
         }
 
         // No path found
-        if (startNode == null){
+        if (startAction == null){
             return null;}
-        availableNodes.Add(startNode);
+        openList.Add(new ActionNode(null, startAction));
         Dictionary<string, bool> requiredState = goal.conditions;
 
-        while (availableNodes.Count != 0){
+        while (openList.Count != 0){
 
-            GOAPAction currentNode = GetNextNode(
+            ActionNode currentNode = GetNextNode(
                 requiredState:requiredState,
-                path:path,
-                availableNodes:availableNodes);
+                availableNodes:openList);
 
             // No path found
             if (currentNode == null){
                 return null;
             }
-            path.Add(currentNode);            
+            closedList.Add(currentNode);            
+            openList.Remove(currentNode);
 
             // Found complete path
-            if (currentState.IsSubset(currentNode.preconditions)){
-                path.Reverse();
-                return path;
+            if (currentState.IsSubset(currentNode.action.preconditions)){
+                return GeneratePath(closedList);
             }
 
-            requiredState = currentNode.preconditions;
-            List<GOAPAction> linkedNodes = GetLinkedNodes(
-                node:currentNode,
-                path:path,
+            requiredState = currentNode.action.preconditions;
+            List<GOAPAction> linkedActions = GetLinkedActions(
+                node:currentNode.action,
                 availableNodes:actions
-                );
-            for (int i = 0; i < linkedNodes.Count; i++){
-                availableNodes.Add(linkedNodes[i]);
+            );
+
+            for (int i = 0; i < linkedActions.Count; i++){
+                if (!InList(linkedActions[i], closedList)){
+                    if (!InList(linkedActions[i], openList)){
+                        openList.Add(new ActionNode(currentNode, linkedActions[i]));
+                    }
+                }
             }
         }
         // No path found
         return null;
     }
 
-    GOAPAction GetNextNode(
+    List<GOAPAction> GeneratePath(List<ActionNode> closedList){
+        List<GOAPAction> path = new List<GOAPAction>();
+        ActionNode currentNode = closedList[closedList.Count - 1];
+        while(currentNode.parent != null){
+            path.Add(currentNode.action);
+            currentNode = currentNode.parent;
+        }
+        path.Add(currentNode.action);
+        return path;
+    }    
+
+    ActionNode GetNextNode(
         Dictionary<string, bool> requiredState, 
-        List<GOAPAction> path, 
-        List<GOAPAction> availableNodes){
+        List<ActionNode> availableNodes){
             /**
              * Searches for the node in availableNodes with the smallest
              * cost that satisfies requiredState
              */
             
             float minCost = -1f;
-            GOAPAction nextNode = null;
+            ActionNode nextNode = null;
             for (int i = 0; i < availableNodes.Count; i++){
-                if (path.Contains(availableNodes[i])){continue;}
-                if (!availableNodes[i].SatisfiesConditions(requiredState)){
+                if (!availableNodes[i].action.SatisfiesConditions(requiredState)){
                     continue;
                 }
-                float cost = availableNodes[i].GetCost();
+                float cost = availableNodes[i].action.GetCost();
                 if (minCost < 0 || cost < minCost){
                     nextNode = availableNodes[i];
                     minCost = cost;
@@ -274,9 +305,8 @@ public class GOAPPlanner : MonoBehaviour
             return nextNode;
         }
 
-    List<GOAPAction> GetLinkedNodes(
+    List<GOAPAction> GetLinkedActions(
         GOAPAction node, 
-        List<GOAPAction> path, 
         List<GOAPAction> availableNodes){
         /**
          * Searches availableNodes for all those that satisfy node.preconditions 
@@ -284,7 +314,6 @@ public class GOAPPlanner : MonoBehaviour
          */
         List<GOAPAction> linkedNodes = new List<GOAPAction>();
         for (int i = 0; i < availableNodes.Count; i++){
-            if (path.Contains(availableNodes[i])){continue;}
             if (availableNodes[i].SatisfiesConditions(node.preconditions)){
                 linkedNodes.Add(availableNodes[i]);
             }
