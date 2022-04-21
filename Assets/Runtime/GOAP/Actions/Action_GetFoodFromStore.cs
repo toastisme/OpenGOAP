@@ -57,6 +57,7 @@ public class Action_GetFoodFromStore : GOAPAction
 
     public override bool PreconditionsSatisfied()
     {
+        Debug.Log($"TEST base conditions {base.PreconditionsSatisfied()} foodstore null {foodStore == null}");
         bool result = base.PreconditionsSatisfied();
         if (!result){
             return result;

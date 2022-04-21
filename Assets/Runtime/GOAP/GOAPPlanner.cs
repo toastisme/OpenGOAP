@@ -30,6 +30,8 @@ public class ActionNode{
 
 public class GOAPPlanner : MonoBehaviour
 {
+    [SerializeField]
+    Logger logger;
     WorldState worldState;
     public List<Goal> goals{get; private set;}
     public List<GOAPAction> actions{get; private set;}
@@ -213,6 +215,8 @@ public class GOAPPlanner : MonoBehaviour
             return false;
         }
 
+        Log($"Searching for plan for {goal.GetType().ToString()}");
+
         List<ActionNode> openList = new List<ActionNode>();
         List<ActionNode> closedList = new List<ActionNode>();
 
@@ -221,6 +225,7 @@ public class GOAPPlanner : MonoBehaviour
         float minCost = -1;
         for (int i = 0; i< actions.Count; i++){
             if (actions[i].SatisfiesConditions(goal.conditions)){
+                Log($"{actions[i].GetType().ToString()} satisfies goal");
                 float cost = actions[i].GetCost();
                 if (minCost < 0 || cost < minCost){
                     minCost = cost;
@@ -231,6 +236,7 @@ public class GOAPPlanner : MonoBehaviour
 
         // No path found
         if (startAction == null){
+            Log("No starting node found");
             return null;}
         openList.Add(new ActionNode(null, startAction));
         Dictionary<string, bool> requiredState = goal.conditions;
@@ -250,6 +256,7 @@ public class GOAPPlanner : MonoBehaviour
 
             // Found complete path
             if (currentState.IsSubset(currentNode.action.preconditions)){
+                Log("Found complete path");
                 return GeneratePath(closedList);
             }
 
@@ -259,6 +266,8 @@ public class GOAPPlanner : MonoBehaviour
                 availableNodes:actions
             );
 
+            Log($"Found {linkedActions.Count} linked to current node");
+
             for (int i = 0; i < linkedActions.Count; i++){
                 if (!InList(linkedActions[i], closedList)){
                     if (!InList(linkedActions[i], openList)){
@@ -267,6 +276,8 @@ public class GOAPPlanner : MonoBehaviour
                 }
             }
         }
+
+        Log("No path found");
         // No path found
         return null;
     }
@@ -289,19 +300,26 @@ public class GOAPPlanner : MonoBehaviour
              * Searches for the node in availableNodes with the smallest
              * cost that satisfies requiredState
              */
-            
+
+            Log($"Checking {availableNodes.Count} nodes for one that satisfies:");
+            foreach (var i in requiredState){
+                Log($"{i.Key} {i.Value}");
+            }
             float minCost = -1f;
             ActionNode nextNode = null;
             for (int i = 0; i < availableNodes.Count; i++){
                 if (!availableNodes[i].action.SatisfiesConditions(requiredState)){
+                    Log($"{availableNodes[i].action.GetType().ToString()} does not satisfy conditions");
                     continue;
                 }
+                Log($"{availableNodes[i].action.GetType().ToString()} satisfies conditions");
                 float cost = availableNodes[i].action.GetCost();
                 if (minCost < 0 || cost < minCost){
                     nextNode = availableNodes[i];
                     minCost = cost;
                 }
             }
+            Log($"Selected {nextNode.action.GetType().ToString()}");
             return nextNode;
         }
 
@@ -312,9 +330,11 @@ public class GOAPPlanner : MonoBehaviour
          * Searches availableNodes for all those that satisfy node.preconditions 
          * and that are not in path  
          */
+        Log($"Finding actions linked to {node.GetType().ToString()}");
         List<GOAPAction> linkedNodes = new List<GOAPAction>();
         for (int i = 0; i < availableNodes.Count; i++){
             if (availableNodes[i].SatisfiesConditions(node.preconditions)){
+                Log($"{availableNodes[i].GetType().ToString()} satisfies conditions");
                 linkedNodes.Add(availableNodes[i]);
             }
         }
@@ -363,6 +383,12 @@ public class GOAPPlanner : MonoBehaviour
         goalData.Sort((x, y) => x.priority.CompareTo(y.priority));
         goalData.Reverse();
         return goalData;
+    }
+
+    void Log(object message){
+        if(logger){
+            logger.Log(message, this);
+        }
     }
 
 }
