@@ -239,16 +239,28 @@ public class GOAPPlanner : MonoBehaviour
             Log("No starting node found");
             return null;}
         openList.Add(new ActionNode(null, startAction));
-        Dictionary<string, bool> requiredState = goal.conditions;
 
         while (openList.Count != 0){
 
-            ActionNode currentNode = GetNextNode(
-                requiredState:requiredState,
-                availableNodes:openList);
+            ActionNode currentNode = null;
+            if (closedList.Count>0){
+                currentNode = GetNextNode(
+                    closedList:closedList,
+                    openList:openList
+                );
+            }
+            else{
+                float nodeCost;
+                currentNode = GetNextNode(
+                    requiredState:goal.conditions,
+                    openList:openList,
+                    nodeCost: out nodeCost
+                );
+            }
 
             // No path found
             if (currentNode == null){
+                Log("No path found");
                 return null;
             }
             closedList.Add(currentNode);            
@@ -260,7 +272,6 @@ public class GOAPPlanner : MonoBehaviour
                 return GeneratePath(closedList);
             }
 
-            requiredState = currentNode.action.preconditions;
             List<GOAPAction> linkedActions = GetLinkedActions(
                 node:currentNode.action,
                 availableNodes:actions
@@ -294,32 +305,68 @@ public class GOAPPlanner : MonoBehaviour
     }    
 
     ActionNode GetNextNode(
+        List<ActionNode> closedList, 
+        List<ActionNode> openList){
+
+        float minCost = -1f;
+        ActionNode nextNode=null;
+        ActionNode currentNode;
+        for (int i = 0; i < closedList.Count; i++){
+            float nodeCost;
+            currentNode = GetNextNode(
+                closedList[i].action.preconditions,
+                openList,
+                out nodeCost
+            );
+            if (minCost < 0 || nodeCost < minCost){
+                nextNode = currentNode;
+                minCost = nodeCost;
+            }
+        }
+        if (nextNode!=null){
+            Log($"Selected {nextNode.action.GetType().ToString()}");
+        }
+        else{
+            Log("Could not find next node");
+        }
+        return nextNode;
+    }
+
+    ActionNode GetNextNode(
         Dictionary<string, bool> requiredState, 
-        List<ActionNode> availableNodes){
+        List<ActionNode> openList,
+        out float nodeCost
+        ){
             /**
              * Searches for the node in availableNodes with the smallest
              * cost that satisfies requiredState
              */
 
-            Log($"Checking {availableNodes.Count} nodes for one that satisfies:");
+            Log($"Checking {openList.Count} nodes for one that satisfies:");
             foreach (var i in requiredState){
                 Log($"{i.Key} {i.Value}");
             }
             float minCost = -1f;
             ActionNode nextNode = null;
-            for (int i = 0; i < availableNodes.Count; i++){
-                if (!availableNodes[i].action.SatisfiesConditions(requiredState)){
-                    Log($"{availableNodes[i].action.GetType().ToString()} does not satisfy conditions");
+            for (int i = 0; i < openList.Count; i++){
+                if (!openList[i].action.SatisfiesConditions(requiredState)){
+                    Log($"{openList[i].action.GetType().ToString()} does not satisfy conditions");
                     continue;
                 }
-                Log($"{availableNodes[i].action.GetType().ToString()} satisfies conditions");
-                float cost = availableNodes[i].action.GetCost();
+                Log($"{openList[i].action.GetType().ToString()} satisfies conditions");
+                float cost = openList[i].action.GetCost();
                 if (minCost < 0 || cost < minCost){
-                    nextNode = availableNodes[i];
+                    nextNode = openList[i];
                     minCost = cost;
                 }
             }
-            Log($"Selected {nextNode.action.GetType().ToString()}");
+            if (nextNode!=null){
+                Log($"Selected {nextNode.action.GetType().ToString()}");
+            }
+            else{
+                Log("Could not find next node");
+            }
+            nodeCost = minCost;
             return nextNode;
         }
 
