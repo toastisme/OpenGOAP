@@ -27,6 +27,7 @@ public class Action_GetFoodFromStore : GOAPAction
         memory = GetComponent<Memory>();
         preconditions["g_FoodAvailable"] = true;
         effects["HoldingFood"] = true;
+        foodStore = (SmartObject)memory.RememberNearest("FoodStore");
     }
 
     public override void OnActivated(){
@@ -57,7 +58,6 @@ public class Action_GetFoodFromStore : GOAPAction
 
     public override bool PreconditionsSatisfied()
     {
-        Debug.Log($"TEST base conditions {base.PreconditionsSatisfied()} foodstore null {foodStore == null}");
         bool result = base.PreconditionsSatisfied();
         if (!result){
             return result;

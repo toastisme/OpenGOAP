@@ -28,11 +28,12 @@ public class Action_TakeFoodToStore : GOAPAction
         worldState.AddState("FoodHarvested", false);
         effects["FoodHarvested"] = true;
         effects["g_FoodAvailable"] = true;
+        foodStore = (SmartObject)memory.RememberNearest("FoodStore");
     }
 
     public override void OnActivated(){
-        worldState.AddState("FoodHarvested", false);
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
+        worldState.AddState("FoodHarvested", false);
         if (foodStore == null){
             StopAction();
             return;

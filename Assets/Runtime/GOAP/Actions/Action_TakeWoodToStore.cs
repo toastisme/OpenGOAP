@@ -29,11 +29,12 @@ public class Action_TakeWoodToStore : GOAPAction
         worldState.AddState("WoodHarvested", false);
         effects["WoodHarvested"] = true;
         effects["g_WoodAvailable"] = true;
+        woodStore = (SmartObject)memory.RememberNearest("WoodStore");
     }
 
     public override void OnActivated(){
-        worldState.AddState("WoodHarvested", false);
         woodStore = (SmartObject)memory.RememberNearest("WoodStore");
+        worldState.AddState("WoodHarvested", false);
         if (woodStore == null){
             StopAction();
             return;
@@ -68,5 +69,5 @@ public class Action_TakeWoodToStore : GOAPAction
         else{
             return (woodStore != null);
         }
-    }
+    } 
 }

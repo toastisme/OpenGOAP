@@ -144,6 +144,7 @@ public class GOAPPlanner : MonoBehaviour
                 // Can move to next action
                 activePlan[activeActionIdx].OnDeactivated();
                 activeActionIdx++;
+                Log($"Moving to new action: {activePlan[activeActionIdx]}");
                 activePlan[activeActionIdx].OnActivated();
             }
         }

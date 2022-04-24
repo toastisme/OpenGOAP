@@ -38,19 +38,17 @@ public class Action_PickUpWood : GOAPAction
     }
 
     public override void OnTick(){
-        if (PreconditionsSatisfied()){
-            if (targetWood == null){
-                targetWood = (SmartObject)awareness.GetNearest("Wood");
-                if (targetWood == null)
-                {
-                    StopAction();
-                    return;
-                }
-            } 
-            movement.GoTo(targetWood);
-            if (movement.AtTarget()){
-                inventory.Add(targetWood);
+        if (targetWood == null){
+            targetWood = (SmartObject)awareness.GetNearest("Wood");
+            if (targetWood == null)
+            {
+                StopAction();
+                return;
             }
+        } 
+        movement.GoTo(targetWood);
+        if (movement.AtTarget()){
+            inventory.Add(targetWood);
         }
     }
 }

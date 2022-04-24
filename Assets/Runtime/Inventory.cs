@@ -25,6 +25,9 @@ public class Inventory : MonoBehaviour
         if (!items.ContainsKey(obj.typeName)){
             items[obj.typeName] = new List<SmartObject>();
         }
+        if (items[obj.typeName].Contains(obj)){
+            return;
+        }
         obj.PickedUp();
         items[obj.typeName].Add(obj);
         awareness.Forget(obj);
