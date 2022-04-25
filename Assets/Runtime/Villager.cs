@@ -26,7 +26,8 @@ public class Villager : Actor
         "WoodStore"
     };
 
-    void Awake(){
+    protected override void Awake(){
+        base.Awake();
         Setup();
     }
 

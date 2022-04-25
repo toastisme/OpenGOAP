@@ -22,6 +22,9 @@ public class Inventory : MonoBehaviour
     }
 
     public void Add(SmartObject obj){
+        if (obj==null){
+            return;
+        }
         if (!items.ContainsKey(obj.typeName)){
             items[obj.typeName] = new List<SmartObject>();
         }

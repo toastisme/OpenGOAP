@@ -48,15 +48,13 @@ public class Action_TakeWoodToStore : GOAPAction
 
     public override void OnTick()
     {
-        if(PreconditionsSatisfied()){
-            movement.GoTo(woodStore);
-            if (movement.AtTarget()){
-                for(int i = inventory.items["Wood"].Count -1; i >= 0; i--){
-                    woodStore.Add(inventory.items["Wood"][i]);
-                    inventory.Remove(inventory.items["Wood"][i]);
-                }
-                worldState.AddState("WoodHarvested", true);
+        movement.GoTo(woodStore);
+        if (movement.AtTarget()){
+            for(int i = inventory.items["Wood"].Count -1; i >= 0; i--){
+                woodStore.Add(inventory.items["Wood"][i]);
+                inventory.Remove(inventory.items["Wood"][i]);
             }
+            worldState.AddState("WoodHarvested", true);
         }
     }
 

@@ -116,6 +116,20 @@ public class WorldState : MonoBehaviour
         return localState.GetFloatState(name);
     }
 
+    public bool InBoolStates(string name){
+        if (IsGlobalState(name)){
+            return globalState.InBoolStates(name);
+        }
+        return localState.InBoolStates(name);
+    }
+
+    public bool InFloatStates(string name){
+        if (IsGlobalState(name)){
+            return globalState.InFloatStates(name);
+        }
+        return localState.InFloatStates(name);
+    }
+
     public bool InSet(string name, bool value){
         if (IsGlobalState(name)){
             if (globalState == null){

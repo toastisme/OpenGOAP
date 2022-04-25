@@ -27,6 +27,7 @@ public class Action_GetFoodFromStore : GOAPAction
         memory = GetComponent<Memory>();
         preconditions["g_FoodAvailable"] = true;
         effects["HoldingFood"] = true;
+        effects["FoodRemovedFromStore"] = true;
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
     }
 
@@ -40,6 +41,7 @@ public class Action_GetFoodFromStore : GOAPAction
     }
 
     public override void OnDeactivated(){
+        worldState.RemoveBoolState("FoodRemovedFromStore");
     }
 
     public override void OnTick()
@@ -52,6 +54,7 @@ public class Action_GetFoodFromStore : GOAPAction
                         worldState.GetFloatState("FoodExtractValue")
                     )
                 );
+                worldState.AddState("FoodRemovedFromStore", true);
             }
         }
     }

@@ -343,10 +343,12 @@ public class GOAPPlanner : MonoBehaviour
              * cost that satisfies requiredState
              */
 
-            Log($"Checking {openList.Count} nodes for one that satisfies:");
-            foreach (var i in requiredState){
-                Log($"{i.Key} {i.Value}");
+            string logString = "";
+            foreach(var i in requiredState){
+                logString += $" {i.Key}={i.Value}, ";
+
             }
+            Log($"Checking {openList.Count} nodes for one that satisfies: {logString}");
             float minCost = -1f;
             ActionNode nextNode = null;
             for (int i = 0; i < openList.Count; i++){

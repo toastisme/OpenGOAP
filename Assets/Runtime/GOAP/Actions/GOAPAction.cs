@@ -9,6 +9,10 @@ public class GOAPAction : MonoBehaviour, IAction
     public Dictionary<string, bool> preconditions{get; protected set;} // worldState.states that must be true to start
     public Dictionary<string, bool> effects{get; protected set;} // worldState.states that are true on completion
     bool stopAction_;
+
+    [SerializeField]
+    protected bool defaultFalse = true; // Absent key treated the same as key = false
+
     
     public virtual void Setup(){
         this.worldState = GetComponent<WorldState>();
@@ -27,7 +31,7 @@ public class GOAPAction : MonoBehaviour, IAction
 
         foreach(var i in conditions){
             if (!effects.ContainsKey(i.Key)){
-                return false;
+                return defaultFalse && i.Value==false? true : false;
             }
             if (effects[i.Key] != i.Value){
                 return false;

@@ -22,6 +22,6 @@ public class Logger : MonoBehaviour
         if(!showLogs){
             return;
         }
-        Debug.Log($"<color={prefixColor}>{prefix}: {message}, {sender} </color>");
+        Debug.Log($"<color={hexColor}>{prefix}: {message}, {sender} </color>");
     }
 }

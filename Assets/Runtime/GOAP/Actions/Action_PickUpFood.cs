@@ -39,19 +39,17 @@ public class Action_PickUpFood : GOAPAction
     }
 
     public override void OnTick(){
-        if (PreconditionsSatisfied()){
-            if (targetFood == null){
-                targetFood = (SmartObject)awareness.GetNearest("Food");
-                if (targetFood == null)
-                {
-                    StopAction();
-                    return;
-                }
-            } 
-            movement.GoTo(targetFood);
-            if (movement.AtTarget()){
-                inventory.Add(targetFood);
+        if (targetFood == null){
+            targetFood = (SmartObject)awareness.GetNearest("Food");
+            if (targetFood == null)
+            {
+                StopAction();
+                return;
             }
+        } 
+        movement.GoTo(targetFood);
+        if (movement.AtTarget()){
+            inventory.Add(targetFood);
         }
     }
 }

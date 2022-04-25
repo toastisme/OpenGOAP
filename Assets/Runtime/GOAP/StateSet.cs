@@ -9,15 +9,22 @@ public class StateSet : MonoBehaviour
     Dictionary<string, bool> states;
     Dictionary<string, float> floatStates;
 
+    [SerializeField]
+    bool defaultFalse = true; // Absent key treated the same as key = false
+
     protected void Awake(){
         states = new Dictionary<string, bool>();
         floatStates = new Dictionary<string, float>();
     }
 
+    public void SetDefaultFalse(bool val){
+        defaultFalse = val;
+    }
+
     public bool IsSubset(Dictionary<string, bool> state){
         foreach(var i in state){
             if (!states.ContainsKey(i.Key)){
-                return false;
+                return defaultFalse && i.Value==false? true : false;
             }
             if (states[i.Key] != i.Value){
                 return false;
@@ -67,7 +74,7 @@ public class StateSet : MonoBehaviour
 
     public bool InSet(string name, bool value){
         if (!InBoolStates(name)){
-            return false;
+            return defaultFalse && value==false ? true : false;
         }
         if (states[name] != value){
             return false;
