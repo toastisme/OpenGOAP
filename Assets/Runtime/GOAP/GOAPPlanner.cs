@@ -261,7 +261,7 @@ public class GOAPPlanner : MonoBehaviour
 
             // No path found
             if (currentNode == null){
-                Log("No path found");
+               Log("No path found");
                 return null;
             }
             closedList.Add(currentNode);            

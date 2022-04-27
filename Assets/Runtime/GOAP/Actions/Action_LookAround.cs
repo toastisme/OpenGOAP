@@ -14,7 +14,6 @@ public class Action_LookAround : GOAPAction
 
     Coroutine surveying;
     bool isSurveying=false;
-    Vector3 moveTarget;
 
     public override void Setup(){
         base.Setup();
@@ -26,21 +25,30 @@ public class Action_LookAround : GOAPAction
 
     IEnumerator SurveyArea(){
         isSurveying = true;
+        movement.ClearTarget();
+        Vector3 moveTarget = movement.RandomLocation(vision.visionRange);
+        Vector3 moveTargetDir = moveTarget.normalized;
         int numPointsToLookAt = UnityEngine.Random.Range(2, 5);
-        for (int i=0; i<numPointsToLookAt; i++){
+        float turnSpeed;
+        for (int i=0; i<numPointsToLookAt-1; i++){
             Vector3 dir = UnityEngine.Random.Range(0,10) > 5 ? transform.right : -transform.right;
             float scaleFactor = UnityEngine.Random.Range(5f, 20f);
             Vector3 newVec = (dir * scaleFactor).normalized;
-            float turnSpeed = UnityEngine.Random.Range(.01f, 3f);
+            turnSpeed = UnityEngine.Random.Range(.0001f, .003f);
             while(Vector3.Distance(transform.forward, newVec) > .5f){
                 Vector3 newDir = Vector3.RotateTowards(transform.forward, newVec, turnSpeed * Time.deltaTime, 0.0f);
                 transform.rotation = Quaternion.LookRotation(newDir);
                 yield return null;
             }
-        }        
-        moveTarget = movement.RandomLocation(vision.visionRange);
-        movement.GoTo(moveTarget);
+        }    
+        turnSpeed = UnityEngine.Random.Range(.0001f, .003f);
+        while(Vector3.Distance(transform.forward, moveTargetDir) > .5f){
+            Vector3 newDir = Vector3.RotateTowards(transform.forward, moveTargetDir, turnSpeed * Time.deltaTime, 0.0f);
+            transform.rotation = Quaternion.LookRotation(newDir);
+            yield return null;
+        }
         isSurveying = false;
+        movement.GoTo(movement.RandomLocation(vision.visionRange));
     }
 
     public override void OnTick(){
@@ -48,7 +56,7 @@ public class Action_LookAround : GOAPAction
             StopAction();
             return;
         }
-        if (moveTarget == null || movement.AtTarget() && !isSurveying){
+        if (!movement.HasTarget() || movement.AtTarget() && !isSurveying){
             surveying = StartCoroutine(SurveyArea());
         }
     }
@@ -56,6 +64,7 @@ public class Action_LookAround : GOAPAction
     public override void OnDeactivated(){
         StopCoroutine(surveying);
         movement.ClearTarget();
+        isSurveying = false;
     }
 
 

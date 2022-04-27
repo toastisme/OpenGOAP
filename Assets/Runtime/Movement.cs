@@ -75,6 +75,10 @@ public class Movement : MonoBehaviour
         nav.ResetPath();
     }
 
+    public bool HasTarget(){
+        return nav.hasPath;
+    }
+
 
 
 }
