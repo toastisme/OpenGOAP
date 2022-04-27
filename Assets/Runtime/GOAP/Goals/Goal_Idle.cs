@@ -8,6 +8,7 @@ public class Goal_Idle : Goal
 
     public override void Setup(){
         base.Setup();
+        conditions["WasIdle"] = true;
     }
 
     public override float GetPriority()

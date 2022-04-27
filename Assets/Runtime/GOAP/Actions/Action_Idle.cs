@@ -5,27 +5,20 @@ using GOAP;
 
 public class Action_Idle : GOAPAction
 {
-    bool _wasIdle;
     public override float GetCost(){
         return 0.0f;
     }
 
     public override void Setup(){
         base.Setup();
-        _wasIdle = false;
-    }
-    public override void OnActivated(){
-        _wasIdle = false;
+        effects["WasIdle"] = true;
     }
 
     public override void OnDeactivated(){
-        _wasIdle = false;
+        worldState.RemoveBoolState("WasIdle");
     }
 
     public override void OnTick(){
-        _wasIdle = true;
+        worldState.AddState("WasIdle", true);
     }
-
-    public bool WasIdle(){return _wasIdle;}
-
 }
