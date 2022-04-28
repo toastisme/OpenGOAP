@@ -12,6 +12,7 @@ public class Goal_HarvestFood : Goal
         base.Setup();
         memory = GetComponent<Memory>();
         conditions["FoodHarvested"] = true;
+        actionLayer = "Food";
     }
 
     public override float GetPriority()

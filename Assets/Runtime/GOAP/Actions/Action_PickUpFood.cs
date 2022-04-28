@@ -23,6 +23,7 @@ public class Action_PickUpFood : GOAPAction
         inventory = GetComponent<Inventory>();
         preconditions["FoodNearby"] = true;
         effects["HoldingFood"] = true;
+        actionLayers.Add("Food");
     }
 
     public override void OnActivated()

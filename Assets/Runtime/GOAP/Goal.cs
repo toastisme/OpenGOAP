@@ -8,8 +8,14 @@ public class Goal : MonoBehaviour, IGoal
 
     protected WorldState worldState;
 
+    /*
+     * Only GOAPActions with this actionLayer will be included during planning
+     */
+    public string actionLayer{get; protected set;} 
+
     public Dictionary<string, bool> conditions{get; protected set;}
     public virtual void Setup(){
+        actionLayer = "All";
         conditions = new Dictionary<string, bool>();
         worldState = GetComponent<WorldState>();
     }

@@ -30,6 +30,7 @@ public class Action_TakeFoodToStore : GOAPAction
         effects["FoodHarvested"] = true;
         effects["g_FoodAvailable"] = true;
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
+        actionLayers.Add("Food");
     }
 
     public override void OnActivated(){

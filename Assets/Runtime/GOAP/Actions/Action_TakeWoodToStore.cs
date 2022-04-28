@@ -30,6 +30,7 @@ public class Action_TakeWoodToStore : GOAPAction
         effects["WoodHarvested"] = true;
         effects["g_WoodAvailable"] = true;
         woodStore = (SmartObject)memory.RememberNearest("WoodStore");
+        actionLayers.Add("Wood");
     }
 
     public override void OnActivated(){

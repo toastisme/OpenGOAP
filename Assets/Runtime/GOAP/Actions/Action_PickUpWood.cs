@@ -22,6 +22,7 @@ public class Action_PickUpWood : GOAPAction
         inventory = GetComponent<Inventory>();
         preconditions["WoodNearby"] = true;
         effects["HoldingWood"] = true;
+        actionLayers.Add("Wood");
     }
 
     public override void OnActivated()

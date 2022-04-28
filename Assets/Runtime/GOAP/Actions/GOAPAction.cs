@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace GOAP{
+
 public class GOAPAction : MonoBehaviour, IAction
 {
     protected WorldState worldState;
     public Dictionary<string, bool> preconditions{get; protected set;} // worldState.states that must be true to start
     public Dictionary<string, bool> effects{get; protected set;} // worldState.states that are true on completion
+
+    /*
+    * When searching for action plans, only goals with these layers will include this
+    * as a potential action
+    */
+    public List<string> actionLayers; 
     bool stopAction_;
 
     [SerializeField]
@@ -19,6 +26,7 @@ public class GOAPAction : MonoBehaviour, IAction
         stopAction_ = false;
         preconditions = new Dictionary<string, bool>();
         effects = new Dictionary<string, bool>();
+        actionLayers = new List<string>();
     }
 
     public virtual float GetCost(){

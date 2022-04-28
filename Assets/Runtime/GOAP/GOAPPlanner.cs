@@ -8,6 +8,11 @@ using System;
 namespace GOAP{
 
 public struct GoalData{
+
+    /*
+     * Used to package Goal data for other classes (e.g. GUIPlanner)
+     */
+
     public Type goalType;
     public float priority;
     public bool canRun;
@@ -20,6 +25,11 @@ public struct GoalData{
 }
 
 public class ActionNode{
+
+    /*
+     * Used to create a linked list of GOAPActions
+     */
+
     public ActionNode parent;
     public GOAPAction action;
     public ActionNode(ActionNode parent, GOAPAction action){
@@ -34,7 +44,7 @@ public class GOAPPlanner : MonoBehaviour
     Logger logger;
     WorldState worldState;
     public List<Goal> goals{get; private set;}
-    public List<GOAPAction> actions{get; private set;}
+    public Dictionary<string, List<GOAPAction> > actions{get; private set;}
 
     //// Active
     public Goal activeGoal{get; private set;}
@@ -51,13 +61,37 @@ public class GOAPPlanner : MonoBehaviour
 
     void Start(){
         worldState = GetComponent<WorldState>();
+        actions = new Dictionary<string, List<GOAPAction> >();
         goals = new List<Goal>(GetComponents<Goal>());
-        actions = new List<GOAPAction>(GetComponents<GOAPAction>());
+        SetupGoals();
+        SetupActions();
+    }
+
+    void SetupActions(){
+        List<GOAPAction> allActions = new List<GOAPAction>(GetComponents<GOAPAction>());
+        for (int i = 0; i < allActions.Count; i++){
+            allActions[i].Setup();
+            actions["All"].Add(allActions[i]);
+            for(int j = 0; j < allActions[i].actionLayers.Count; j++){
+                string actionLayer = allActions[i].actionLayers[j];
+                if (!actions.ContainsKey(actionLayer)){
+                    actions[actionLayer] = new List<GOAPAction>();
+                }
+                if (!actions[actionLayer].Contains(allActions[i])){
+                    actions[actionLayer].Add(allActions[i]);
+                }
+            }
+        }
+    }
+
+    void SetupGoals(){
+        actions["All"] = new List<GOAPAction>();
         for (int i = 0; i < goals.Count; i++){
             goals[i].Setup();
-        }
-        for (int i = 0; i < actions.Count; i++){
-            actions[i].Setup();
+            // This ensures no key errors when finding optimal plans
+            if (!actions.ContainsKey(goals[i].actionLayer)){
+                actions[goals[i].actionLayer] = new List<GOAPAction>();
+            }
         }
     }
 
@@ -186,7 +220,7 @@ public class GOAPPlanner : MonoBehaviour
             List<GOAPAction> candidatePath = GetOptimalPath(
                 currentState:worldState,
                 goal:goals[i], 
-                actions:actions
+                actions:actions[goals[i].actionLayer]
                 );
 
             if (candidatePath != null){

@@ -29,6 +29,7 @@ public class Action_GetFoodFromStore : GOAPAction
         effects["HoldingFood"] = true;
         effects["FoodRemovedFromStore"] = true;
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
+        actionLayers.Add("Food");
     }
 
     public override void OnActivated(){

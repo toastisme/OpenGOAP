@@ -9,6 +9,7 @@ public class Goal_Idle : Goal
     public override void Setup(){
         base.Setup();
         conditions["WasIdle"] = true;
+        actionLayer = "Idle";
     }
 
     public override float GetPriority()

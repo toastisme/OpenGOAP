@@ -8,6 +8,7 @@ public class Goal_ReduceHunger : Goal
         public override void Setup(){
             base.Setup();
             conditions["ReducedHunger"] = true;
+            actionLayer = "Food";
         }
 
         public override float GetPriority()

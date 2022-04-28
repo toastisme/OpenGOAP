@@ -18,6 +18,7 @@ public class Action_EatFood : GOAPAction
         inventory = GetComponent<Inventory>();
         preconditions["HoldingFood"] = true;
         effects["ReducedHunger"] = true;
+        actionLayers.Add("Food");
     }
 
     public override void OnActivated(){

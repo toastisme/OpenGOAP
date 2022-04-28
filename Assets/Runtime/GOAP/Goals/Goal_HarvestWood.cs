@@ -13,6 +13,7 @@ public class Goal_HarvestWood : Goal
         base.Setup();
         memory = GetComponent<Memory>();
         conditions["WoodHarvested"] = true;
+        actionLayer = "Wood";
     }
 
     public override float GetPriority()

@@ -12,6 +12,7 @@ public class Action_Idle : GOAPAction
     public override void Setup(){
         base.Setup();
         effects["WasIdle"] = true;
+        actionLayers.Add("Idle");
     }
 
     public override void OnDeactivated(){

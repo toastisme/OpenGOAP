@@ -192,7 +192,6 @@ public class GUIPlanner : EditorWindow
 
     void DrawActionNodes(int unusedWindowID){
         List<GOAPAction> activePlan = planner.activePlan;
-        List<GOAPAction> actions = planner.actions;
         GOAPAction activeAction = activePlan[planner.activeActionIdx];
         int count = 0;
         for (int i = 0; i < activePlan.Count; i++){

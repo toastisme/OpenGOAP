@@ -21,6 +21,8 @@ public class Action_LookAround : GOAPAction
         vision = GetComponent<Vision>();
         effects["WoodNearby"] = true;
         effects["FoodNearby"] = true;
+        actionLayers.Add("Food");
+        actionLayers.Add("Wood");
     }
 
     IEnumerator SurveyArea(){
