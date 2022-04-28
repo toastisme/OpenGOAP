@@ -20,9 +20,6 @@ public class Action_PickUpWood : GOAPAction
         movement = GetComponent<Movement>();
         awareness = GetComponent<Awareness>();
         inventory = GetComponent<Inventory>();
-        preconditions["WoodNearby"] = true;
-        effects["HoldingWood"] = true;
-        actionLayers.Add("Wood");
     }
 
     public override void OnActivated()
@@ -51,5 +48,20 @@ public class Action_PickUpWood : GOAPAction
         if (movement.AtTarget()){
             inventory.Add(targetWood);
         }
+    }
+
+    protected override void SetupActionLayers(){
+        base.SetupActionLayers();
+        actionLayers.Add("Wood");
+    }
+
+    protected override void SetupEffects(){
+        base.SetupEffects();
+        effects["HoldingWood"] = true;
+    }
+
+    protected override void SetupConditions(){
+        base.SetupConditions();
+        preconditions["WoodNearby"] = true;
     }
 }

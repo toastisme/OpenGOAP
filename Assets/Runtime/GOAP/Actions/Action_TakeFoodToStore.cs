@@ -24,13 +24,8 @@ public class Action_TakeFoodToStore : GOAPAction
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
         memory = GetComponent<Memory>();
-        preconditions["HoldingFood"] = true;
-        preconditions["FoodRemovedFromStore"] = false;
         worldState.AddState("FoodHarvested", false);
-        effects["FoodHarvested"] = true;
-        effects["g_FoodAvailable"] = true;
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
-        actionLayers.Add("Food");
     }
 
     public override void OnActivated(){
@@ -68,6 +63,23 @@ public class Action_TakeFoodToStore : GOAPAction
         else{
             return (foodStore != null);
         }
+    }
+
+    protected override void SetupActionLayers(){
+        base.SetupActionLayers();
+        actionLayers.Add("Food");
+    }
+
+    protected override void SetupEffects(){
+        base.SetupEffects();
+        effects["FoodHarvested"] = true;
+        effects["g_FoodAvailable"] = true;
+    }
+
+    protected override void SetupConditions(){
+        base.SetupConditions();
+        preconditions["HoldingFood"] = true;
+        preconditions["FoodRemovedFromStore"] = false;
     }
 
 }

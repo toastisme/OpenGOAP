@@ -9,17 +9,22 @@ public class Action_Idle : GOAPAction
         return 0.0f;
     }
 
-    public override void Setup(){
-        base.Setup();
-        effects["WasIdle"] = true;
-        actionLayers.Add("Idle");
-    }
-
     public override void OnDeactivated(){
         worldState.RemoveBoolState("WasIdle");
     }
 
     public override void OnTick(){
         worldState.AddState("WasIdle", true);
+    }
+
+    protected override void SetupActionLayers()
+    {
+        base.SetupActionLayers();
+        actionLayers.Add("Idle");
+    }
+
+    protected override void SetupEffects(){
+        base.SetupEffects();
+        effects["WasIdle"] = true;
     }
 }

@@ -21,9 +21,6 @@ public class Action_PickUpFood : GOAPAction
         movement = GetComponent<Movement>();
         awareness = GetComponent<Awareness>();
         inventory = GetComponent<Inventory>();
-        preconditions["FoodNearby"] = true;
-        effects["HoldingFood"] = true;
-        actionLayers.Add("Food");
     }
 
     public override void OnActivated()
@@ -52,5 +49,20 @@ public class Action_PickUpFood : GOAPAction
         if (movement.AtTarget()){
             inventory.Add(targetFood);
         }
+    }
+
+    protected override void SetupActionLayers(){
+        base.SetupActionLayers();
+        actionLayers.Add("Food");
+    }
+
+    protected override void SetupEffects(){
+        base.SetupEffects();
+        effects["HoldingFood"] = true;
+    }
+
+    protected override void SetupConditions(){
+        base.SetupConditions();
+        preconditions["FoodNearby"] = true;
     }
 }

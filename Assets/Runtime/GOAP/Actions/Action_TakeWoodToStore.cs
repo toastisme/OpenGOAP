@@ -25,12 +25,8 @@ public class Action_TakeWoodToStore : GOAPAction
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
         memory = GetComponent<Memory>();
-        preconditions["HoldingWood"] = true;
         worldState.AddState("WoodHarvested", false);
-        effects["WoodHarvested"] = true;
-        effects["g_WoodAvailable"] = true;
         woodStore = (SmartObject)memory.RememberNearest("WoodStore");
-        actionLayers.Add("Wood");
     }
 
     public override void OnActivated(){
@@ -69,4 +65,18 @@ public class Action_TakeWoodToStore : GOAPAction
             return (woodStore != null);
         }
     } 
+
+    protected override void SetupActionLayers(){
+        base.SetupActionLayers();
+        actionLayers.Add("Wood");
+    }
+    protected override void SetupEffects(){
+        base.SetupEffects();
+        effects["WoodHarvested"] = true;
+        effects["g_WoodAvailable"] = true;
+    }
+    protected override void SetupConditions(){
+        base.SetupConditions();
+        preconditions["HoldingWood"] = true;
+    }
 }

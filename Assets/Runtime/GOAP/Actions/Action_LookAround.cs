@@ -19,10 +19,6 @@ public class Action_LookAround : GOAPAction
         base.Setup();
         movement = GetComponent<Movement>();
         vision = GetComponent<Vision>();
-        effects["WoodNearby"] = true;
-        effects["FoodNearby"] = true;
-        actionLayers.Add("Food");
-        actionLayers.Add("Wood");
     }
 
     IEnumerator SurveyArea(){
@@ -69,5 +65,15 @@ public class Action_LookAround : GOAPAction
         isSurveying = false;
     }
 
+    protected override void SetupActionLayers(){
+        base.SetupActionLayers();
+        actionLayers.Add("Food");
+        actionLayers.Add("Wood");
+    }
 
+    protected override void SetupEffects(){
+        base.SetupEffects();
+        effects["WoodNearby"] = true;
+        effects["FoodNearby"] = true;
+    }
 }

@@ -24,9 +24,9 @@ public class GOAPAction : MonoBehaviour, IAction
     public virtual void Setup(){
         this.worldState = GetComponent<WorldState>();
         stopAction_ = false;
-        preconditions = new Dictionary<string, bool>();
-        effects = new Dictionary<string, bool>();
-        actionLayers = new List<string>();
+        SetupConditions();
+        SetupEffects();
+        SetupActionLayers();
     }
 
     public virtual float GetCost(){
@@ -76,6 +76,16 @@ public class GOAPAction : MonoBehaviour, IAction
          * true if worldState satisfies effects
          */
         return (worldState.IsSubset(effects));
+    }
+
+    protected virtual void SetupActionLayers(){
+        actionLayers = new List<string>();
+    }
+    protected virtual void SetupEffects(){
+        effects = new Dictionary<string, bool>();
+    }
+    protected virtual void SetupConditions(){
+        preconditions = new Dictionary<string, bool>();
     }
 }
 }
