@@ -23,7 +23,7 @@ public class SmartObject : Detectable, ISmartObject
     public virtual GameObject Extract(float value){return null;}
 
     public virtual void Remove(){
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 
     public void SetValue(float value){

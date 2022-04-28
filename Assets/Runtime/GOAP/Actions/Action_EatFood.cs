@@ -29,7 +29,7 @@ public class Action_EatFood : GOAPAction
     public override void OnTick()
     {
         if(PreconditionsSatisfied()){
-            inventory.Remove("Food", 1);
+            inventory.Remove("Food", 1, true);
             worldState.AddState("Hunger", 0f);
             worldState.AddState("ReducedHunger", true);
         }

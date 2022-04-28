@@ -38,14 +38,17 @@ public class Inventory : MonoBehaviour
         obj.transform.SetParent(this.transform);
     }
 
-    public void Remove(SmartObject obj){
+    public void Remove(SmartObject obj, bool destroy=false){
         items[obj.typeName].Remove(obj);
         if (!Contains(obj.typeName)){
             worldState.AddState($"Holding{obj.typeName}", false);
         }
+        if(destroy){
+            obj.Remove();
+        }
     }
 
-    public void Remove(string typeName, int numToRemove){
+    public void Remove(string typeName, int numToRemove, bool destroy=false){
         if (!items.ContainsKey(typeName)){
             Debug.LogWarning($"Trying to remove {typeName} from inventory that does not exist.");
             return;
@@ -57,6 +60,9 @@ public class Inventory : MonoBehaviour
         }
         numToRemove = numToRemove < items[typeName].Count ? numToRemove : items[typeName].Count;
         for (int i = numToRemove-1; i >= 0; i--){
+            if (destroy){
+                items[typeName][i].Remove();
+            }
             items[typeName].RemoveAt(i);
         }
         if (!Contains(typeName)){
