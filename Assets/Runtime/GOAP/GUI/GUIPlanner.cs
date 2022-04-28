@@ -122,7 +122,7 @@ public class GUIPlanner : EditorWindow
         GUI.backgroundColor = panelColor;
         goalPrioritiesPanel = new Rect(
             0,
-            position.height*.4f,
+            position.height*.3f,
             position.width,
             position.height
         );

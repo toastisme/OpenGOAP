@@ -13,8 +13,8 @@ public class GUIProperties
 
     //// Sizes
 
-    public static Vector2 NodeSize(){return new Vector2(200, 120);}
-    public static Vector2 TaskNodeSize(){return new Vector2(200, 80);}
+    public static Vector2 NodeSize(){return new Vector2(200, 90);}
+    public static Vector2 TaskNodeSize(){return new Vector2(200, 65);}
 
     //// Positions
 
@@ -91,7 +91,7 @@ public class GUIProperties
         nodeStyle.alignment = TextAnchor.UpperLeft;
         nodeStyle.fontStyle = FontStyle.Bold;
         nodeStyle.padding=new RectOffset(10,0,10,0);
-        nodeStyle.fontSize=14;
+        nodeStyle.fontSize=12;
         return nodeStyle;
     }
 
