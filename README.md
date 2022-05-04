@@ -1,6 +1,7 @@
 # OpenGOAP
 
 OpenGOAP is an open source tool to design and monitor goal orientated action planning in Unity.
+![OpenGOAP](https://github.com/toastisme/OpenGOAP/blob/main/Assets/Runtime/GOAP/Screenshots/HarvestFoodPlan.PNG?raw=true)
 
 ## Features
 - World state consisting of local (`GameObject` specific) and global states
