@@ -23,7 +23,7 @@ public class Goal_HarvestWood : Goal
         return 1/(1+(worldState.GetFloatState("g_Wood")/demand));
     }
 
-    public override bool PreconditionsSatisfied(){
+    public override bool PreconditionsSatisfied(WorldState worldState){
         return memory.InMemory("WoodStore");
     }
 }

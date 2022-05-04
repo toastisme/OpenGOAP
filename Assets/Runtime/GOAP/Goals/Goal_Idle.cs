@@ -17,7 +17,7 @@ public class Goal_Idle : Goal
         return 0f;
     }
 
-    public override bool PreconditionsSatisfied(){
+    public override bool PreconditionsSatisfied(WorldState worldState){
         return true;
     }
     

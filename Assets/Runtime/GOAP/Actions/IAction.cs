@@ -5,13 +5,13 @@ namespace GOAP{
 public interface IAction
 {
     float GetCost(); // Between 0 and 1
-    void OnActivated();
-    void OnDeactivated();
+    void OnActivate();
+    void OnDeactivate();
     void OnTick();
     void Setup();
     bool SatisfiesConditions(Dictionary<string, bool> conditions);
-    bool PreconditionsSatisfied(); // true if WorldState satisfies preconditions
-    bool EffectsSatisfied(); // true if WorldState contains all effects of action
+    bool PreconditionsSatisfied(WorldState worldState); 
+    bool EffectsSatisfied(WorldState worldState); 
     
 }
 }

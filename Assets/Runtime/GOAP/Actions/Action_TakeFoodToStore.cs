@@ -28,7 +28,7 @@ public class Action_TakeFoodToStore : GOAPAction
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
     }
 
-    public override void OnActivated(){
+    public override void OnActivate(){
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
         worldState.AddState("FoodHarvested", false);
         if (foodStore == null){
@@ -38,7 +38,7 @@ public class Action_TakeFoodToStore : GOAPAction
         movement.GoTo(foodStore);
     }
 
-    public override void OnDeactivated(){
+    public override void OnDeactivate(){
         worldState.AddState("FoodHarvested", false);
     }
 
@@ -54,9 +54,9 @@ public class Action_TakeFoodToStore : GOAPAction
         }
     }
 
-    public override bool PreconditionsSatisfied()
+    public override bool PreconditionsSatisfied(WorldState worldState)
     {
-        bool result = base.PreconditionsSatisfied();
+        bool result = base.PreconditionsSatisfied(worldState);
         if (!result){
             return result;
         }

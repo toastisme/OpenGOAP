@@ -22,7 +22,7 @@ public class Goal_HarvestFood : Goal
         return 1/(1+(worldState.GetFloatState("g_Food")/demand));
     }
 
-    public override bool PreconditionsSatisfied(){
+    public override bool PreconditionsSatisfied(WorldState worldState){
         return memory.InMemory("FoodStore");
     }
 }

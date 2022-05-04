@@ -23,9 +23,9 @@ public class Action_PickUpFood : GOAPAction
         inventory = GetComponent<Inventory>();
     }
 
-    public override void OnActivated()
+    public override void OnActivate()
     {
-        base.OnActivated();
+        base.OnActivate();
         targetFood = (SmartObject)awareness.GetNearest("Food");
         if (targetFood != null){
             movement.GoTo(targetFood);

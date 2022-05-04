@@ -29,7 +29,7 @@ public class Action_TakeWoodToStore : GOAPAction
         woodStore = (SmartObject)memory.RememberNearest("WoodStore");
     }
 
-    public override void OnActivated(){
+    public override void OnActivate(){
         woodStore = (SmartObject)memory.RememberNearest("WoodStore");
         worldState.AddState("WoodHarvested", false);
         if (woodStore == null){
@@ -39,7 +39,7 @@ public class Action_TakeWoodToStore : GOAPAction
         movement.GoTo(woodStore);
     }
 
-    public override void OnDeactivated(){
+    public override void OnDeactivate(){
         worldState.AddState("WoodHarvested", false);
     }
 
@@ -55,9 +55,9 @@ public class Action_TakeWoodToStore : GOAPAction
         }
     }
 
-    public override bool PreconditionsSatisfied()
+    public override bool PreconditionsSatisfied(WorldState worldState)
     {
-        bool result = base.PreconditionsSatisfied();
+        bool result = base.PreconditionsSatisfied(worldState);
         if (!result){
             return result;
         }

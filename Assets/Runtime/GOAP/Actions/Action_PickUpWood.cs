@@ -22,9 +22,9 @@ public class Action_PickUpWood : GOAPAction
         inventory = GetComponent<Inventory>();
     }
 
-    public override void OnActivated()
+    public override void OnActivate()
     {
-        base.OnActivated();
+        base.OnActivate();
         targetWood = (SmartObject)awareness.GetNearest("Wood");
         if (targetWood != null){
             movement.GoTo(targetWood);

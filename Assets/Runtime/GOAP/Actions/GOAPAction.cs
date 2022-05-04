@@ -49,11 +49,11 @@ public class GOAPAction : MonoBehaviour, IAction
         return true;
     }
 
-    public virtual void OnActivated(){
+    public virtual void OnActivate(){
         stopAction_ = false;
     }
 
-    public virtual void OnDeactivated(){
+    public virtual void OnDeactivate(){
         StopAction();
     }
 
@@ -63,7 +63,7 @@ public class GOAPAction : MonoBehaviour, IAction
         stopAction_=true;
     }
 
-    public virtual bool PreconditionsSatisfied(){
+    public virtual bool PreconditionsSatisfied(WorldState worldState){
         /**
          * true if worldState satisfies preconditions
          */
@@ -71,7 +71,7 @@ public class GOAPAction : MonoBehaviour, IAction
         return(worldState.IsSubset(preconditions));
     }
 
-    public virtual bool EffectsSatisfied(){
+    public virtual bool EffectsSatisfied(WorldState worldState){
         /**
          * true if worldState satisfies effects
          */

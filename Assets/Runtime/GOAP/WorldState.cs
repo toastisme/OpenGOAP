@@ -15,6 +15,7 @@ public class WorldState : MonoBehaviour
     Shared between objects.
     All states assumed to have g_ prefix
     */
+    [SerializeField]
     StateSet globalState; 
 
     protected void Awake(){

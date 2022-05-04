@@ -7,7 +7,7 @@ public class Goal : MonoBehaviour, IGoal
 {
 
     protected WorldState worldState;
-
+    
     /*
      * Only GOAPActions with this actionLayer will be included during planning
      */
@@ -24,17 +24,17 @@ public class Goal : MonoBehaviour, IGoal
         return 0f;
     }
 
-    public virtual bool PreconditionsSatisfied(){
+    public virtual bool PreconditionsSatisfied(WorldState worldState){
         return true;
     }
 
-    public virtual bool ConditionsSatisfied(){
+    public virtual bool ConditionsSatisfied(WorldState worldState){
         return worldState.IsSubset(conditions);
     }
 
     public virtual void OnTick(){}
-    public virtual void OnActivated(){}
-    public virtual void OnDeactivated(){}
+    public virtual void OnActivate(){}
+    public virtual void OnDeactivate(){}
 
 }
 }

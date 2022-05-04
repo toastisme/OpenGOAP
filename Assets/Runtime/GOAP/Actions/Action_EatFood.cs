@@ -18,24 +18,19 @@ public class Action_EatFood : GOAPAction
         inventory = GetComponent<Inventory>();
     }
 
-    public override void OnActivated(){
+    public override void OnActivate(){
         worldState.AddState("ReducedHunger", false);
     }
 
-    public override void OnDeactivated(){
+    public override void OnDeactivate(){
         worldState.AddState("ReducedHunger", false);
     }
 
     public override void OnTick()
     {
-        if(PreconditionsSatisfied()){
-            inventory.Remove("Food", 1, true);
-            worldState.AddState("Hunger", 0f);
-            worldState.AddState("ReducedHunger", true);
-        }
-        else{
-            StopAction();
-        }
+        inventory.Remove("Food", 1, true);
+        worldState.AddState("Hunger", 0f);
+        worldState.AddState("ReducedHunger", true);
     }
 
     protected override void SetupActionLayers(){

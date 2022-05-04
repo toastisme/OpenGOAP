@@ -3,9 +3,10 @@ public interface IGoal
 {
     void Setup();
     float GetPriority(); // Between 0 and 1
-    bool PreconditionsSatisfied();
+    bool ConditionsSatisfied(WorldState worldState);
+    bool PreconditionsSatisfied(WorldState worldState);
     void OnTick();
-    void OnActivated();
-    void OnDeactivated();
+    void OnActivate();
+    void OnDeactivate();
 }
 }

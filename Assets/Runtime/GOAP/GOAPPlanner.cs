@@ -121,17 +121,17 @@ public class GOAPPlanner : MonoBehaviour
 
     void StartCurrentBestGoal(){
         if (activeGoal != null){
-            activeGoal.OnDeactivated();
+            activeGoal.OnDeactivate();
         }
         if (activePlan != null && activeActionIdx < activePlan.Count){
-            activePlan[activeActionIdx].OnDeactivated();
+            activePlan[activeActionIdx].OnDeactivate();
         }
 
         activeActionIdx = 0;
         activeGoal = optimalGoal;
         activePlan = optimalPlan;
-        activeGoal.OnActivated();
-        activePlan[activeActionIdx].OnActivated();
+        activeGoal.OnActivate();
+        activePlan[activeActionIdx].OnActivate();
     }
 
     void OnTick(){
@@ -153,13 +153,13 @@ public class GOAPPlanner : MonoBehaviour
         if (!(activeGoal != null && activePlan != null)){ return; }
 
         // Goal no longer viable
-        if (!activeGoal.PreconditionsSatisfied()){
+        if (!activeGoal.PreconditionsSatisfied(worldState)){
             OnFailActivePlan();
             return;
         }
 
         // Plan no longer viable
-        if (!(activePlan[activeActionIdx].PreconditionsSatisfied())){ 
+        if (!(activePlan[activeActionIdx].PreconditionsSatisfied(worldState))){ 
             OnFailActivePlan(); 
             return;
         }
@@ -167,31 +167,31 @@ public class GOAPPlanner : MonoBehaviour
         activePlan[activeActionIdx].OnTick();
 
         // Goal complete
-        if (activeGoal.ConditionsSatisfied()){
+        if (activeGoal.ConditionsSatisfied(worldState)){
             OnCompleteActivePlan();
             return;
         }
 
         if (activeActionIdx < activePlan.Count-1){
             // At least one more action after activeAction
-            if (activePlan[activeActionIdx + 1].PreconditionsSatisfied()){
+            if (activePlan[activeActionIdx + 1].PreconditionsSatisfied(worldState)){
                 // Can move to next action
-                activePlan[activeActionIdx].OnDeactivated();
+                activePlan[activeActionIdx].OnDeactivate();
                 activeActionIdx++;
                 Log($"Moving to new action: {activePlan[activeActionIdx]}");
-                activePlan[activeActionIdx].OnActivated();
+                activePlan[activeActionIdx].OnActivate();
             }
         }
     }
 
     void OnCompleteActivePlan(){
-        activeGoal.OnDeactivated();
+        activeGoal.OnDeactivate();
         activeGoal = null;
         activePlan = null;
     }
 
     void OnFailActivePlan(){
-        activeGoal.OnDeactivated();
+        activeGoal.OnDeactivate();
         activeGoal = null;
         activePlan = null;
     }
@@ -209,7 +209,7 @@ public class GOAPPlanner : MonoBehaviour
 
         for (int i = 0; i < goals.Count; i++){
 
-            if (!goals[i].PreconditionsSatisfied()){
+            if (!goals[i].PreconditionsSatisfied(worldState)){
                 continue;
             }
 
@@ -459,7 +459,7 @@ public class GOAPPlanner : MonoBehaviour
                 new GoalData(
                     goals[i].GetType(), 
                     goals[i].GetPriority(), 
-                    goals[i].PreconditionsSatisfied()
+                    goals[i].PreconditionsSatisfied(worldState)
                     )
             );
         }

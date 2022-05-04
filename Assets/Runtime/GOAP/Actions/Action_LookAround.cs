@@ -50,16 +50,12 @@ public class Action_LookAround : GOAPAction
     }
 
     public override void OnTick(){
-        if (!PreconditionsSatisfied()){
-            StopAction();
-            return;
-        }
         if (!movement.HasTarget() || movement.AtTarget() && !isSurveying){
             surveying = StartCoroutine(SurveyArea());
         }
     }
 
-    public override void OnDeactivated(){
+    public override void OnDeactivate(){
         StopCoroutine(surveying);
         movement.ClearTarget();
         isSurveying = false;

@@ -9,7 +9,7 @@ public class Action_Idle : GOAPAction
         return 0.0f;
     }
 
-    public override void OnDeactivated(){
+    public override void OnDeactivate(){
         worldState.RemoveBoolState("WasIdle");
     }
 
