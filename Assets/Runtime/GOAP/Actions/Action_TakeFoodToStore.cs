@@ -24,13 +24,11 @@ public class Action_TakeFoodToStore : GOAPAction
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
         memory = GetComponent<Memory>();
-        worldState.AddState("FoodHarvested", false);
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
     }
 
     public override void OnActivate(){
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
-        worldState.AddState("FoodHarvested", false);
         if (foodStore == null){
             StopAction();
             return;
@@ -39,7 +37,8 @@ public class Action_TakeFoodToStore : GOAPAction
     }
 
     public override void OnDeactivate(){
-        worldState.AddState("FoodHarvested", false);
+        worldState.RemoveBoolState("FoodHarvested");
+        StopAction();
     }
 
     public override void OnTick()

@@ -25,4 +25,9 @@ public class Goal_HarvestFood : GOAPGoal
     public override bool PreconditionsSatisfied(WorldState worldState){
         return memory.InMemory("FoodStore");
     }
+
+    public override void OnDeactivate()
+    {
+        worldState.RemoveBoolState("FoodHarvested");
+    }
 }

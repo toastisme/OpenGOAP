@@ -9,8 +9,9 @@ namespace GOAP{
 
 public struct GoalData{
 
-    /*
-     * Used to package Goal data for other classes (e.g. GUIPlanner)
+    /**
+     * \struct GoalData
+     * Used to package GOAPGoal data for other classes (e.g. GUIPlanner)
      */
 
     public Type goalType;
@@ -26,7 +27,8 @@ public struct GoalData{
 
 public class ActionNode{
 
-    /*
+    /**
+     * \class ActionNode
      * Used to create a linked list of GOAPActions
      */
 
@@ -40,8 +42,19 @@ public class ActionNode{
 
 public class GOAPPlanner : MonoBehaviour
 {
+
+    /**
+     * \class GOAPPlanner
+     * Identifies the highest priority GOAPGoal with a viable action plan
+     * and carries out that action plan.
+     */
+
+    // Loggers
     [SerializeField]
-    Logger logger;
+    Logger plannerLogger;
+    [SerializeField]
+    Logger activePlanLogger;
+
     WorldState worldState;
     public List<GOAPGoal> goals{get; private set;}
     public Dictionary<string, List<GOAPAction> > actions{get; private set;}
@@ -68,6 +81,12 @@ public class GOAPPlanner : MonoBehaviour
     }
 
     void SetupActions(){
+
+        /**
+         * Calls GOAPAction.Setup for each GOAPAction and caches the actionLayer
+         * of each GOAPAction.
+         */
+
         List<GOAPAction> allActions = new List<GOAPAction>(GetComponents<GOAPAction>());
         for (int i = 0; i < allActions.Count; i++){
             allActions[i].Setup();
@@ -85,6 +104,13 @@ public class GOAPPlanner : MonoBehaviour
     }
 
     void SetupGoals(){
+
+        /**
+         * Calls GOAPGoal.Setup() for all GOAPGoals
+         * and adds the actionLayer of each GOAPGoal as a key
+         * in actions.
+         */
+
         actions["All"] = new List<GOAPAction>();
         for (int i = 0; i < goals.Count; i++){
             goals[i].Setup();
@@ -130,6 +156,7 @@ public class GOAPPlanner : MonoBehaviour
         activeActionIdx = 0;
         activeGoal = optimalGoal;
         activePlan = optimalPlan;
+        ActivePlanLog($"Starting new plan for {activeGoal}");
         activeGoal.OnActivate();
         activePlan[activeActionIdx].OnActivate();
     }
@@ -154,12 +181,14 @@ public class GOAPPlanner : MonoBehaviour
 
         // Goal no longer viable
         if (!activeGoal.PreconditionsSatisfied(worldState)){
+            ActivePlanLog($"{activeGoal} failed as preconditions are no longer satisfied");
             OnFailActivePlan();
             return;
         }
 
         // Plan no longer viable
         if (!(activePlan[activeActionIdx].PreconditionsSatisfied(worldState))){ 
+            ActivePlanLog($"{activePlan[activeActionIdx]} failed as preconditions are no longer satisfied");
             OnFailActivePlan(); 
             return;
         }
@@ -168,6 +197,7 @@ public class GOAPPlanner : MonoBehaviour
 
         // Goal complete
         if (activeGoal.ConditionsSatisfied(worldState)){
+            ActivePlanLog($"{activeGoal} completed");
             OnCompleteActivePlan();
             return;
         }
@@ -177,8 +207,9 @@ public class GOAPPlanner : MonoBehaviour
             if (activePlan[activeActionIdx + 1].PreconditionsSatisfied(worldState)){
                 // Can move to next action
                 activePlan[activeActionIdx].OnDeactivate();
+                ActivePlanLog($"{activePlan[activeActionIdx]} complete");
                 activeActionIdx++;
-                Log($"Moving to new action: {activePlan[activeActionIdx]}");
+                ActivePlanLog($"Moving to new action: {activePlan[activeActionIdx]}");
                 activePlan[activeActionIdx].OnActivate();
             }
         }
@@ -205,17 +236,24 @@ public class GOAPPlanner : MonoBehaviour
 
         chosenGoal = null;
         chosenPlan = null;
-        if (goals == null){return;}
+        PlannerLog("Searching for highest priority goal");
+        if (goals == null){
+            PlannerLog("No goals found");
+            return;
+        }
 
         for (int i = 0; i < goals.Count; i++){
 
             if (!goals[i].PreconditionsSatisfied(worldState)){
+                PlannerLog($"{goals[i]} not valid as preconditions not satisfied");
                 continue;
             }
 
             if (!(chosenGoal == null || HasHigherPriority(goals[i], chosenGoal))){
                 continue;
             }
+
+            PlannerLog($"{goals[i]} has higher priority than {chosenGoal}");
 
             List<GOAPAction> candidatePath = GetOptimalPath(
                 currentState:worldState,
@@ -226,6 +264,7 @@ public class GOAPPlanner : MonoBehaviour
             if (candidatePath != null){
                 chosenGoal = goals[i];
                 chosenPlan = candidatePath;
+                PlannerLog($"Path found. Chosen goal is now {goals[i]}");
             }
         }
     }
@@ -241,6 +280,11 @@ public class GOAPPlanner : MonoBehaviour
         GOAPGoal goal, 
         List<GOAPAction> actions){
 
+
+        /**
+         * Uses A* searching algorithm to find the lowest cost path for goal
+         */
+
         bool InList(GOAPAction action, List<ActionNode> nodeList){
             for(int i = 0; i < nodeList.Count; i++){
                 if (nodeList[i].action == action){
@@ -250,7 +294,7 @@ public class GOAPPlanner : MonoBehaviour
             return false;
         }
 
-        Log($"Searching for plan for {goal.GetType().ToString()}");
+        PlannerLog($"Searching for plan for {goal}");
 
         List<ActionNode> openList = new List<ActionNode>();
         List<ActionNode> closedList = new List<ActionNode>();
@@ -260,7 +304,7 @@ public class GOAPPlanner : MonoBehaviour
         float minCost = -1;
         for (int i = 0; i< actions.Count; i++){
             if (actions[i].SatisfiesConditions(goal.conditions)){
-                Log($"{actions[i].GetType().ToString()} satisfies goal");
+                PlannerLog($"{actions[i]} satisfies goal conditions");
                 float cost = actions[i].GetCost();
                 if (minCost < 0 || cost < minCost){
                     minCost = cost;
@@ -271,9 +315,12 @@ public class GOAPPlanner : MonoBehaviour
 
         // No path found
         if (startAction == null){
-            Log("No starting node found");
-            return null;}
+            PlannerLog($"No actions found to satisfy {goal} conditions");
+            return null;
+        }
+
         openList.Add(new ActionNode(null, startAction));
+        PlannerLog($"Selected {startAction}");
 
         while (openList.Count != 0){
 
@@ -293,17 +340,15 @@ public class GOAPPlanner : MonoBehaviour
                 );
             }
 
-            // No path found
             if (currentNode == null){
-               Log("No path found");
+                PlannerLog("No path found");
                 return null;
             }
             closedList.Add(currentNode);            
             openList.Remove(currentNode);
 
-            // Found complete path
             if (currentState.IsSubset(currentNode.action.preconditions)){
-                Log("Found complete path");
+                PlannerLog("Found complete path");
                 return GeneratePath(closedList);
             }
 
@@ -312,7 +357,7 @@ public class GOAPPlanner : MonoBehaviour
                 availableNodes:actions
             );
 
-            Log($"Found {linkedActions.Count} linked to current node");
+            PlannerLog($"Found {linkedActions.Count} linked to current node");
 
             for (int i = 0; i < linkedActions.Count; i++){
                 if (!InList(linkedActions[i], closedList)){
@@ -323,12 +368,17 @@ public class GOAPPlanner : MonoBehaviour
             }
         }
 
-        Log("No path found");
-        // No path found
+        PlannerLog("No path found.");
         return null;
     }
 
     List<GOAPAction> GeneratePath(List<ActionNode> closedList){
+
+        /**
+         * Iterates through parents starting with the last ActionNode in closedList
+         * to return a list of GOAPActions.
+         */
+
         List<GOAPAction> path = new List<GOAPAction>();
         ActionNode currentNode = closedList[closedList.Count - 1];
         while(currentNode.parent != null){
@@ -342,6 +392,11 @@ public class GOAPPlanner : MonoBehaviour
     ActionNode GetNextNode(
         List<ActionNode> closedList, 
         List<ActionNode> openList){
+
+        /**
+         * Finds the ActionNode in openList that satisfies
+         * conditions of an ActionNode in closedList with the lowest cost.
+         */
 
         float minCost = -1f;
         ActionNode nextNode=null;
@@ -359,10 +414,10 @@ public class GOAPPlanner : MonoBehaviour
             }
         }
         if (nextNode!=null){
-            Log($"Selected {nextNode.action.GetType().ToString()}");
+            PlannerLog($"Selected {nextNode.action}");
         }
         else{
-            Log("Could not find next node");
+            PlannerLog("Could not find next action");
         }
         return nextNode;
     }
@@ -372,8 +427,9 @@ public class GOAPPlanner : MonoBehaviour
         List<ActionNode> openList,
         out float nodeCost
         ){
+
             /**
-             * Searches for the node in availableNodes with the smallest
+             * Searches for the node in openList with the smallest
              * cost that satisfies requiredState
              */
 
@@ -382,26 +438,20 @@ public class GOAPPlanner : MonoBehaviour
                 logString += $" {i.Key}={i.Value}, ";
 
             }
-            Log($"Checking {openList.Count} nodes for one that satisfies: {logString}");
+            PlannerLog($"Checking {openList.Count} actions for one that satisfies: {logString}");
             float minCost = -1f;
             ActionNode nextNode = null;
             for (int i = 0; i < openList.Count; i++){
                 if (!openList[i].action.SatisfiesConditions(requiredState)){
-                    Log($"{openList[i].action.GetType().ToString()} does not satisfy conditions");
+                    PlannerLog($"{openList[i].action} does not satisfy conditions");
                     continue;
                 }
-                Log($"{openList[i].action.GetType().ToString()} satisfies conditions");
+                PlannerLog($"{openList[i].action} satisfies conditions");
                 float cost = openList[i].action.GetCost();
                 if (minCost < 0 || cost < minCost){
                     nextNode = openList[i];
                     minCost = cost;
                 }
-            }
-            if (nextNode!=null){
-                Log($"Selected {nextNode.action.GetType().ToString()}");
-            }
-            else{
-                Log("Could not find next node");
             }
             nodeCost = minCost;
             return nextNode;
@@ -410,15 +460,17 @@ public class GOAPPlanner : MonoBehaviour
     List<GOAPAction> GetLinkedActions(
         GOAPAction node, 
         List<GOAPAction> availableNodes){
+
         /**
          * Searches availableNodes for all those that satisfy node.preconditions 
-         * and that are not in path  
+         * and that are not in path. 
          */
-        Log($"Finding actions linked to {node.GetType().ToString()}");
+
+        PlannerLog($"Finding actions linked to {node}");
         List<GOAPAction> linkedNodes = new List<GOAPAction>();
         for (int i = 0; i < availableNodes.Count; i++){
             if (availableNodes[i].SatisfiesConditions(node.preconditions)){
-                Log($"{availableNodes[i].GetType().ToString()} satisfies conditions");
+                PlannerLog($"{availableNodes[i]} is linked to {node}");
                 linkedNodes.Add(availableNodes[i]);
             }
         }
@@ -469,9 +521,15 @@ public class GOAPPlanner : MonoBehaviour
         return goalData;
     }
 
-    void Log(object message){
-        if(logger){
-            logger.Log(message, this);
+    void ActivePlanLog(object message){
+        if(activePlanLogger){
+            activePlanLogger.Log(message, this);
+        }
+    }
+
+    void PlannerLog(object message){
+        if(plannerLogger){
+            plannerLogger.Log(message, this);
         }
     }
 

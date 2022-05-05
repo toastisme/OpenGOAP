@@ -26,4 +26,9 @@ public class Goal_HarvestWood : GOAPGoal
     public override bool PreconditionsSatisfied(WorldState worldState){
         return memory.InMemory("WoodStore");
     }
+
+    public override void OnDeactivate()
+    {
+        worldState.RemoveBoolState("WoodHarvested");
+    }
 }

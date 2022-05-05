@@ -25,13 +25,11 @@ public class Action_TakeWoodToStore : GOAPAction
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
         memory = GetComponent<Memory>();
-        worldState.AddState("WoodHarvested", false);
         woodStore = (SmartObject)memory.RememberNearest("WoodStore");
     }
 
     public override void OnActivate(){
         woodStore = (SmartObject)memory.RememberNearest("WoodStore");
-        worldState.AddState("WoodHarvested", false);
         if (woodStore == null){
             StopAction();
             return;
@@ -40,7 +38,8 @@ public class Action_TakeWoodToStore : GOAPAction
     }
 
     public override void OnDeactivate(){
-        worldState.AddState("WoodHarvested", false);
+        worldState.RemoveBoolState("WoodHarvested");
+        StopAction();
     }
 
     public override void OnTick()

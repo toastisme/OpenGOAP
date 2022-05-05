@@ -235,6 +235,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1068889259}
+  - {fileID: 1024982666}
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -776,6 +777,53 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1024982665
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1024982666}
+  - component: {fileID: 1024982667}
+  m_Layer: 0
+  m_Name: GOAPActivePlan
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1024982666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024982665}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 321766014}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1024982667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024982665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b1ad7387100f1f4ebb550edb962264a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showLogs: 1
+  prefix: ActivePlan
+  prefixColor: {r: 0.35511917, g: 0.8584906, b: 0.07694017, a: 1}
 --- !u!1 &1068889258
 GameObject:
   m_ObjectHideFlags: 0
@@ -787,7 +835,7 @@ GameObject:
   - component: {fileID: 1068889259}
   - component: {fileID: 1068889260}
   m_Layer: 0
-  m_Name: GOAP
+  m_Name: GOAPPlanner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -821,7 +869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showLogs: 0
-  prefix: GOAP
+  prefix: Planner
   prefixColor: {r: 0, g: 0.5356281, b: 0.69803923, a: 1}
 --- !u!4 &1139453746 stripped
 Transform:
@@ -1337,7 +1385,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9520386d9df0bcb45872f9808d6a9c6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logger: {fileID: 1068889260}
+  plannerLogger: {fileID: 1068889260}
+  activePlanLogger: {fileID: 1024982667}
   displayPlanner: 1
 --- !u!114 &1845868842
 MonoBehaviour:
@@ -1496,6 +1545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d0c554326331d14c85963acca946dd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  globalState: {fileID: 0}
 --- !u!114 &1845868863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1522,6 +1572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66857e480b7c30044be30c1df6afe8b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionLayers: []
   defaultFalse: 1
 --- !u!114 &1845868865
 MonoBehaviour:
@@ -1535,6 +1586,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8837c773abbc0cf40854a00b1421748a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionLayers: []
   defaultFalse: 1
 --- !u!114 &1845868866
 MonoBehaviour:
@@ -1548,6 +1600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6675d240dcf2104cb675dd4de66eabb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionLayers: []
   defaultFalse: 1
 --- !u!114 &1845868867
 MonoBehaviour:
@@ -1561,6 +1614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eeae85494eb94b42822813611573646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionLayers: []
   defaultFalse: 1
 --- !u!114 &1845868868
 MonoBehaviour:
@@ -1574,6 +1628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91c4b6e5a7e0dfb40b136a98754d0318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionLayers: []
   defaultFalse: 1
 --- !u!114 &1845868869
 MonoBehaviour:
@@ -1587,6 +1642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a255e4478976e449c4704b012c57ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionLayers: []
   defaultFalse: 1
 --- !u!114 &1845868870
 MonoBehaviour:
@@ -1600,6 +1656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e031beb4ecda5849b0d4f1a7a75ab28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionLayers: []
   defaultFalse: 1
 --- !u!114 &1845868871
 MonoBehaviour:
@@ -1613,6 +1670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b077106ffe83ab1418c09ae42ad981b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionLayers: []
   defaultFalse: 1
 --- !u!1001 &2056197522
 PrefabInstance:
