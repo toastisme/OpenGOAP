@@ -4,14 +4,19 @@ using System.Collections.Generic;
 namespace GOAP{
 public interface IAction
 {
-    float GetCost(); // Between 0 and 1
-    void OnActivate();
-    void OnDeactivate();
-    void OnTick();
+    /**
+     * \interface GOAP.IAction
+     * Basic interface for all GOAPActions
+     */
+
     void Setup();
+    float GetCost(); // Assumed between 0f and 1f
     bool SatisfiesConditions(Dictionary<string, bool> conditions);
     bool PreconditionsSatisfied(WorldState worldState); 
     bool EffectsSatisfied(WorldState worldState); 
+    void OnTick();
+    void OnActivate();
+    void OnDeactivate();
     
 }
 }

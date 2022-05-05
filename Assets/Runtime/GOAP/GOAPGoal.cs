@@ -27,7 +27,7 @@ public class GOAPGoal : MonoBehaviour, IGoal
 
     public virtual void Setup(){
 
-        /*
+        /**
          * Called by GOAPPlanner when entering Play Mode.
          */
 
@@ -39,7 +39,7 @@ public class GOAPGoal : MonoBehaviour, IGoal
 
     public virtual float GetPriority(){
 
-        /*
+        /**
          * Assumed to be between 0f and 1f
          */ 
 
@@ -48,7 +48,7 @@ public class GOAPGoal : MonoBehaviour, IGoal
 
     public virtual bool PreconditionsSatisfied(WorldState worldState){
         // Will return true if preconditions are empty
-        return worldState.IsSubset(conditions);
+        return worldState.IsSubset(preconditions);
     }
 
     public virtual bool ConditionsSatisfied(WorldState worldState){
@@ -56,21 +56,27 @@ public class GOAPGoal : MonoBehaviour, IGoal
     }
 
     public virtual void OnTick(){
-        /*
+
+        /**
          * Called every frame by GOAPPlanner
          */
+
     }
 
     public virtual void OnActivate(){
-        /*
+
+        /**
          * Called when selected by GOAPPlanner
          */
+
     }
 
     public virtual void OnDeactivate(){
-        /*
+
+        /**
          * Called by GOAPPlanner when goal achieved or plan cancelled
          */
+
     }
 
 }

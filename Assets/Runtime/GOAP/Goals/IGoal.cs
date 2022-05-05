@@ -7,7 +7,7 @@ public interface IGoal
      */
 
     void Setup();
-    float GetPriority(); // Between 0 and 1
+    float GetPriority(); // Assumed between 0f and 1f
     bool ConditionsSatisfied(WorldState worldState);
     bool PreconditionsSatisfied(WorldState worldState);
     void OnTick();
