@@ -6,14 +6,19 @@ using System;
 namespace GOAP{
 public class StateSet : MonoBehaviour
 {
-    Dictionary<string, bool> states;
+    /**
+     * GOAP.StateSet 
+     * A series of string,value dictionaries to describe a state
+     */
+
+    Dictionary<string, bool> boolStates;
     Dictionary<string, float> floatStates;
 
     [SerializeField]
     bool defaultFalse = true; // Absent key treated the same as key = false
 
     protected void Awake(){
-        states = new Dictionary<string, bool>();
+        boolStates = new Dictionary<string, bool>();
         floatStates = new Dictionary<string, float>();
     }
 
@@ -23,10 +28,10 @@ public class StateSet : MonoBehaviour
 
     public bool IsSubset(Dictionary<string, bool> state){
         foreach(var i in state){
-            if (!states.ContainsKey(i.Key)){
+            if (!boolStates.ContainsKey(i.Key)){
                 return defaultFalse && i.Value==false? true : false;
             }
-            if (states[i.Key] != i.Value){
+            if (boolStates[i.Key] != i.Value){
                 return false;
             }
         }
@@ -45,11 +50,11 @@ public class StateSet : MonoBehaviour
     }
 
     public virtual void AddState(string name, bool value){
-        states[name] = value;
+        boolStates[name] = value;
     }
 
     public void RemoveBoolState(string name){
-        states.Remove(name);
+        boolStates.Remove(name);
     }
 
     public void RemoveFloatState(string name){
@@ -61,11 +66,11 @@ public class StateSet : MonoBehaviour
     }
 
     public bool GetBoolState(string name){
-        return states[name];
+        return boolStates[name];
     }
 
     public bool InBoolStates(string name){
-        return states.ContainsKey(name);
+        return boolStates.ContainsKey(name);
     }
 
     public bool InFloatStates(string name){
@@ -76,7 +81,7 @@ public class StateSet : MonoBehaviour
         if (!InBoolStates(name)){
             return defaultFalse && value==false ? true : false;
         }
-        if (states[name] != value){
+        if (boolStates[name] != value){
             return false;
         }
         return true;
@@ -93,7 +98,7 @@ public class StateSet : MonoBehaviour
     }
 
     public Dictionary<string, bool> GetBoolStates(){
-        return states;
+        return boolStates;
     }
 
     public Dictionary<string, float> GetFloatStates(){

@@ -6,9 +6,16 @@ namespace GOAP{
 [RequireComponent(typeof(StateSet))]
 public class WorldState : MonoBehaviour
 {
-    /* 
-    Attached and specific to the GameObject 
-    */
+
+    /**
+     * \class GOAP.WorldState
+     * The state of the world represented as a local StateSet and a global StateSet.
+     * The local StateSet is specific to the GameObject, whereas the global StateSet
+     * can be shared between GameObjects.
+     */
+
+     
+    //Attached and specific to the GameObject 
     StateSet localState; 
 
     /* 
