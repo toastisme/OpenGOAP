@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace GOAP{
-public class Goal : MonoBehaviour, IGoal
+public class GOAPGoal : MonoBehaviour, IGoal
 {
 
     protected WorldState worldState;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GOAP;
 
-public class Goal_Idle : Goal
+public class Goal_Idle : GOAPGoal
 {
 
     public override void Setup(){

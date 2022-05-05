@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GOAP;
 
-public class Goal_ReduceHunger : Goal
+public class Goal_ReduceHunger : GOAPGoal
 {
         public override void Setup(){
             base.Setup();

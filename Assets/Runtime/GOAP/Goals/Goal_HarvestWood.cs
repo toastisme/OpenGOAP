@@ -5,7 +5,7 @@ using GOAP;
 using Sensors;
 
 [RequireComponent(typeof(Memory))]
-public class Goal_HarvestWood : Goal
+public class Goal_HarvestWood : GOAPGoal
 {
     Memory memory;
 

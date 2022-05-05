@@ -5,7 +5,7 @@ using GOAP;
 using Sensors;
 
 [RequireComponent(typeof(Memory))]
-public class Goal_HarvestFood : Goal
+public class Goal_HarvestFood : GOAPGoal
 {
     Memory memory;
     public override void Setup(){

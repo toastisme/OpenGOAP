@@ -43,16 +43,16 @@ public class GOAPPlanner : MonoBehaviour
     [SerializeField]
     Logger logger;
     WorldState worldState;
-    public List<Goal> goals{get; private set;}
+    public List<GOAPGoal> goals{get; private set;}
     public Dictionary<string, List<GOAPAction> > actions{get; private set;}
 
     //// Active
-    public Goal activeGoal{get; private set;}
+    public GOAPGoal activeGoal{get; private set;}
     public int activeActionIdx{get; private set;}
     public List<GOAPAction> activePlan{get; private set;}
 
     //// Optimal
-    Goal optimalGoal;
+    GOAPGoal optimalGoal;
     List<GOAPAction> optimalPlan;
 
     //// GUI bookkeeping
@@ -62,7 +62,7 @@ public class GOAPPlanner : MonoBehaviour
     void Start(){
         worldState = GetComponent<WorldState>();
         actions = new Dictionary<string, List<GOAPAction> >();
-        goals = new List<Goal>(GetComponents<Goal>());
+        goals = new List<GOAPGoal>(GetComponents<GOAPGoal>());
         SetupGoals();
         SetupActions();
     }
@@ -196,7 +196,7 @@ public class GOAPPlanner : MonoBehaviour
         activePlan = null;
     }
 
-    void GetHighestPriorityGoal(out Goal chosenGoal, out List<GOAPAction> chosenPlan){
+    void GetHighestPriorityGoal(out GOAPGoal chosenGoal, out List<GOAPAction> chosenPlan){
 
         /**
          * Updates chosenGoal and chosenPlan with the highest priorty goal that 
@@ -230,7 +230,7 @@ public class GOAPPlanner : MonoBehaviour
         }
     }
 
-    bool HasHigherPriority(Goal goal, Goal other){
+    bool HasHigherPriority(GOAPGoal goal, GOAPGoal other){
         return goal.GetPriority() > other.GetPriority();
     }
 
@@ -238,7 +238,7 @@ public class GOAPPlanner : MonoBehaviour
 
     List<GOAPAction> GetOptimalPath(
         WorldState currentState, 
-        Goal goal, 
+        GOAPGoal goal, 
         List<GOAPAction> actions){
 
         bool InList(GOAPAction action, List<ActionNode> nodeList){
