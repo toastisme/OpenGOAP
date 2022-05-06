@@ -28,7 +28,7 @@ Tested on Windows 10 using Unity 2021.2.11f1
 - To find the optimum viable action plan the `GOAPPlanner` uses the [A* search algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm) to find 
 the series of actions which have the minimum cost.
 
-#### GOAPGOAL
+#### GOAPGoal
 
 A `GOAPGoal` has a dictionary of boolean `conditions` that need to be met to satisfy the goal, and optionally a dictionary of boolean `preconditions` that must be met before it can be considered (beyond having a viable plan). This component has the following interface:
 - `Setup()` called when the `GameObject` is first initialised
@@ -140,7 +140,14 @@ public class Action_TakeWoodToStore : GOAPAction
 ```
 This action has a precondition of `"HoldingWood" being true`, and so we could have another action `Action_PickUpWood`, which picks up the nearest wood, given the precondition `"WoodNearby"` is true. This preconditon in turn could be in the `effects` dictionary of both `Action_ChopDownTree` and `Action_LookAround`. The latter could have a higher cost than the former, and so would only be selected by the `GOAPPlanner` if, say, the `GameObject` did not have an axe. 
 
-To have a `GameObject` utilise these behaviours simply add the goal and action scripts, along with a `GOAPPlanner` and `WorldState` script to the `GameObject` as components. The global `StateSet` can be kept on a separate `GameObject` and added in the inspector on the `WorldState` component, or added in code via `WorldState.SetGlobalState(StateSet)`. The `GOAPPlanner` has a boolean `Display Planner` in the inspector. If this is set to true, when clicking on `GameObject` in the `Hierarchy` navigation bar, a window will be displayed of the current active plan, and the priorities of all goals.
+To have a `GameObject` utilise these behaviours simply add the goal and action scripts, along with a `GOAPPlanner` and `WorldState` script to the `GameObject` as components. The global `StateSet` can be kept on a separate `GameObject` and added in the inspector on the `WorldState` component, or added in code via `WorldState.SetGlobalState(StateSet)`. 
+
+### Visualisation and Debugging
+
+The `GOAPPlanner` has a boolean `Display Planner` in the inspector. If this is set to true, when clicking on `GameObject` in the Hierarchy navigation bar, a `GUIPlanner` window will be displayed of the current active plan, and the priorities of all goals. For a given `GOAPGoal`, if `PreconditionsSatisfied() == false`, the goal will be greyed out.
+
+Additional debugging can be done by adding a `GOAPLogger` to the scene. This contains a logger for the active plan and one for the planner, which can be assigned to a `GameObject`'s `GOAPPlanner` in the inspector. These can be turned on or off individually on the loggers themselves, in the inspector, by selecting `Show Logs`. The Planner logger will print log statements for each step through the A* process when finding the optimum plan. The ActivePlan logger will essentially print log statements with the same information as the `GUIPlanner` window, but this can still be useful (for example for identifying if plans are being selected/completing instantly, repeatedly, due to a condition in `WorldState` not being reset correctly).
+
 
 
 
