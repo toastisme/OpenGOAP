@@ -7,10 +7,21 @@ using System;
 namespace GOAP{
 public class GUIPlanner : EditorWindow
 {
+
+    /**
+     * \class GOAP.GUIPlanner
+     * Displays informtion from the GOAPPlanner as a custom editor window
+     */
+
     GOAPPlanner planner; // The planner being visualised
+
+    Rect activePlanPanel;
+    Rect goalPrioritiesPanel;
+
+    // Active plan node params
     Vector2 nodeSpacing;
-    Vector2 nodeSize;
-    Vector2 taskNodeSize;
+    Vector2 nodeSize; 
+    Vector2 taskNodeSize;  
 
     // Styles
     GUIStyle guiNodeStyle;
@@ -24,9 +35,7 @@ public class GUIPlanner : EditorWindow
     GUIContent actionContent;
     GUIContent goalContent;
 
-    Rect activePlanPanel;
-    Rect goalPrioritiesPanel;
-
+    // Positions
     float activePlanHeight = 30f;
     float maxPriorityRectWidth;
     float priorityRectHeight = 40f;
@@ -41,14 +50,11 @@ public class GUIPlanner : EditorWindow
     Color linkColor;
     Color panelColor;
 
-
-
     public void SetPlanner(GOAPPlanner planner){
         this.planner = planner;
     }
 
-    void OnEnable(){
-
+    void SetupPanels(){
         activePlanPanel = new Rect(
             0,
             0,
@@ -61,20 +67,24 @@ public class GUIPlanner : EditorWindow
             position.width,
             position.height
         );
+    }
 
-        maxPriorityRectWidth = position.width - 10f;
-
+    void SetupActivePlanNodeParams(){
         nodeSpacing = GUIProperties.NodeSpacing();
         nodeSize = GUIProperties.NodeSize();
         taskNodeSize = GUIProperties.TaskNodeSize();
+    }
 
+    void SetupGUIStyles(){
         guiNodeStyle = GUIProperties.GUINodeStyle();
         selectedNodeStyle = GUIProperties.SelectedGUINodeStyle();
         activeNodeStyle = guiNodeStyle;
         panelStyle = GUIProperties.GUIPlannerStyle();
         goalLabelStyle = GUIProperties.GoalLabelStyle();
         disabledGoalLabelStyle = GUIProperties.DisabledGoalLabelStyle();
+    }
 
+    void SetupColors(){
         backgroundNodeColor = GUIProperties.BackgroundNodeColor();
         actionColor = GUIProperties.ActionColor();
         goalColor = GUIProperties.GoalColor();
@@ -82,9 +92,26 @@ public class GUIPlanner : EditorWindow
         defaultTint = GUIProperties.DefaultTint();
         linkColor = GUIProperties.LinkColor();
         panelColor = GUIProperties.PanelColor();
+    }
 
+    void SetupGUIContent(){
         actionContent = GUIProperties.ActionContent();
         goalContent = GUIProperties.GoalContent();
+    }
+
+    void SetupGoalPriorities(){
+        maxPriorityRectWidth = position.width - 10f;
+    }
+
+    void OnEnable(){
+
+        SetupPanels();
+        SetupActivePlanNodeParams();
+        SetupGUIStyles();
+        SetupColors();
+        SetupGUIContent();
+        SetupGoalPriorities();
+
     }
 
     void OnGUI(){
@@ -155,6 +182,12 @@ public class GUIPlanner : EditorWindow
     }
 
     void DrawGoalPriorities(int unusedWindowID){
+
+        /**
+         * Draws goals in priority order, where priority is 
+         * visualised as a progress bar 
+         */
+
         if (!IsActive()){return;}
         List<GoalData> goalData = planner.GetSortedGoalData();
         GUILayout.Label("\n\n");
@@ -191,6 +224,11 @@ public class GUIPlanner : EditorWindow
     }
 
     void DrawActionNodes(int unusedWindowID){
+
+        /**
+         * Draws an action plan as a series of labelled Rects linked together
+         */
+
         List<GOAPAction> activePlan = planner.activePlan;
         GOAPAction activeAction = activePlan[planner.activeActionIdx];
         int count = 0;
@@ -279,6 +317,11 @@ public class GUIPlanner : EditorWindow
     }
 
     void DrawLink(
+
+        /**
+         * Links between nodes in the active plan
+         */
+
         int startGridPos, 
         int endGridPos, 
         Color color,
@@ -337,9 +380,5 @@ public class GUIPlanner : EditorWindow
         Handles.color = Color.white;
         Handles.EndGUI();
     }
-
-
-    
 }
-
 }
