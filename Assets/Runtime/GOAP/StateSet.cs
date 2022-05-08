@@ -38,6 +38,15 @@ public class StateSet : MonoBehaviour
         return true;
     }
 
+    public bool IsSubset(Dictionary<string, float> state){
+        foreach(var i in state){
+            if (!InSet(i.Key, i.Value)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public virtual void UpdateState(string name, float addedValue){
         if (!floatStates.ContainsKey(name)){
             floatStates[name] = 0;
