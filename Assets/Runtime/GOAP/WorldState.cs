@@ -33,6 +33,14 @@ public class WorldState : MonoBehaviour
         this.globalState = globalState;
     }
 
+    public void SetGlobalDefaultFalse(bool val){
+        globalState?.SetDefaultFalse(val);
+    }
+
+    public void SetLocalDefaultFalse(bool val){
+        localState?.SetDefaultFalse(val);
+    }
+
     public bool IsSubset(Dictionary<string, bool> state){
         foreach(var i in state){
             if (!InSet(i.Key, i.Value)){

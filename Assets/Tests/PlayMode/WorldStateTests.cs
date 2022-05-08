@@ -63,6 +63,9 @@ public class WorldStateTests
     [Test]
     public void IsSubsetBoolTest(){
         WorldState worldState = GetWorldStateMock();
+        // Absent key treated the same as key = false by default
+        worldState.SetLocalDefaultFalse(true);
+
         worldState.AddState("testBool1", true);
         worldState.AddState("testBool2", false);
         Dictionary<string, bool> states = new Dictionary<string, bool>();
@@ -75,7 +78,6 @@ public class WorldStateTests
         Assert.IsTrue(!worldState.IsSubset(states));        
         states["testBool2"] = false;
         Assert.IsTrue(worldState.IsSubset(states));        
-        // Abset key treated the same as key = false by default
         states["testBool3"] = false;
         Assert.IsTrue(worldState.IsSubset(states));        
         states["testBool3"] = true;
@@ -99,6 +101,28 @@ public class WorldStateTests
         Assert.IsTrue(worldState.IsSubset(states));        
         states["testFloat3"] = 1f;
         Assert.IsTrue(!worldState.IsSubset(states));        
+    }
+
+    [Test]
+    public void DefaultFalseTest(){
+        WorldState worldState = GetWorldStateMock();
+        worldState.AddState("testBool1", true);
+
+        Dictionary<string, bool> states = new Dictionary<string, bool>();
+        states["testBool1"] = true;
+        states["testBool2"] = false;
+        Assert.IsTrue(worldState.IsSubset(states));
+
+        worldState.SetLocalDefaultFalse(true);
+        worldState.SetGlobalDefaultFalse(true);
+        Assert.IsTrue(worldState.IsSubset(states));
+
+        worldState.SetLocalDefaultFalse(false);
+        Assert.IsTrue(!worldState.IsSubset(states));
+        worldState.SetLocalDefaultFalse(true);
+        Assert.IsTrue(worldState.IsSubset(states));
+        worldState.SetGlobalDefaultFalse(false);
+        Assert.IsTrue(worldState.IsSubset(states));
     }
 
 }
