@@ -20,15 +20,14 @@ public class Action_GetFoodFromStore : GOAPAction
     public override float GetCost(){
         return 0.1f * worldState.GetFloatState("Fatigue");
     }
-    public override void Setup(){
-        base.Setup();
+    protected override void SetupDerived(){
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
         memory = GetComponent<Memory>();
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
     }
 
-    public override void OnActivate(){
+    protected override void OnActivateDerived(){
         foodStore = (SmartObject)memory.RememberNearest("FoodStore");
         if (foodStore == null){
             StopAction();
@@ -37,7 +36,7 @@ public class Action_GetFoodFromStore : GOAPAction
         movement.GoTo(foodStore);
     }
 
-    public override void OnDeactivate(){
+    protected override void OnDeactivateDerived(){
         worldState.RemoveBoolState("FoodRemovedFromStore");
     }
 
@@ -66,16 +65,13 @@ public class Action_GetFoodFromStore : GOAPAction
     }
 
     protected override void SetupActionLayers(){
-        base.SetupActionLayers();
         actionLayers.Add("Food");
     }
     protected override void SetupEffects(){
-        base.SetupEffects();
         effects["HoldingFood"] = true;
         effects["FoodRemovedFromStore"] = true;
     }
     protected override void SetupConditions(){
-        base.SetupConditions();
         preconditions["g_FoodAvailable"] = true;
     }
 

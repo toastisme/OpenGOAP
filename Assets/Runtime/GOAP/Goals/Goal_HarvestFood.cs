@@ -8,8 +8,7 @@ using Sensors;
 public class Goal_HarvestFood : GOAPGoal
 {
     Memory memory;
-    public override void Setup(){
-        base.Setup();
+    protected override void SetupDerived(){
         memory = GetComponent<Memory>();
         conditions["FoodHarvested"] = true;
         actionLayer = "Food";

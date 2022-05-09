@@ -15,16 +15,14 @@ public class Action_PickUpWood : GOAPAction
     public override float GetCost(){
         return 0.0f;
     }
-    public override void Setup(){
-        base.Setup();
+    protected override void SetupDerived(){
         movement = GetComponent<Movement>();
         awareness = GetComponent<Awareness>();
         inventory = GetComponent<Inventory>();
     }
 
-    public override void OnActivate()
+    protected override void OnActivateDerived()
     {
-        base.OnActivate();
         targetWood = (SmartObject)awareness.GetNearest("Wood");
         if (targetWood != null){
             movement.GoTo(targetWood);
@@ -51,17 +49,14 @@ public class Action_PickUpWood : GOAPAction
     }
 
     protected override void SetupActionLayers(){
-        base.SetupActionLayers();
         actionLayers.Add("Wood");
     }
 
     protected override void SetupEffects(){
-        base.SetupEffects();
         effects["HoldingWood"] = true;
     }
 
     protected override void SetupConditions(){
-        base.SetupConditions();
         preconditions["WoodNearby"] = true;
     }
 }

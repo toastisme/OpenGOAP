@@ -25,7 +25,7 @@ public class GOAPGoal : MonoBehaviour, IGoal
     // What must be in worldState for the goal to be considered
     public Dictionary<string, bool> preconditions{get; protected set;}
 
-    public virtual void Setup(){
+    public void Setup(){
 
         /**
          * Called by GOAPPlanner when entering Play Mode.
@@ -35,6 +35,11 @@ public class GOAPGoal : MonoBehaviour, IGoal
         conditions = new Dictionary<string, bool>();
         preconditions = new Dictionary<string, bool>();
         worldState = GetComponent<WorldState>();
+        SetupDerived();
+    }
+
+    protected virtual void SetupDerived(){
+
     }
 
     public virtual float GetPriority(){

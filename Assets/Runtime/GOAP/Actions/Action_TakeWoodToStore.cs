@@ -20,15 +20,14 @@ public class Action_TakeWoodToStore : GOAPAction
     public override float GetCost(){
         return 0.1f * worldState.GetFloatState("Fatigue");
     }
-    public override void Setup(){
-        base.Setup();
+    protected override void SetupDerived(){
         movement = GetComponent<Movement>();
         inventory = GetComponent<Inventory>();
         memory = GetComponent<Memory>();
         woodStore = (SmartObject)memory.RememberNearest("WoodStore");
     }
 
-    public override void OnActivate(){
+    protected override void OnActivateDerived(){
         woodStore = (SmartObject)memory.RememberNearest("WoodStore");
         if (woodStore == null){
             StopAction();
@@ -37,7 +36,7 @@ public class Action_TakeWoodToStore : GOAPAction
         movement.GoTo(woodStore);
     }
 
-    public override void OnDeactivate(){
+    protected override void OnDeactivateDerived(){
         worldState.RemoveBoolState("WoodHarvested");
         StopAction();
     }
@@ -66,16 +65,13 @@ public class Action_TakeWoodToStore : GOAPAction
     } 
 
     protected override void SetupActionLayers(){
-        base.SetupActionLayers();
         actionLayers.Add("Wood");
     }
     protected override void SetupEffects(){
-        base.SetupEffects();
         effects["WoodHarvested"] = true;
         effects["g_WoodAvailable"] = true;
     }
     protected override void SetupConditions(){
-        base.SetupConditions();
         preconditions["HoldingWood"] = true;
     }
 }

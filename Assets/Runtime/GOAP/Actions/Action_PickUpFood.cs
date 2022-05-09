@@ -16,16 +16,14 @@ public class Action_PickUpFood : GOAPAction
     public override float GetCost(){
         return 0.0f;
     }
-    public override void Setup(){
-        base.Setup();
+    protected override void SetupDerived(){
         movement = GetComponent<Movement>();
         awareness = GetComponent<Awareness>();
         inventory = GetComponent<Inventory>();
     }
 
-    public override void OnActivate()
+    protected override void OnActivateDerived()
     {
-        base.OnActivate();
         targetFood = (SmartObject)awareness.GetNearest("Food");
         if (targetFood != null){
             movement.GoTo(targetFood);
@@ -52,17 +50,14 @@ public class Action_PickUpFood : GOAPAction
     }
 
     protected override void SetupActionLayers(){
-        base.SetupActionLayers();
         actionLayers.Add("Food");
     }
 
     protected override void SetupEffects(){
-        base.SetupEffects();
         effects["HoldingFood"] = true;
     }
 
     protected override void SetupConditions(){
-        base.SetupConditions();
         preconditions["FoodNearby"] = true;
     }
 }

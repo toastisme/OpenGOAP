@@ -6,8 +6,7 @@ using GOAP;
 public class Goal_Idle : GOAPGoal
 {
 
-    public override void Setup(){
-        base.Setup();
+    protected override void SetupDerived(){
         conditions["WasIdle"] = true;
         actionLayer = "Idle";
     }

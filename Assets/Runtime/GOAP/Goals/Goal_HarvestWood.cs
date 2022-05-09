@@ -9,8 +9,7 @@ public class Goal_HarvestWood : GOAPGoal
 {
     Memory memory;
 
-    public override void Setup(){
-        base.Setup();
+    protected override void SetupDerived(){
         memory = GetComponent<Memory>();
         conditions["WoodHarvested"] = true;
         actionLayer = "Wood";

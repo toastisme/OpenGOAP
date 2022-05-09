@@ -15,8 +15,7 @@ public class Action_LookAround : GOAPAction
     Coroutine surveying;
     bool isSurveying=false;
 
-    public override void Setup(){
-        base.Setup();
+    protected override void SetupDerived(){
         movement = GetComponent<Movement>();
         vision = GetComponent<Vision>();
     }
@@ -55,20 +54,18 @@ public class Action_LookAround : GOAPAction
         }
     }
 
-    public override void OnDeactivate(){
+    protected override void OnDeactivateDerived(){
         StopCoroutine(surveying);
         movement.ClearTarget();
         isSurveying = false;
     }
 
     protected override void SetupActionLayers(){
-        base.SetupActionLayers();
         actionLayers.Add("Food");
         actionLayers.Add("Wood");
     }
 
     protected override void SetupEffects(){
-        base.SetupEffects();
         effects["WoodNearby"] = true;
         effects["FoodNearby"] = true;
     }

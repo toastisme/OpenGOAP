@@ -13,16 +13,15 @@ public class Action_EatFood : GOAPAction
         return 0.0f;
     }
 
-    public override void Setup(){
-        base.Setup();
+    protected override void SetupDerived(){
         inventory = GetComponent<Inventory>();
     }
 
-    public override void OnActivate(){
+    protected override void OnActivateDerived(){
         worldState.AddState("ReducedHunger", false);
     }
 
-    public override void OnDeactivate(){
+    protected override void OnDeactivateDerived(){
         worldState.AddState("ReducedHunger", false);
     }
 
@@ -34,17 +33,14 @@ public class Action_EatFood : GOAPAction
     }
 
     protected override void SetupActionLayers(){
-        base.SetupActionLayers();
         actionLayers.Add("Food");
     }
 
     protected override void SetupEffects(){
-        base.SetupEffects();
         effects["ReducedHunger"] = true;
     }
 
     protected override void SetupConditions(){
-        base.SetupConditions();
         preconditions["HoldingFood"] = true;
     }
 }

@@ -33,7 +33,7 @@ public class GOAPAction : MonoBehaviour, IAction
     protected bool defaultFalse = true; 
 
     
-    public virtual void Setup(){
+    public void Setup(){
 
         /**
          * Called by GOAPPlanner when entering Play Mode.
@@ -41,10 +41,16 @@ public class GOAPAction : MonoBehaviour, IAction
 
         this.worldState = GetComponent<WorldState>();
         stopAction_ = false;
+        actionLayers = new List<string>();
+        effects = new Dictionary<string, bool>();
+        preconditions = new Dictionary<string, bool>();
         SetupConditions();
         SetupEffects();
         SetupActionLayers();
+        SetupDerived();
     }
+
+    protected virtual void SetupDerived(){}
 
     public virtual float GetCost(){
 
@@ -75,23 +81,29 @@ public class GOAPAction : MonoBehaviour, IAction
         return true;
     }
 
-    public virtual void OnActivate(){
+    public void OnActivate(){
 
         /**
          * Called when selected by GOAPPlanner
          */
 
         stopAction_ = false;
+        OnActivateDerived();
     }
 
-    public virtual void OnDeactivate(){
+    protected virtual void OnActivateDerived(){}
+
+    public void OnDeactivate(){
 
         /**
          * Called by GOAPPlanner when action effects achieved or plan cancelled
          */
 
         StopAction();
+        OnDeactivateDerived();
     }
+
+    protected virtual void OnDeactivateDerived(){}
 
     public virtual void OnTick(){
 
@@ -125,13 +137,10 @@ public class GOAPAction : MonoBehaviour, IAction
     }
 
     protected virtual void SetupActionLayers(){
-        actionLayers = new List<string>();
     }
     protected virtual void SetupEffects(){
-        effects = new Dictionary<string, bool>();
     }
     protected virtual void SetupConditions(){
-        preconditions = new Dictionary<string, bool>();
     }
 }
 }

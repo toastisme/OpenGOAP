@@ -5,8 +5,7 @@ using GOAP;
 
 public class Goal_ReduceHunger : GOAPGoal
 {
-        public override void Setup(){
-            base.Setup();
+        protected override void SetupDerived(){
             conditions["ReducedHunger"] = true;
             actionLayer = "Food";
         }
