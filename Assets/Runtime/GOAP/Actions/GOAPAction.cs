@@ -13,6 +13,8 @@ public class GOAPAction : MonoBehaviour, IAction
      */
 
     protected WorldState worldState;
+    // All of these states are removed from worldState when OnDeactivate is called
+    private WorldState temporaryState; 
 
     // What must be in worldState for the action to run
     public Dictionary<string, bool> preconditions{get; protected set;} 
@@ -101,6 +103,7 @@ public class GOAPAction : MonoBehaviour, IAction
 
         StopAction();
         OnDeactivateDerived();
+        ClearTemporaryStates();
     }
 
     protected virtual void OnDeactivateDerived(){}
@@ -142,5 +145,111 @@ public class GOAPAction : MonoBehaviour, IAction
     }
     protected virtual void SetupConditions(){
     }
+
+    protected void AddState(string name, bool val){
+        worldState.AddState(name, val);
+    }
+
+    protected void AddState(string name, float val){
+        worldState.AddState(name, val);
+    }
+
+    protected void AddState(string name, int val){
+        worldState.AddState(name, val);
+    }
+
+    protected void AddState(string name, Vector2 val){
+        worldState.AddState(name, val);
+    }
+
+    protected void AddState(string name, Vector3 val){
+        worldState.AddState(name, val);
+    }
+
+    protected void AddState(string name, string val){
+        worldState.AddState(name, val);
+    }
+
+    protected void AddState(string name, GameObject val){
+        worldState.AddState(name, val);
+    }
+
+    protected void AddTemporaryState(string name, bool val){
+        AddState(name, val);
+        temporaryState.AddState(name, val);
+    }
+    protected void AddTemporaryState(string name, float val){
+        AddState(name, val);
+        temporaryState.AddState(name, val);
+    }
+    protected void AddTemporaryState(string name, int val){
+        AddState(name, val);
+        temporaryState.AddState(name, val);
+    }
+    protected void AddTemporaryState(string name, Vector2 val){
+        AddState(name, val);
+        temporaryState.AddState(name, val);
+    }
+    protected void AddTemporaryState(string name, Vector3 val){
+        AddState(name, val);
+        temporaryState.AddState(name, val);
+    }
+    protected void AddTemporaryState(string name, string val){
+        AddState(name, val);
+        temporaryState.AddState(name, val);
+    }
+    protected void AddTemporaryState(string name, GameObject val){
+        AddState(name, val);
+        temporaryState.AddState(name, val);
+    }
+
+    protected void ClearTemporaryStates(){
+        StateSet localState = temporaryState.GetLocalState();
+        StateSet globalState = temporaryState.GetGlobalState();
+        
+        foreach(var i in localState.GetBoolStates().Keys){
+            worldState.RemoveBoolState(i);
+        }
+        foreach(var i in globalState.GetBoolStates().Keys){
+            worldState.RemoveBoolState(i);
+        }
+        foreach(var i in localState.GetFloatStates().Keys){
+            worldState.RemoveFloatState(i);
+        }
+        foreach(var i in globalState.GetFloatStates().Keys){
+            worldState.RemoveFloatState(i);
+        }
+        foreach(var i in localState.GetIntStates().Keys){
+            worldState.RemoveIntState(i);
+        }
+        foreach(var i in globalState.GetIntStates().Keys){
+            worldState.RemoveIntState(i);
+        }
+        foreach(var i in localState.GetVector2States().Keys){
+            worldState.RemoveVector2State(i);
+        }
+        foreach(var i in globalState.GetVector2States().Keys){
+            worldState.RemoveVector2State(i);
+        }
+        foreach(var i in localState.GetVector3States().Keys){
+            worldState.RemoveVector3State(i);
+        }
+        foreach(var i in globalState.GetVector3States().Keys){
+            worldState.RemoveVector3State(i);
+        }
+        foreach(var i in localState.GetStringStates().Keys){
+            worldState.RemoveStringState(i);
+        }
+        foreach(var i in globalState.GetStringStates().Keys){
+            worldState.RemoveStringState(i);
+        }
+        foreach(var i in localState.GetGameObjectStates().Keys){
+            worldState.RemoveGameObjectState(i);
+        }
+        foreach(var i in globalState.GetGameObjectStates().Keys){
+            worldState.RemoveGameObjectState(i);
+        }
+    }
+
 }
 }
