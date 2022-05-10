@@ -15,6 +15,7 @@ public class GOAPAction : MonoBehaviour, IAction
     protected WorldState worldState;
     // All of these states are removed from worldState when OnDeactivate is called
     private WorldState temporaryState; 
+    bool usedTemporaryState=false;
 
     // What must be in worldState for the action to run
     public Dictionary<string, bool> preconditions{get; protected set;} 
@@ -177,33 +178,41 @@ public class GOAPAction : MonoBehaviour, IAction
     protected void AddTemporaryState(string name, bool val){
         AddState(name, val);
         temporaryState.AddState(name, val);
+        usedTemporaryState=true;
     }
     protected void AddTemporaryState(string name, float val){
         AddState(name, val);
         temporaryState.AddState(name, val);
+        usedTemporaryState=true;
     }
     protected void AddTemporaryState(string name, int val){
         AddState(name, val);
         temporaryState.AddState(name, val);
+        usedTemporaryState=true;
     }
     protected void AddTemporaryState(string name, Vector2 val){
         AddState(name, val);
         temporaryState.AddState(name, val);
+        usedTemporaryState=true;
     }
     protected void AddTemporaryState(string name, Vector3 val){
         AddState(name, val);
         temporaryState.AddState(name, val);
+        usedTemporaryState=true;
     }
     protected void AddTemporaryState(string name, string val){
         AddState(name, val);
         temporaryState.AddState(name, val);
+        usedTemporaryState=true;
     }
     protected void AddTemporaryState(string name, GameObject val){
         AddState(name, val);
         temporaryState.AddState(name, val);
+        usedTemporaryState=true;
     }
 
     protected void ClearTemporaryStates(){
+        if (!usedTemporaryState){return;}
         StateSet localState = temporaryState.GetLocalState();
         StateSet globalState = temporaryState.GetGlobalState();
         
