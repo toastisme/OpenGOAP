@@ -25,12 +25,7 @@ public class GOAPGoal : MonoBehaviour, IGoal
     // What must be in worldState for the goal to be considered
     public Dictionary<string, bool> preconditions{get; protected set;}
 
-    public void Setup(){
-
-        /**
-         * Called by GOAPPlanner when entering Play Mode.
-         */
-
+    void Awake(){
         actionLayer = "All"; // By default consider all GOAPActions to achieve conditions
         conditions = new Dictionary<string, bool>();
         preconditions = new Dictionary<string, bool>();

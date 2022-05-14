@@ -9,7 +9,6 @@ public interface IAction
      * Basic interface for all GOAPActions
      */
 
-    void Setup();
     float GetCost(); // Assumed between 0f and 1f
     bool SatisfiesConditions(Dictionary<string, bool> conditions);
     bool PreconditionsSatisfied(WorldState worldState); 

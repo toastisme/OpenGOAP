@@ -6,7 +6,6 @@ public interface IGoal
      * Basic interface for all GOAPGoals
      */
 
-    void Setup();
     float GetPriority(); // Assumed between 0f and 1f
     bool ConditionsSatisfied(WorldState worldState);
     bool PreconditionsSatisfied(WorldState worldState);

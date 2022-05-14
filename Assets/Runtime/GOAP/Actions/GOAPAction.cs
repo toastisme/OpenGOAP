@@ -36,12 +36,7 @@ public class GOAPAction : MonoBehaviour, IAction
     protected bool defaultFalse = true; 
 
     
-    public void Setup(){
-
-        /**
-         * Called by GOAPPlanner when entering Play Mode.
-         */
-
+    void Awake(){
         this.worldState = GetComponent<WorldState>();
         stopAction_ = false;
         actionLayers = new List<string>();

@@ -89,7 +89,6 @@ public class GOAPPlanner : MonoBehaviour
 
         List<GOAPAction> allActions = new List<GOAPAction>(GetComponents<GOAPAction>());
         for (int i = 0; i < allActions.Count; i++){
-            allActions[i].Setup();
             actions["All"].Add(allActions[i]);
             for(int j = 0; j < allActions[i].actionLayers.Count; j++){
                 string actionLayer = allActions[i].actionLayers[j];
@@ -113,7 +112,6 @@ public class GOAPPlanner : MonoBehaviour
 
         actions["All"] = new List<GOAPAction>();
         for (int i = 0; i < goals.Count; i++){
-            goals[i].Setup();
             // This ensures no key errors when finding optimal plans
             if (!actions.ContainsKey(goals[i].actionLayer)){
                 actions[goals[i].actionLayer] = new List<GOAPAction>();

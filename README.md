@@ -31,7 +31,7 @@ the series of actions which have the minimum cost.
 #### GOAPGoal
 
 A `GOAPGoal` has a dictionary of boolean `conditions` that need to be met to satisfy the goal, and optionally a dictionary of boolean `preconditions` that must be met before it can be considered (beyond having a viable plan). This component has the following interface:
-- `Setup()` called when the `GameObject` is first initialised
+- `SetupDerived()` called when the `GameObject` is first initialised
 - `OnActivate()` called the when goal is first selected by the `GOAPPlanner`
 - `OnDeactivate()` called when the goal is deselected by the `GOAPPlanner` (either due to completing the goal or finding a better one)
 - `GetPriority()` value between 0 and 1 
@@ -42,7 +42,7 @@ A `GOAPGoal` has a dictionary of boolean `conditions` that need to be met to sat
 #### GOAPAction
 
 A `GOAPAction` has a dictionary of `preconditions` that need to be met before it can run, and a dictionary of boolean `effects` that will occur as a result of running to completion. This component has the following interface:
-- `Setup()` called when the `GameObject` is first initialised
+- `SetupDerived()` called when the `GameObject` is first initialised
 - `OnActivate()` called the when action is first selected by the `GOAPPlanner`
 - `OnDeactivate()` called when the action is deselected by the `GOAPPlanner` (either due to completing the action or changing plan)
 - `GetCost()` value between 0 and 1
@@ -71,8 +71,7 @@ using GOAP;
 public class Goal_HarvestWood : GOAPGoal
 {
 
-    public override void Setup(){
-        base.Setup(); // Creates an empty conditions dictionary, gets the WorldState, and sets a default action layer
+    public override void SetupDerived(){
         conditions["WoodHarvested"] = true; // GOAPPlanner will consider the goal complete when this condition is in the WorldState
         actionLayer = "Wood"; // Only actions in this layer will be considered by the GOAPPlanner for this goal
     }
@@ -101,16 +100,13 @@ public class Action_TakeWoodToStore : GOAPAction
 {
  
     protected override void SetupActionLayers(){
-        base.SetupActionLayers();
         actionLayers.Add("Wood"); // This action is in the same layer as Goal_HarvestWood
     }
     protected override void SetupEffects(){
-        base.SetupEffects();
         effects["WoodHarvested"] = true;
         effects["g_WoodAvailableAtStore"] = true; // Lets other GameObjects know wood is at the store
     }
     protected override void SetupConditions(){
-        base.SetupConditions();
         preconditions["HoldingWood"] = true;
     }
     
