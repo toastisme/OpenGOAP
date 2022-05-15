@@ -254,6 +254,7 @@ public class GOAPAction : MonoBehaviour, IAction
         foreach(var i in globalState.GetGameObjectStates().Keys){
             worldState.RemoveGameObjectState(i);
         }
+        usedTemporaryState = false;
     }
 
 }
