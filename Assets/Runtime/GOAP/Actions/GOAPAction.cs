@@ -14,8 +14,7 @@ public class GOAPAction : MonoBehaviour, IAction
 
     protected WorldState worldState;
     // All of these states are removed from worldState when OnDeactivate is called
-    private WorldState temporaryState; 
-    bool usedTemporaryState=false;
+    private Dictionary<string, List<string> > temporaryState; 
 
     // What must be in worldState for the action to run
     public Dictionary<string, bool> preconditions{get; protected set;} 
@@ -38,7 +37,6 @@ public class GOAPAction : MonoBehaviour, IAction
     
     void Awake(){
         this.worldState = GetComponent<WorldState>();
-        this.temporaryState = this.gameObject.AddComponent<WorldState>();
         stopAction_ = false;
         actionLayers = new List<string>();
         effects = new Dictionary<string, bool>();
@@ -47,6 +45,11 @@ public class GOAPAction : MonoBehaviour, IAction
         SetupEffects();
         SetupActionLayers();
         SetupDerived();
+        ResetTemporaryState();
+    }
+
+    void ResetTemporaryState(){
+        temporaryState = new Dictionary<string, List<string> >();
     }
 
     protected virtual void SetupDerived(){}
@@ -173,88 +176,95 @@ public class GOAPAction : MonoBehaviour, IAction
 
     protected void AddTemporaryState(string name, bool val){
         AddState(name, val);
-        temporaryState.AddState(name, val);
-        usedTemporaryState=true;
+        if (!temporaryState.ContainsKey("bool")){
+            temporaryState["bool"] = new List<string>();
+        }
+        temporaryState["bool"].Add(name);
     }
     protected void AddTemporaryState(string name, float val){
         AddState(name, val);
-        temporaryState.AddState(name, val);
-        usedTemporaryState=true;
+        if (!temporaryState.ContainsKey("float")){
+            temporaryState["float"] = new List<string>();
+        }
+        temporaryState["float"].Add(name);
     }
     protected void AddTemporaryState(string name, int val){
         AddState(name, val);
-        temporaryState.AddState(name, val);
-        usedTemporaryState=true;
+        if (!temporaryState.ContainsKey("int")){
+            temporaryState["int"] = new List<string>();
+        }
+        temporaryState["int"].Add(name);
     }
     protected void AddTemporaryState(string name, Vector2 val){
         AddState(name, val);
-        temporaryState.AddState(name, val);
-        usedTemporaryState=true;
+        if (!temporaryState.ContainsKey("Vector2")){
+            temporaryState["Vector2"] = new List<string>();
+        }
+        temporaryState["Vector2"].Add(name);
     }
     protected void AddTemporaryState(string name, Vector3 val){
         AddState(name, val);
-        temporaryState.AddState(name, val);
-        usedTemporaryState=true;
+        if (!temporaryState.ContainsKey("Vector3")){
+            temporaryState["Vector3"] = new List<string>();
+        }
+        temporaryState["Vector3"].Add(name);
     }
     protected void AddTemporaryState(string name, string val){
         AddState(name, val);
-        temporaryState.AddState(name, val);
-        usedTemporaryState=true;
+        if (!temporaryState.ContainsKey("string")){
+            temporaryState["string"] = new List<string>();
+        }
+        temporaryState["string"].Add(name);
     }
     protected void AddTemporaryState(string name, GameObject val){
         AddState(name, val);
-        temporaryState.AddState(name, val);
-        usedTemporaryState=true;
+        if (!temporaryState.ContainsKey("GameObject")){
+            temporaryState["GameObject"] = new List<string>();
+        }
+        temporaryState["GameObject"].Add(name);
     }
 
     protected void ClearTemporaryStates(){
-        if (!usedTemporaryState){return;}
-        StateSet localState = temporaryState.GetLocalState();
-        StateSet globalState = temporaryState.GetGlobalState();
-        
-        foreach(var i in localState.GetBoolStates().Keys){
-            worldState.RemoveBoolState(i);
+        foreach(var i in temporaryState){
+            switch(i.Key){
+                case("bool"):
+                    for (int j = 0; j < i.Value.Count; j++){
+                        worldState.RemoveBoolState(i.Value[j]);
+                    }
+                    break;
+                case("float"):
+                    for (int j = 0; j < i.Value.Count; j++){
+                        worldState.RemoveFloatState(i.Value[j]);
+                    }
+                    break;
+                case("int"):
+                    for (int j = 0; j < i.Value.Count; j++){
+                        worldState.RemoveIntState(i.Value[j]);
+                    }
+                    break;
+                case("Vector2"):
+                    for (int j = 0; j < i.Value.Count; j++){
+                        worldState.RemoveVector2State(i.Value[j]);
+                    }
+                    break;
+                case("Vector3"):
+                    for (int j = 0; j < i.Value.Count; j++){
+                        worldState.RemoveVector3State(i.Value[j]);
+                    }
+                    break;
+                case("string"):
+                    for (int j = 0; j < i.Value.Count; j++){
+                        worldState.RemoveStringState(i.Value[j]);
+                    }
+                    break;
+                case("GameObject"):
+                    for (int j = 0; j < i.Value.Count; j++){
+                        worldState.RemoveGameObjectState(i.Value[j]);
+                    }
+                    break;
+            }
         }
-        foreach(var i in globalState.GetBoolStates().Keys){
-            worldState.RemoveBoolState(i);
-        }
-        foreach(var i in localState.GetFloatStates().Keys){
-            worldState.RemoveFloatState(i);
-        }
-        foreach(var i in globalState.GetFloatStates().Keys){
-            worldState.RemoveFloatState(i);
-        }
-        foreach(var i in localState.GetIntStates().Keys){
-            worldState.RemoveIntState(i);
-        }
-        foreach(var i in globalState.GetIntStates().Keys){
-            worldState.RemoveIntState(i);
-        }
-        foreach(var i in localState.GetVector2States().Keys){
-            worldState.RemoveVector2State(i);
-        }
-        foreach(var i in globalState.GetVector2States().Keys){
-            worldState.RemoveVector2State(i);
-        }
-        foreach(var i in localState.GetVector3States().Keys){
-            worldState.RemoveVector3State(i);
-        }
-        foreach(var i in globalState.GetVector3States().Keys){
-            worldState.RemoveVector3State(i);
-        }
-        foreach(var i in localState.GetStringStates().Keys){
-            worldState.RemoveStringState(i);
-        }
-        foreach(var i in globalState.GetStringStates().Keys){
-            worldState.RemoveStringState(i);
-        }
-        foreach(var i in localState.GetGameObjectStates().Keys){
-            worldState.RemoveGameObjectState(i);
-        }
-        foreach(var i in globalState.GetGameObjectStates().Keys){
-            worldState.RemoveGameObjectState(i);
-        }
-        usedTemporaryState = false;
+        ResetTemporaryState();
     }
 
 }

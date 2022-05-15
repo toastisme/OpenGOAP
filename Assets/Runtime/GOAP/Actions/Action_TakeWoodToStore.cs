@@ -15,6 +15,7 @@ public class Action_TakeWoodToStore : GOAPAction
     Movement movement;
     Memory memory;
     
+    [SerializeField]
     SmartObject woodStore;
 
     public override float GetCost(){
@@ -60,7 +61,7 @@ public class Action_TakeWoodToStore : GOAPAction
             return result;
         }
         else{
-            return (woodStore != null);
+            return (memory.RememberNearest("WoodStore") != null);
         }
     } 
 

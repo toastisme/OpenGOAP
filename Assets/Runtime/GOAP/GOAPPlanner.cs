@@ -156,6 +156,7 @@ public class GOAPPlanner : MonoBehaviour
         activePlan = optimalPlan;
         ActivePlanLog($"Starting new plan for {activeGoal}", bold:true);
         activeGoal.OnActivate();
+        ActivePlanLog($"Starting {activePlan[activeActionIdx]}");
         activePlan[activeActionIdx].OnActivate();
     }
 
@@ -172,7 +173,7 @@ public class GOAPPlanner : MonoBehaviour
         }
     }
 
-    void OnTickActivePlan(){
+   void OnTickActivePlan(){
 
         // Nothing to run
         if (!(activeGoal != null && activePlan != null)){ return; }
@@ -210,8 +211,8 @@ public class GOAPPlanner : MonoBehaviour
             // At least one more action after activeAction
             if (activePlan[activeActionIdx + 1].PreconditionsSatisfied(worldState)){
                 // Can move to next action
-                activePlan[activeActionIdx].OnDeactivate();
                 ActivePlanLog($"{activePlan[activeActionIdx]} complete");
+                activePlan[activeActionIdx].OnDeactivate();
                 activeActionIdx++;
                 ActivePlanLog($"Moving to new action: {activePlan[activeActionIdx]}");
                 activePlan[activeActionIdx].OnActivate();
