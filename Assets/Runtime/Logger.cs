@@ -18,10 +18,14 @@ public class Logger : MonoBehaviour
         hexColor = "#"+ColorUtility.ToHtmlStringRGBA(prefixColor);
     }
 
-    public void Log(object message, Object sender){
+    public void Log(object message, Object sender, bool bold=false){
         if(!showLogs){
             return;
         }
-        Debug.Log($"<color={hexColor}>{prefix}: {message}, {sender} </color>");
+        string s = $"<color={hexColor}>{prefix}: {message}, {sender} </color>";
+        if (bold){
+            s = "<b>" + s + "</b>";
+        }
+        Debug.Log(s);
     }
 }

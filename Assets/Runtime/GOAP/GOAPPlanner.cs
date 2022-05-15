@@ -154,7 +154,7 @@ public class GOAPPlanner : MonoBehaviour
         activeActionIdx = 0;
         activeGoal = optimalGoal;
         activePlan = optimalPlan;
-        ActivePlanLog($"Starting new plan for {activeGoal}");
+        ActivePlanLog($"Starting new plan for {activeGoal}", bold:true);
         activeGoal.OnActivate();
         activePlan[activeActionIdx].OnActivate();
     }
@@ -179,14 +179,20 @@ public class GOAPPlanner : MonoBehaviour
 
         // Goal no longer viable
         if (!activeGoal.PreconditionsSatisfied(worldState)){
-            ActivePlanLog($"{activeGoal} failed as preconditions are no longer satisfied");
+            ActivePlanLog(
+                $"{activeGoal} failed as preconditions are no longer satisfied",
+                bold:true
+            );
             OnFailActivePlan();
             return;
         }
 
         // Plan no longer viable
         if (!(activePlan[activeActionIdx].PreconditionsSatisfied(worldState))){ 
-            ActivePlanLog($"{activePlan[activeActionIdx]} failed as preconditions are no longer satisfied");
+            ActivePlanLog(
+                $"{activePlan[activeActionIdx]} failed as preconditions are no longer satisfied",
+                bold:true
+                );
             OnFailActivePlan(); 
             return;
         }
@@ -195,7 +201,7 @@ public class GOAPPlanner : MonoBehaviour
 
         // Goal complete
         if (activeGoal.ConditionsSatisfied(worldState)){
-            ActivePlanLog($"{activeGoal} completed");
+            ActivePlanLog($"{activeGoal} completed", bold:true);
             OnCompleteActivePlan();
             return;
         }
@@ -234,7 +240,7 @@ public class GOAPPlanner : MonoBehaviour
 
         chosenGoal = null;
         chosenPlan = null;
-        PlannerLog("Searching for highest priority goal");
+        PlannerLog("Searching for highest priority goal", bold:true);
         if (goals == null){
             PlannerLog("No goals found");
             return;
@@ -251,7 +257,9 @@ public class GOAPPlanner : MonoBehaviour
                 continue;
             }
 
-            PlannerLog($"{goals[i]} has higher priority than {chosenGoal}");
+            if (chosenGoal != null){
+                PlannerLog($"{goals[i]} has higher priority than {chosenGoal}");
+            }
 
             List<GOAPAction> candidatePath = GetOptimalPath(
                 currentState:worldState,
@@ -262,7 +270,7 @@ public class GOAPPlanner : MonoBehaviour
             if (candidatePath != null){
                 chosenGoal = goals[i];
                 chosenPlan = candidatePath;
-                PlannerLog($"Path found. Chosen goal is now {goals[i]}");
+                PlannerLog($"Path found. Chosen goal is now {goals[i]}", bold:true);
             }
         }
     }
@@ -292,7 +300,7 @@ public class GOAPPlanner : MonoBehaviour
             return false;
         }
 
-        PlannerLog($"Searching for plan for {goal}");
+        PlannerLog($"Searching for plan for {goal}", bold:true);
 
         List<ActionNode> openList = new List<ActionNode>();
         List<ActionNode> closedList = new List<ActionNode>();
@@ -318,7 +326,7 @@ public class GOAPPlanner : MonoBehaviour
         }
 
         openList.Add(new ActionNode(null, startAction));
-        PlannerLog($"Selected {startAction}");
+        PlannerLog($"Selected {startAction}", bold:true);
 
         while (openList.Count != 0){
 
@@ -334,7 +342,8 @@ public class GOAPPlanner : MonoBehaviour
                 currentNode = GetNextNode(
                     requiredState:goal.conditions,
                     openList:openList,
-                    nodeCost: out nodeCost
+                    nodeCost: out nodeCost,
+                    isStartNode:true
                 );
             }
 
@@ -346,7 +355,6 @@ public class GOAPPlanner : MonoBehaviour
             openList.Remove(currentNode);
 
             if (currentState.IsSubset(currentNode.action.preconditions)){
-                PlannerLog("Found complete path");
                 return GeneratePath(closedList);
             }
 
@@ -354,8 +362,6 @@ public class GOAPPlanner : MonoBehaviour
                 node:currentNode.action,
                 availableNodes:actions
             );
-
-            PlannerLog($"Found {linkedActions.Count} linked to current node");
 
             for (int i = 0; i < linkedActions.Count; i++){
                 if (!InList(linkedActions[i], closedList)){
@@ -412,7 +418,7 @@ public class GOAPPlanner : MonoBehaviour
             }
         }
         if (nextNode!=null){
-            PlannerLog($"Selected {nextNode.action}");
+            PlannerLog($"Selected {nextNode.action}", bold:true);
         }
         else{
             PlannerLog("Could not find next action");
@@ -423,7 +429,8 @@ public class GOAPPlanner : MonoBehaviour
     ActionNode GetNextNode(
         Dictionary<string, bool> requiredState, 
         List<ActionNode> openList,
-        out float nodeCost
+        out float nodeCost,
+        bool isStartNode=false
         ){
 
             /**
@@ -436,7 +443,6 @@ public class GOAPPlanner : MonoBehaviour
                 logString += $" {i.Key}={i.Value}, ";
 
             }
-            PlannerLog($"Checking {openList.Count} actions for one that satisfies: {logString}");
             float minCost = -1f;
             ActionNode nextNode = null;
             for (int i = 0; i < openList.Count; i++){
@@ -444,7 +450,9 @@ public class GOAPPlanner : MonoBehaviour
                     PlannerLog($"{openList[i].action} does not satisfy conditions");
                     continue;
                 }
-                PlannerLog($"{openList[i].action} satisfies conditions");
+                if (!isStartNode){
+                    PlannerLog($"{openList[i].action} satisfies conditions");
+                }
                 float cost = openList[i].action.GetCost();
                 if (minCost < 0 || cost < minCost){
                     nextNode = openList[i];
@@ -519,15 +527,15 @@ public class GOAPPlanner : MonoBehaviour
         return goalData;
     }
 
-    void ActivePlanLog(object message){
+    void ActivePlanLog(object message, bool bold=false){
         if(activePlanLogger){
-            activePlanLogger.Log(message, this);
+            activePlanLogger.Log(message, this, bold:bold);
         }
     }
 
-    void PlannerLog(object message){
+    void PlannerLog(object message, bool bold=false){
         if(plannerLogger){
-            plannerLogger.Log(message, this);
+            plannerLogger.Log(message, this, bold:bold);
         }
     }
 
