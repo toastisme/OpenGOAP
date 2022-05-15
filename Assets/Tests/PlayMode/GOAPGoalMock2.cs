@@ -7,8 +7,8 @@ public class GOAPGoalMock2 : GOAPGoal
 {
     protected override void SetupDerived(){
         actionLayer = "Mock";
-        conditions["mockCondition2"] = true;
-        preconditions["mockPrecondtion2"] = true;
+        conditions["mockGoalCondition2"] = true;
+        preconditions["mockGoalPrecondtion2"] = true;
     }
 
     public override float GetPriority()

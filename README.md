@@ -114,11 +114,11 @@ public class Action_TakeWoodToStore : GOAPAction
         return worldState.GetFloatState("Fatigue"); // action cost increases with fatigue
     }
 
-    public override void OnActivate(){
+    public override void OnActivateDerived(){
         /* Identify wood store position */
     }
 
-    public override void OnDeactivate(){
+    public override void OnDeactivateDerived(){
         if (worldState.InBoolStates("WoodHarvested")){
             worldState.RemoveBooleanState("WoodHarvested"); // state no longer needed
         }
@@ -129,7 +129,7 @@ public class Action_TakeWoodToStore : GOAPAction
         /*
          * Move towards wood store
          * If at wood store deposite wood and call 
-         * worldState.AddState("WoodHarvested, true")
+         * worldState.AddTemporaryState("WoodHarvested, true")
          */
     }
 }

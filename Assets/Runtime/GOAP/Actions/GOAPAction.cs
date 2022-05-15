@@ -38,6 +38,7 @@ public class GOAPAction : MonoBehaviour, IAction
     
     void Awake(){
         this.worldState = GetComponent<WorldState>();
+        this.temporaryState = this.gameObject.AddComponent<WorldState>();
         stopAction_ = false;
         actionLayers = new List<string>();
         effects = new Dictionary<string, bool>();
