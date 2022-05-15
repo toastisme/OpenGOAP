@@ -22,15 +22,15 @@ Tested on Windows 10 using Unity 2021.2.11f1
 
 ### How OpenGOAP works
 
-- A `GameObject` using GOAP has a `GOAPPlanner` and `WorldState` components, along with a series of `GOAPGoal` and `GOAPAction` components. 
-- The `GOAPPlanner` finds the `GOAPGoal` with the highest priority that has a viable action plan executes that plan.
-- An action plan is a list of `GOAPActions`, and is viable if the final `GOAPAction` satisfies the conditions of the `GOAPGoal`, and each preceeding `GOAPACtion` satisfies the conditions of the action that follows it, where the first `GOAPAction`'s conditions are satisfied by the current `WorldState`.
+- A `GameObject` using GOAP has a `GOAPPlanner`, `WorldState`, and a series of `GOAPGoal` and `GOAPAction` components. 
+- The `GOAPPlanner` finds the `GOAPGoal` with the highest priority that has a viable action plan and executes that plan.
+- An action plan is a list of `GOAPActions`, and is viable if the final `GOAPAction` satisfies the conditions of the `GOAPGoal`, and each preceeding `GOAPAction` satisfies the conditions of the action that follows it, where the first `GOAPAction`'s conditions are satisfied by the current `WorldState`.
 - To find the optimum viable action plan the `GOAPPlanner` uses the [A* search algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm) to find 
 the series of actions which have the minimum cost.
 
 #### GOAPGoal
 
-A `GOAPGoal` has a dictionary of boolean `conditions` that need to be met to satisfy the goal, and optionally a dictionary of boolean `preconditions` that must be met before it can be considered (beyond having a viable plan). This component has the following interface:
+A `GOAPGoal` has a dictionary of boolean `conditions` that need to be met to satisfy the goal, and optionally a dictionary of boolean `preconditions` that must be met before it can be considered (beyond having a viable plan). Each `GOAPGoal` belongs to an `actionLayer` (string), which tells the planner only consider `GOAPActions` for this goal that have the same `actionLayer` (by default this is set to All, where all `GOAPActions` are considered). For this component the main interface is the following:
 - `SetupDerived()` called when the `GameObject` is first initialised
 - `OnActivate()` called the when goal is first selected by the `GOAPPlanner`
 - `OnDeactivate()` called when the goal is deselected by the `GOAPPlanner` (either due to completing the goal or finding a better one)
@@ -41,10 +41,12 @@ A `GOAPGoal` has a dictionary of boolean `conditions` that need to be met to sat
 
 #### GOAPAction
 
-A `GOAPAction` has a dictionary of `preconditions` that need to be met before it can run, and a dictionary of boolean `effects` that will occur as a result of running to completion. This component has the following interface:
-- `SetupDerived()` called when the `GameObject` is first initialised
-- `OnActivate()` called the when action is first selected by the `GOAPPlanner`
-- `OnDeactivate()` called when the action is deselected by the `GOAPPlanner` (either due to completing the action or changing plan)
+A `GOAPAction` has a dictionary of boolean `preconditions` that need to be met before it can run, and a dictionary of boolean `effects` that will occur as a result of running to completion. For this component the main interface is the following:
+- `SetupDerived()` called when the `GameObject` is first initialised. Used for e.g. getting components required for the action
+- `SetupEffects()` called when the `GameObject` is first initialised. Used to populate the effects boolean dictionary
+- `SetupActionLayers()` called when the `GameObject` is first initalised. Used to populate which `actionLayers` the action belongs to
+- `OnActivateDerived()` called the when action is first selected by the `GOAPPlanner`
+- `OnDeactivateDerived()` called when the action is deselected by the `GOAPPlanner` (either due to completing the action or changing plan)
 - `GetCost()` value between 0 and 1
 - `PreconditionsSatisfied(WorldState)` Can this action run based on `WorldState`
 - `EffectsSatisfied(WorldState)` Are the action's effects all present in `WorldState`
@@ -54,11 +56,11 @@ A `GOAPAction` has a dictionary of `preconditions` that need to be met before it
 #### WorldState
 
 A `WorldState` is composed of two `StateSets`, one global and one local. The global `StateSet` is common to multiple `GameObjects`, whereas the local
-`StateSet` is specific to the `GameObject` the `WorldState` is attached to. A `StateSet` is simply several dictionaries of strings mapped to values. 
+`StateSet` is specific to the `GameObject` the `WorldState` is attached to. A `StateSet` is simply several dictionaries of strings mapped to values (analogous to a blackboard for behaviour trees). 
 The `WorldState` differentiates between local and global states by assuming a `g_` prefix for all global states. 
 I.e, if you call `WorldState.AddState("InDanger", true)`, this would be added to the local `StateSet`, whereas `WorldState.AddState("g_InDanger", true)` 
 would be added to the global `StateSet` and apply to all other `GameObjects` sharing the same `Stateset`.
-By default, an absent boolean key is assumed to be equivalent to the key being present with a false value. This can be turned off for each `StateSet` with the `defaultFalse` parameter (visible in the inspector).
+By default, an absent boolean key is assumed to be equivalent to the key being present with a false value. This can be turned off using `SetGlobalDefaultFalse` and `SetLocalDefaultFalse` for the global ahd local `StateSets`, respectively. (The motivation for this is to avoid the need of requiring many boolean states to properly define a particular `WorldState`. For example, if the goal is to harvest wood, a viable plan could be to take wood from the wood store and put it back in. To avoid this it's simpler to have a `woodExtractedFromStore = true` effect added to a `Action_TakeWoodFromStore`, rather than having `woodExtractedFromStore = false` on all other approaches.)
 
 ### HarvestWood Example
 
@@ -90,7 +92,7 @@ public class Goal_HarvestWood : GOAPGoal
     }
 }
 ```
-We now need a series of `GOAPActions`, atleast one of which has `"WoodHarvested"` in their `effects` dictionary. One of these could be taking wood to the wood store:
+We now need a series of `GOAPActions`, atleast one of which has `"WoodHarvested" == true` in their `effects` dictionary. One of these could be taking wood to the wood store:
 
 ```
 using UnityEngine;
@@ -100,14 +102,16 @@ public class Action_TakeWoodToStore : GOAPAction
 {
  
     protected override void SetupActionLayers(){
-        actionLayers.Add("Wood"); // This action is in the same layer as Goal_HarvestWood
+        actionLayers.Add("Wood"); // This action is in the same layer as Goal_HarvestWood. GOAPActions can belong to many actionLayers.
     }
+    
     protected override void SetupEffects(){
-        effects["WoodHarvested"] = true;
+        effects["WoodHarvested"] = true; // This action satisfies the conditions of Goal_HarvestWood
         effects["g_WoodAvailableAtStore"] = true; // Lets other GameObjects know wood is at the store
     }
+    
     protected override void SetupConditions(){
-        preconditions["HoldingWood"] = true;
+        preconditions["HoldingWood"] = true; // Cannot perform this action unless holding wood
     }
     
    public override float GetCost(){
@@ -115,7 +119,8 @@ public class Action_TakeWoodToStore : GOAPAction
     }
 
     public override void OnActivateDerived(){
-        /* Identify wood store position */
+        /* Called when the action is first selected by the GOAPPlanner.
+           Some code here could identify the wood store position */
     }
 
     public override void OnDeactivateDerived(){
@@ -128,21 +133,24 @@ public class Action_TakeWoodToStore : GOAPAction
     {
         /*
          * Move towards wood store
-         * If at wood store deposite wood and call 
-         * worldState.AddTemporaryState("WoodHarvested, true")
+         * If at wood store deposit wood and call 
+         * worldState.AddTemporaryState("WoodHarvested, true") 
+         * TemporaryStates are automatically removed when the action completes
+         * This is useful for states that are no longer relevant after the action completes, and saves you needing to 
+         * remember to remove it manually.
          */
     }
 }
 ```
-This action has a precondition of `"HoldingWood" being true`, and so we could have another action `Action_PickUpWood`, which picks up the nearest wood, given the precondition `"WoodNearby"` is true. This preconditon in turn could be in the `effects` dictionary of both `Action_ChopDownTree` and `Action_LookAround`. The latter could have a higher cost than the former, and so would only be selected by the `GOAPPlanner` if, say, the `GameObject` did not have an axe. 
+This action has a precondition of `"HoldingWood" == true`, and so we could have another action `Action_PickUpWood`, which picks up the nearest wood, given the precondition `"WoodNearby"` is true. This preconditon in turn could be in the `effects` dictionary of both `Action_ChopDownTree` and `Action_LookAround`. The latter could have a higher cost than the former, and so would only be selected by the `GOAPPlanner` if, say, the `GameObject` did not have an axe. `Action_LookAround` could have no `preconditions`, and so would always be viable from the current `WorldState`. 
 
-To have a `GameObject` utilise these behaviours simply add the goal and action scripts, along with a `GOAPPlanner` and `WorldState` script to the `GameObject` as components. The global `StateSet` can be kept on a separate `GameObject` and added in the inspector on the `WorldState` component, or added in code via `WorldState.SetGlobalState(StateSet)`. 
+To have a `GameObject` utilise these behaviours simply add the goal and action scripts, along with a `GOAPPlanner` and `WorldState` script to the `GameObject` as components. The global `StateSet` is kept on a separate (empty) `GameObject`. This can be added in the inspector on the `WorldState` component, or added in code via `WorldState.SetGlobalState(StateSet)`. 
 
 ### Visualisation and Debugging
 
-The `GOAPPlanner` has a boolean `Display Planner` in the inspector. If this is set to true, when clicking on `GameObject` in the Hierarchy navigation bar, a `GUIPlanner` window will be displayed of the current active plan, and the priorities of all goals. For a given `GOAPGoal`, if `PreconditionsSatisfied() == false`, the goal will be greyed out.
+The `GOAPPlanner` has a boolean `Display Planner` in the inspector. If this is set to true, when clicking on the `GameObject` in the Hierarchy navigation bar, a `GUIPlanner` window will be displayed showing the current active plan, and the priorities of all goals. For a given `GOAPGoal`, if `PreconditionsSatisfied() == false`, the goal will be greyed out.
 
-Additional debugging can be done by adding a `GOAPLogger` to the scene. This contains a logger for the active plan and one for the planner, which can be assigned to a `GameObject`'s `GOAPPlanner` in the inspector. These can be turned on or off individually on the loggers themselves, in the inspector, by selecting `Show Logs`. The Planner logger will print log statements for each step through the A* process when finding the optimum plan. The ActivePlan logger will essentially print log statements with the same information as the `GUIPlanner` window, but this can still be useful (for example for identifying if plans are being selected/completing instantly, repeatedly, due to a condition in `WorldState` not being reset correctly).
+Additional debugging can be done by adding a `GOAPLogger` to the scene. This contains a logger for the active plan and another for the planner, which can be assigned to a `GameObject`'s `GOAPPlanner` in the inspector. These can be turned on or off individually on the loggers themselves, in the inspector, by selecting `Show Logs`. The Planner logger will print log statements for each step through the A* process when finding the optimum plan. The ActivePlan logger will essentially print log statements with the same information as the `GUIPlanner` window, but this can still be useful (for example for identifying if plans are being selected/completing instantly, repeatedly, due to a condition in `WorldState` not being reset correctly).
 
 
 
