@@ -152,6 +152,8 @@ The `GOAPPlanner` has a boolean `Display Planner` in the inspector. If this is s
 
 Additional debugging can be done by adding a `GOAPLogger` to the scene. This contains a logger for the active plan and another for the planner, which can be assigned to a `GameObject`'s `GOAPPlanner` in the inspector. These can be turned on or off individually on the loggers themselves, in the inspector, by selecting `Show Logs`. The Planner logger will print log statements for each step through the A* process when finding the optimum plan. The ActivePlan logger will essentially print log statements with the same information as the `GUIPlanner` window, but this can still be useful (for example for identifying if plans are being selected/completing instantly, repeatedly, due to a condition in `WorldState` not being reset correctly).
 
+![OpenGOAP](https://github.com/toastisme/OpenGOAP/blob/main/Assets/Runtime/GOAP/Screenshots/GOAPLoggers.PNG?raw=true)
+
 
 
 
