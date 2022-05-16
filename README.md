@@ -1,7 +1,7 @@
 # OpenGOAP
 
 OpenGOAP is an open source tool to design and monitor goal orientated action planning in Unity.
-![OpenGOAP](https://github.com/toastisme/OpenGOAP/blob/main/Assets/Runtime/GOAP/Screenshots/HarvestFoodPlan.PNG?raw=true)
+![OpenGOAP](https://github.com/toastisme/OpenGOAP/blob/main/Runtime/Screenshots/HarvestFoodPlan.PNG?raw=true)
 
 ## Features
 - World state consisting of local (`GameObject` specific) and global states
@@ -152,7 +152,7 @@ The `GOAPPlanner` has a boolean `Display Planner` in the inspector. If this is s
 
 Additional debugging can be done by adding a `GOAPLogger` to the scene. This contains a logger for the active plan and another for the planner, which can be assigned to a `GameObject`'s `GOAPPlanner` in the inspector. These can be turned on or off individually on the loggers themselves, in the inspector, by selecting `Show Logs`. The Planner logger will print log statements for each step through the A* process when finding the optimum plan. The ActivePlan logger will essentially print log statements with the same information as the `GUIPlanner` window, but this can still be useful (for example for identifying if plans are being selected/completing instantly, repeatedly, due to a condition in `WorldState` not being reset correctly).
 
-![OpenGOAP](https://github.com/toastisme/OpenGOAP/blob/main/Assets/Runtime/GOAP/Screenshots/GOAPLoggers.PNG?raw=true)
+![OpenGOAP](https://github.com/toastisme/OpenGOAP/blob/main/Runtime/Screenshots/GOAPLoggers.PNG?raw=true)
 
 ## Running Tests
 - In your project packages folder, open the manifest file and add `"com.davidmcdonagh-openbehaviourtree"` to `"testables"` (see the Enabling tests for a package section [here](https://docs.unity3d.com/Manual/cus-tests.html#tests)).
