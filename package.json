@@ -1,0 +1,25 @@
+{
+  "name": "com.davidmcdonagh-opengoap",
+  "version": "0.1.0",
+  "displayName": "OpenGOAP",
+  "description": "An open source tool to design and monitor goal orientated action planning (GOAP) in Unity",
+  "unity": "2021.2",
+  "unityRelease": "11f1",
+  "documentationUrl": "https://github.com/toastisme/OpenGOAP/Docs/html/index.html",
+  "changelogUrl": "https://github.com/toastisme/OpenGOAP/CHANGELOG.md",
+  "licensesUrl": "https://github.com/toastisme/OpenGOAP/LICENSE.md",
+  "keywords": [
+    "GOAP",
+    "artifical intelligence",
+    "npc",
+    "goal orientated action planning"
+  ],
+  "author": {
+    "name": "David McDonagh",
+    "email": "dnmcdonagh@protonmail.com",
+    "url": "https://www.github.com/toastisme"
+  },
+  "type": "tool",
+  "dependencies": {
+  }
+}

@@ -154,7 +154,18 @@ Additional debugging can be done by adding a `GOAPLogger` to the scene. This con
 
 ![OpenGOAP](https://github.com/toastisme/OpenGOAP/blob/main/Assets/Runtime/GOAP/Screenshots/GOAPLoggers.PNG?raw=true)
 
+## Running Tests
+- In your project packages folder, open the manifest file and add `"com.davidmcdonagh-openbehaviourtree"` to `"testables"` (see the Enabling tests for a package section [here](https://docs.unity3d.com/Manual/cus-tests.html#tests)).
+- In the Editor open `Window -> General -> Test Runner
+- Under `PlayMode` you should now see tests for OpenBehaviourTree
 
+# TODO
+- Partial plans
+- Fixed sequences of actions
+
+## Further Info
+- [Full documentation](https://toastisme.github.io/OpenGOAP/)
+- See also [OpenBehaviourTree](https://github.com/toastisme/OpenBehaviourTree)
 
 
 
