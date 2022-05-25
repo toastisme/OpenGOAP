@@ -73,7 +73,7 @@ using GOAP;
 public class Goal_HarvestWood : GOAPGoal
 {
 
-    public override void SetupDerived(){
+    protected override void SetupDerived(){
         conditions["WoodHarvested"] = true; // GOAPPlanner will consider the goal complete when this condition is in the WorldState
         actionLayer = "Wood"; // Only actions in this layer will be considered by the GOAPPlanner for this goal
     }
@@ -118,12 +118,12 @@ public class Action_TakeWoodToStore : GOAPAction
         return worldState.GetFloatState("Fatigue"); // action cost increases with fatigue
     }
 
-    public override void OnActivateDerived(){
+    protected override void OnActivateDerived(){
         /* Called when the action is first selected by the GOAPPlanner.
            Some code here could identify the wood store position */
     }
 
-    public override void OnDeactivateDerived(){
+    protected override void OnDeactivateDerived(){
         if (worldState.InBoolStates("WoodHarvested")){
             worldState.RemoveBooleanState("WoodHarvested"); // state no longer needed
         }
