@@ -114,7 +114,7 @@ public class Action_TakeWoodToStore : GOAPAction
         preconditions["HoldingWood"] = true; // Cannot perform this action unless holding wood
     }
     
-   public override float GetCost(){
+    public override float GetCost(){
         return worldState.GetFloatState("Fatigue"); // action cost increases with fatigue
     }
 
