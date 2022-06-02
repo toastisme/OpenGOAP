@@ -40,6 +40,8 @@ public class ActionNode{
     }
 }
 
+
+[RequireComponent(typeof(WorldState))]
 public class GOAPPlanner : MonoBehaviour
 {
 
