@@ -134,7 +134,7 @@ public class Action_TakeWoodToStore : GOAPAction
         /*
          * Move towards wood store
          * If at wood store deposit wood and call 
-         * worldState.AddTemporaryState("WoodHarvested, true") 
+         * AddTemporaryState("WoodHarvested, true") 
          * TemporaryStates are automatically removed when the action completes
          * This is useful for states that are no longer relevant after the action completes, and saves you needing to 
          * remember to remove it manually.
