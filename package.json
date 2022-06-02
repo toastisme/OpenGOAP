@@ -1,6 +1,6 @@
 {
   "name": "com.davidmcdonagh-opengoap",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "OpenGOAP",
   "description": "An open source tool to design and monitor goal orientated action planning (GOAP) in Unity",
   "unity": "2021.2",
