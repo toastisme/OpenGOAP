@@ -85,8 +85,7 @@ public class GOAPPlanner : MonoBehaviour
     void SetupActions(){
 
         /**
-         * Calls GOAPAction.Setup for each GOAPAction and caches the actionLayer
-         * of each GOAPAction.
+         * Caches the actionLayer of each GOAPAction.
          */
 
         List<GOAPAction> allActions = new List<GOAPAction>(GetComponents<GOAPAction>());
@@ -107,9 +106,7 @@ public class GOAPPlanner : MonoBehaviour
     void SetupGoals(){
 
         /**
-         * Calls GOAPGoal.Setup() for all GOAPGoals
-         * and adds the actionLayer of each GOAPGoal as a key
-         * in actions.
+         * Adds the actionLayer of each GOAPGoal as a key in actions.
          */
 
         actions["All"] = new List<GOAPAction>();
