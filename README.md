@@ -146,6 +146,8 @@ This action has a precondition of `"HoldingWood" == true`, and so we could have 
 
 To have a `GameObject` utilise these behaviours simply add the goal and action scripts, along with a `GOAPPlanner` and `WorldState` script to the `GameObject` as components. The global `StateSet` is kept on a separate (empty) `GameObject`. This can be added in the inspector on the `WorldState` component, or added in code via `WorldState.SetGlobalState(StateSet)`. 
 
+Adding many `GOAPGoals` and `GOAPActions` can get messy in the inspector. To help with this the `ComponentGrouper` component can be added, which allows components to be grouped together and hidden. This was taken from the amazing people [here](https://forum.unity.com/threads/group-components-in-inspector.513931/) (the Kitsuba version).
+
 ### Visualisation and Debugging
 
 The `GOAPPlanner` has a boolean `Display Planner` in the inspector. If this is set to true, when clicking on the `GameObject` in the Hierarchy navigation bar, a `GUIPlanner` window will be displayed showing the current active plan, and the priorities of all goals. For a given `GOAPGoal`, if `PreconditionsSatisfied() == false`, the goal will be greyed out.
