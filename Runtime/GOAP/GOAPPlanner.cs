@@ -412,7 +412,7 @@ public class GOAPPlanner : MonoBehaviour
                 openList,
                 out nodeCost
             );
-            if (minCost < 0 || nodeCost < minCost){
+            if ((minCost < 0 || nodeCost < minCost) && currentNode != null){
                 nextNode = currentNode;
                 minCost = nodeCost;
             }
