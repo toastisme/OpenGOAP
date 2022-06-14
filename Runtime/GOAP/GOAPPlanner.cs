@@ -220,13 +220,19 @@ public class GOAPPlanner : MonoBehaviour
     }
 
     void OnCompleteActivePlan(){
-        activeGoal.OnDeactivate();
+        if (activePlan != null){
+            activePlan[activeActionIdx].OnDeactivate();
+        }
+        activeGoal?.OnDeactivate();
         activeGoal = null;
         activePlan = null;
     }
 
     void OnFailActivePlan(){
-        activeGoal.OnDeactivate();
+        if (activePlan != null){
+            activePlan[activeActionIdx].OnDeactivate();
+        }
+        activeGoal?.OnDeactivate();
         activeGoal = null;
         activePlan = null;
     }
