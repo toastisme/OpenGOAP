@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.3]
+
+### Fixed
+- Bug in `GOAPPlanner.OnCompleteActivePlan` and `GOAPPlanner.OnFailActivePlan` where `GOAPAction.OnDeactivate` was not called for the active action.
+
 ## [0.1.2]
 
 ### Fixed
