@@ -208,13 +208,15 @@ public class GOAPPlanner : MonoBehaviour
 
         if (activeActionIdx < activePlan.Count-1){
             // At least one more action after activeAction
-            if (activePlan[activeActionIdx + 1].PreconditionsSatisfied(worldState)){
-                // Can move to next action
-                ActivePlanLog($"{activePlan[activeActionIdx]} complete");
-                activePlan[activeActionIdx].OnDeactivate();
-                activeActionIdx++;
-                ActivePlanLog($"Moving to new action: {activePlan[activeActionIdx]}");
-                activePlan[activeActionIdx].OnActivate();
+            for (int i=activePlan.Count-1; i > activeActionIdx; i--){
+                if (activePlan[i].PreconditionsSatisfied(worldState)){
+                    // Can skip to a new action
+                    ActivePlanLog($"Stopping {activePlan[activeActionIdx]}");
+                    activePlan[activeActionIdx].OnDeactivate();
+                    activeActionIdx = i;
+                    ActivePlanLog($"Moving to new action: {activePlan[activeActionIdx]}");
+                    activePlan[activeActionIdx].OnActivate();
+                }
             }
         }
     }
