@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.4]
+
+### Changed
+- `GOAPPlanner` now allows for actions in a plan to be skipped if the preconditions of a subsequent action are met. 
+
 ## [0.1.3]
 
 ### Fixed
