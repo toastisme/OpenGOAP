@@ -124,9 +124,7 @@ public class Action_TakeWoodToStore : GOAPAction
     }
 
     protected override void OnDeactivateDerived(){
-        if (worldState.InBoolStates("WoodHarvested")){
-            worldState.RemoveBooleanState("WoodHarvested"); // state no longer needed
-        }
+        /* Called when the action is deselected by the GOAPPlanner. */
     }
 
     public override void OnTick()
@@ -142,7 +140,10 @@ public class Action_TakeWoodToStore : GOAPAction
     }
 }
 ```
-This action has a precondition of `"HoldingWood" == true`, and so we could have another action `Action_PickUpWood`, which picks up the nearest wood, given the precondition `"WoodNearby"` is true. This preconditon in turn could be in the `effects` dictionary of both `Action_ChopDownTree` and `Action_LookAround`. The latter could have a higher cost than the former, and so would only be selected by the `GOAPPlanner` if, say, the `GameObject` did not have an axe. `Action_LookAround` could have no `preconditions`, and so would always be viable from the current `WorldState`. 
+
+Note the use of `GOAPAction.AddTemporaryState("WoodHarvested, true")`. In this case `WoodHarvested` is only true at the instant the action has been completed. `AddTemporaryState` is just a wrapper for `WorldState.AddState`, but the state is automatically removed as part of `GOAPAction.OnDeactivate`, ensuring the state is removed as soon as the action completes or is cancelled. 
+
+`Action_TakeWoodToStore` has a precondition of `"HoldingWood" == true`, and so we could have another action `Action_PickUpWood`, which picks up the nearest wood, given the precondition `"WoodNearby"` is true. This preconditon in turn could be in the `effects` dictionary of both `Action_ChopDownTree` and `Action_LookAround`. The latter could have a higher cost than the former, and so would only be selected by the `GOAPPlanner` if, say, the `GameObject` did not have an axe. `Action_LookAround` could have no `preconditions`, and so would always be viable from the current `WorldState`. 
 
 To have a `GameObject` utilise these behaviours simply add the goal and action scripts, along with a `GOAPPlanner` and `WorldState` script to the `GameObject` as components. The global `StateSet` is kept on a separate (empty) `GameObject`. This can be added in the inspector on the `WorldState` component, or added in code via `WorldState.SetGlobalState(StateSet)`. 
 
