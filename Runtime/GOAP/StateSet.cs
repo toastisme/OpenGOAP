@@ -187,6 +187,9 @@ public class StateSet : MonoBehaviour
     }
 
     public bool GetBoolState(string name){
+        if (defaultFalse && !boolStates.ContainsKey(name)){
+            return false;
+        }
         return boolStates[name];
     }
 
