@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.5]
+
+### Fixed
+- `StateSet.GetBoolState` no longer throws a key error if `StateSet.defaultFalse==true` and the state is not present.
+
 ## [0.1.4]
 
 ### Changed
