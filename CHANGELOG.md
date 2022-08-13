@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.6]
+
+### Fixed
+- Erroneous default check of `GOAPAction.stopAction_==false` in `GOAPAction.PreconditionsSatisfied()`
+
 ## [0.1.5]
 
 ### Fixed
