@@ -126,7 +126,6 @@ public class GOAPAction : MonoBehaviour, IAction
          * true if worldState is a superset of preconditions
          */
 
-        if (stopAction_){ return false; }
         return(worldState.IsSubset(preconditions));
     }
 
