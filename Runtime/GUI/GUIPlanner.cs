@@ -293,7 +293,7 @@ public class GUIPlanner : EditorWindow
     string GetTypeString(Type type){
         string typeString = type.ToString();
         if (typeString.Contains("_")){
-            return typeString.Split("_")[1];
+            return typeString.Split('_')[1];
         }
         return typeString;
     }
